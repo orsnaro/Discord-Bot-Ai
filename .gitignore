@@ -1,0 +1,8 @@
+Gpteous_botToken.txt
+openai_apiKey.txt
+
+build/
+build/*
+avatars/
+avatars/*
+Wizard_bot_local_runner.exe
