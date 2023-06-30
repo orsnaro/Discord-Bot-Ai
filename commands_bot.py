@@ -20,7 +20,7 @@ async def bardAIfast (ctx : commands.Context , * , full_prompt:str ,  ): #(searc
 	await send_initMsg_task 
 	task_response = await ask_bard_task
 	# task_response = ask_bard(full_prompt , user_name= ctx.author.display_name )
-	embed = discord.Embed(type='rich' , color= 1 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
+	embed = discord.Embed(type='rich' , color= 4 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
 	await ctx.reply(embed=embed)# short cut for ctx.send()   
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
@@ -32,7 +32,7 @@ async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search ke
    await send_initMsg_task 
    task_response = await ask_bard_task
    # task_response = ask_bard(full_prompt , user_name= ctx.author.display_name )
-   embed = discord.Embed(type='rich' , color= 1 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
+   embed = discord.Embed(type='rich' , color= 4 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
    await ctx.reply(embed=embed)# short cut for ctx.send()   
 #------------------------------------------------------------------------------------------------------------------------------------------#
    

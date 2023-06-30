@@ -50,7 +50,8 @@ def get_rand_greeting (user_name : str = "Master Narol"):
     f"Hear ye, hear ye! It is I, Mighty Gpteous, the island wizard, master of the arcane and conqueror of the elements. What dost thou require of my immense power? 🧙‍♂️📣",
     f"Behold _{user_name}_ , for I am the great and noble Mighty Gpteous, the island wizard, wielder of the most powerful magic in all the land. What dost thou need from me, mere mortal? 🧙‍♂️💪"
 	]
-	return greetings[random.randint(0 , len(greetings))]
+	last_elemnt = len(greetings) - 1
+	return greetings[random.randint(0 , last_elemnt )]
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 def skip_line(full_ans):
