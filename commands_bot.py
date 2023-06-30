@@ -16,11 +16,11 @@ async def bardAIfast (ctx : commands.Context , * , full_prompt:str ,  ): #(searc
 #using BARD API
 	print("entered comand name empty string or space")#testing
 	send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message.reference ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))#if error replace display_name with name
-	ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
+	# ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
 	await send_initMsg_task 
-	task_response = await ask_bard_task
-	# task_response = ask_bard(full_prompt , user_name= ctx.author.display_name )
-	embed = discord.Embed(type='rich' , color= 1 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
+	# task_response = await ask_bard_task
+	task_response = ask_bard(full_prompt , user_name= ctx.author.display_name )
+	embed = discord.Embed(type='rich' , color= 4 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
 	await ctx.reply(embed=embed)# short cut for ctx.send()   
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
@@ -28,11 +28,11 @@ async def bardAIfast (ctx : commands.Context , * , full_prompt:str ,  ): #(searc
 async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 #using BARD API
    send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message.reference ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**")) #if error replace display_name with name
-   ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
+   # ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
    await send_initMsg_task 
-   task_response = await ask_bard_task
-   # task_response = ask_bard(full_prompt , user_name= ctx.author.display_name )
-   embed = discord.Embed(type='rich' , color= 1 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
+   # task_response = await ask_bard_task
+   task_response = ask_bard(full_prompt , user_name= ctx.author.display_name )
+   embed = discord.Embed(type='rich' , color= 4 , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
    await ctx.reply(embed=embed)# short cut for ctx.send()   
 #------------------------------------------------------------------------------------------------------------------------------------------#
    

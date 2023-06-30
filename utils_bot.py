@@ -58,14 +58,14 @@ def skip_line(full_ans):
   return '\n'.join(lines[1:])
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
-async def ask_bard(user_query : str , user_name = "Narol island master" ) -> str: 
-   bard_ans = await bard.get_answer(f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}")
-   return skip_line(bard_ans['content']) # skip first line that has my prompt 
-   # return bard_ans['content'] 
-
-# def ask_bard(user_query : str , user_name = "Narol island master" ):
-#    bard_ans =  bard.get_answer(f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences  that also  has emojies like :fog: etc.. . the  rest must be using normal english. {user_name} question: {user_query}")
+# async def ask_bard(user_query : str , user_name = "Narol island master" ) -> str: 
+#    bard_ans = await bard.get_answer(f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}")
 #    return skip_line(bard_ans['content']) # skip first line that has my prompt 
+#    # return bard_ans['content'] 
+
+def ask_bard(user_query : str , user_name = "Narol island master" ):
+   bard_ans =  bard.get_answer(f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences  that also  has emojies like :fog: etc.. . the  rest must be using normal english. {user_name} question: {user_query}")
+   return skip_line(bard_ans['content']) # skip first line that has my prompt 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class

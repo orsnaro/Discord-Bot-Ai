@@ -24,9 +24,9 @@ async def on_message(message):
 	if check_msg(wizard_ch_msg , targetChannelId=wizardChannelId): 
     #NOTE : if want to disable talk to all bots in also check if author.bot != True
 		# print (wizard_ch_msg.content)
-		ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content , user_name= wizard_ch_msg.author.display_name) ) #if error replace display_name with name
-		task_response = await ask_bard_task
-		# task_response = ask_bard(user_query= message.content , user_name= message.author.display_name)
+		# ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content , user_name= wizard_ch_msg.author.display_name) ) #if error replace display_name with name
+		# task_response = await ask_bard_task
+		task_response = ask_bard(user_query= message.content , user_name= message.author.display_name)
 		bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
 		full_response = bot_msg_header + task_response
 		await message.reply(content= full_response  , mention_author= True)
