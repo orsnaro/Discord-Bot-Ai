@@ -11,11 +11,11 @@ from init_bot import *
 import keys
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.command (name="ping" , description="Sends the bot's latency.")
+@bot.command (name="ping" )
 async def ping(ctx : commands.Context):
     await ctx.reply(content= f"Pong! Latency is {bot.latency}")
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.command(name=f"<@{wizard_bot_id}>" , description= "answers any question you ask with links and images if needed , also checks if there is refrenced message to answer in case of reply") # command name is defaulted to method name 
+@bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * , full_prompt : str ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 #using BARD API
 
@@ -45,7 +45,7 @@ async def bardAIfast (ctx : commands.Context , * , full_prompt : str ,  ): #(sea
 		await send_imgmsg_task
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
-# @bot.command(name="wizard" , aliases=["wizard ", "wiz" , "wizardspirit" , "bard"] , description= "answers any question you ask with links and images if needed") # command name is defaulted to method name 'bardAI'
+# @bot.command(name="wizard" , aliases=["wizard ", "wiz" , "wizardspirit" , "bard"]) # command name is defaulted to method name 'bardAI'
 # async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 # #using BARD API
 #    send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message.reference ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**")) #if error replace display_name with name
@@ -55,7 +55,6 @@ async def bardAIfast (ctx : commands.Context , * , full_prompt : str ,  ): #(sea
 #    embed = discord.Embed(type='rich' , color= discord.Color.purple() , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
 #    await ctx.reply(embed=embed)# short cut for ctx.send()   
 # #------------------------------------------------------------------------------------------------------------------------------------------#
-   
 # @bot.command(name="wizardgpt" , aliases =["wizardgpt " , "gpt"]) # command name is defaulted to method name 'gpt'
 # async def gpt (ctx : commands.Context , * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 #    async with aiohttp.ClientSession() as session: #with just is for handling errors and session ending

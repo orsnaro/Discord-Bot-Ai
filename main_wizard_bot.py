@@ -6,6 +6,7 @@
                           Title : main code for Discord Bot (with generative AI)
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
+#TODO TODO TODO : DONT ADD MORE TASKS! (FINSIH THOSE & FIX BIG BUGS ) THEN => MIGRATE TO PYCORD 
 #TODO : Documentaion for functions / classes and repo readme.md
 #(DONE)TODO : make bot see prev messages (use session)
 #(DONE)TODO : talk to bot by mention him  
