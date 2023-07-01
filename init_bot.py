@@ -6,11 +6,11 @@
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
+import discord
+from discord.ext import commands
 import asyncio as aio
 import random
 from bardapi import BardAsync , Bard
-import discord
-from discord.ext import commands
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
@@ -41,20 +41,24 @@ wizard_bot_id = 1117540489365827594
 wizard_channel_id = 1118953370510696498
 bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , strip_after_prefix= True , intents=discord.Intents.all() ,description= f""" 
                    GPTEOUS HELP MESSAGE```
-                   **I'M MIGHTY GPTEOUS !** the first GPT-Spirit in Narol's island volcan gurdian , Island Master right hand  and the begining of Island's new ERA  , etc... I mean you get it am very special here  :man_mage:
+                   **I'M MIGHTY GPTEOUS !** the first GPT-Spirit in Narol's island Volcan guardian , Island's Master right hand  and the begining of Island's new ERA etcetera etcetera... I mean you get it am very special here  :man_mage:
 
- 						:inbox_tray:   Ask me any where in the Island and  I shall INDEED answer you 
+ 						:label:    Ask me any where in the Island and  I shall INDEED answer you 
 
-						:inbox_tray:   The question must start start with mentioning me e.g.( <@{wizard_bot_id}> )
+						:label:    The question must start start with mentioning me e.g.( <@{wizard_bot_id}> )
       
-						:inbox_tray:   if you want to speak with me more freely with no mentionrs/ commands just type anything in my channel <#{wizard_channel_id}> and I shall respond !
+						:label:    if you want to speak with me more freely with no mentions/commands 
+      							   just type anything in my channel <#{wizard_channel_id}> and I shall respond !
+      
+						:label:    (FOR NOW)THE ONLY OWAY THAT I ANSWER A REPLY 
+      								MESSAGE AND SEARCH ORG. MSG. CONTENT   IS BY MENTIONING THE BOT (CMD NO.1 ON CMD LIST BELOW :point_down:)
 
-						:inbox_tray:   Aditional Functionalities and SPELLS coming soon...
+						:label:    Aditional Functionalities and SPELLS coming soon  (DISAPPEARS :face_in_clouds:  )...
 
                    
                    __COMANDS LIST__
                    ```fix
-                   1. <@{wizard_bot_id}> "your_question"
+                   1. @WizardSpirit "your_question" 
                    3. wiz "your_question"
                    5. bard "your_question"
                    2. wizard "your_question"
@@ -94,5 +98,6 @@ async def on_ready():
       if  not (attr.startswith('__') or  attr.startswith('_')) :
          value = getattr(bot.user, attr)
          print(f'{attr}: {value}')
-
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def get_last_conv_id()  : ...  #TODO
 

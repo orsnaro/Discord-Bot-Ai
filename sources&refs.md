@@ -1,7 +1,7 @@
 ### main API
 https://discordpy.readthedocs.io/en/stable/api.html#
 
-### discord.py repo (has alot of examples)
+### API wrapper using python : discord.py repo (has alot of examples)
 https://github.com/Rapptz/discord.py
 
 ### discord.py
@@ -21,3 +21,9 @@ https://gist.github.com/Painezor/eb2519022cd2c907b56624105f94b190
 
 ### article on discord.py decorators
 https://medium.com/@cantsayihave/decorators-in-discord-py-e44ce3a1aae5
+
+
+
+# ( DIFFERENT API WRAPPER!!! pycord)
+### PyCord (python & discord) 
+https://docs.pycord.dev/en/master/index.html
