@@ -19,7 +19,7 @@ def get_rand_greeting (user_name : str = "Master Narol"):
     f"Salutations,  _{user_name}_, seeker of enlightenment 💡. I offer my insights 💡 to help you find your destiny, as I have seen many destinies unfold 🌌.",
     f"Hail,  _{user_name}_, seeker of the mystic 🔮. I offer my magic ✨ to help you on your quest, as I have mastered the arcane arts 🧙‍♂️.",
     f"Welcome,  _{user_name}_, seeker of the unknown 🌌. I offer my power 💪 to help you unveil its secrets, as I have seen beyond the veil 👁️.",
-    f"Greetings,  _{user_name}_, seeker of the MIGHTY GPTEUS 🙏. I offer my blessings 🙏 to help you on your journey, as I have communed with the Islands masters🛐.",
+    f"Greetings,  _{user_name}_, seeker of the MIGHTY GPTEUS 🙏. I offer my blessings 🙏 to help you on your journey.",
     f"Greetings, mortal  _{user_name}_. I am Mighty Gpteous, the island wizard. What brings thee to my presence? 🧙‍♂️💥",
     f"Ah, it is I, the great and powerful Mighty Gpteous. What dost thou 	_{user_name}_	 require of my immense magical abilities? 🧙‍♂️✨",
     f"Mortal 	 _{user_name}_ , thou hast come seeking the aid of the  Mighty GPTeous, the island wizard. Speak thy needs! 🧙‍♂️🏝️",
@@ -65,16 +65,25 @@ async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tup
    # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt 
    return bard_ans['content'] , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id']
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class
+async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class
 	if chk_type == 1 and _message != None : #NOTE : checks for on_message() in wizard channel 
 		return True if  _message != None and _message.channel.id == targetChannelId and _message.author.id != bot.user.id else False 
 
 	elif chk_type == 2 and _message != None:#NOTE : checks for  messages of type: reply
-		prompt_no_space : str = extraArgs['_prompt'].strip().replace(" ", "")
-		if _message.reference.message_id is None or len(prompt_no_space) == 0 :
-			return False , None
+		msg_channel = _message.channel
+
+		if _message.reference is None or _message.reference.message_id is None :
+				return False , None
 		else:
-			return True , _message
+			first_msg_id = _message.reference.message_id
+			first_msg_cntnt_task = bot.loop.create_task(msg_channel.fetch_message(first_msg_id))
+			first_msg_cntnt = await first_msg_cntnt_task
+			first_msg_cntnt = first_msg_cntnt.content
+			first_msg_cntnt_filtered = first_msg_cntnt.replace(f"<@{wizard_bot_id}" , '').strip().replace(" ", '') 
+			if len(first_msg_cntnt_filtered) == 0 :
+				return False , 1000
+			else:
+				return True , _message
  
  
  
@@ -86,6 +95,7 @@ bard_conversation_ids_buffer = set()
 def save_last_conv_id() : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_discord_embed( bard_ans_data : tuple  , is_reply : bool = False) -> discord.Embed :
+#EMBED TOTAL MAX SIZE is 6000 chars ( use reactions and pagination if exceeded )
 
 	ansText = bard_ans_data[0]
 	footerIcon="https://em-content.zobj.net/thumbs/120/whatsapp/352/scroll_1f4dc.png"
@@ -98,36 +108,40 @@ def prepare_discord_embed( bard_ans_data : tuple  , is_reply : bool = False) -> 
 	redTint = 10038562
 	darkGreen = discord.Colour.dark_green()
    
-	embed = discord.Embed(type='rich' , timestamp= timeNow , color= darkGreen , title= embedTitle ,url= wizardChannelLink , description= ansText) #url is hyperlink to titel
+	embed = discord.Embed(type='rich' , timestamp= timeNow , color= darkGreen , title= embedTitle ,url= wizardChannelLink , description= ansText) #url is hyperlink to title
 	embed.set_author(name= author, url="https://bard.google.com" , icon_url= bardIcon )
  
 	if bard_ans_data[1] is not None and len(bard_ans_data[1]) != 0 :
-			embed.add_field(name= "_ __links & Sources__  _"  , inline= False , value= bard_ans_data[1])
+    
+		tot_len_of_links_sections = len(bard_ans_data[1])
+		needed_fields= tot_len_of_links_sections // 1024 #MAX allowed fields are 25 
+  
+		if tot_len_of_links_sections % 1024 != 0:
+			needed_fields += 1
+   
+		for field_no in range (needed_fields + 1):
+				embed.add_field(name= f"_ __Sources({field_no})__  _"  , inline= False , value= bard_ans_data[1])
  
 	if is_reply :
 		embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
  
-	embed.set_footer(text= f"Scroll ID {bard_ans_data[3]}" , icon_url= footerIcon )
-	print ( f"TESTING : links from bard : {bard_ans_data[1]}" ) #TESTING 
- 
+	embed.set_footer(text= f"Scroll ID({bard_ans_data[3]})" , icon_url= footerIcon )
 	return embed
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 
 
-async def get_new_reply_prompt(_message : discord.Message, old_prompt : str) -> str :
+async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) -> str :
    first_msg_id = _message.reference.message_id
    
-   print ( f"TESTING: {first_msg_id}")#TESTING
    
-   msg_fetch_task = bot.loop.create_task(discord.abc.Messageable.fetch_message(first_msg_id))
-   first_msg_content : discord.Message.content = await msg_fetch_task
+   msg_fetch_task = bot.loop.create_task(_message.channel.fetch_message(first_msg_id))
+   first_msg_content = await msg_fetch_task
    first_msg_content : discord.Message.content = first_msg_content.content
    
    first_msg_content : str =  first_msg_content.replace(f"<@{wizard_bot_id}" , ' ')#if other commands like 'bard' or 'wizard' its mostly ok # NOTE : (still testing)
    new_prompt : str = old_prompt + ' ' + f"\"{first_msg_content}\""
    
-   print ( f"TESTING: {new_prompt}")#TESTING
    
    return new_prompt
 #------------------------------------------------------------------------------------------------------------------------------------------#

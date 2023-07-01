@@ -13,8 +13,8 @@
 #(DONE)TODO : talk to bot in specific channel no need to mention or trigger him by command just send the question as plain message
 #(DONE)TODO :  reply to his message (take the content of replayed message and respond accordingly to it + new message)
 #(DONE)TODO : use SESSION with ASYNC BARD ( contact BardAPI maker or raise issue in their repo)(I was  kinda  wrong)
-#(DONE)TODO : show embedded images in bard answer 
 #(DONE)TODO : show embedded links in bard answer 
+#TODO : show embedded images in bard answer (shows with the links)
 #TODO : save last conversation id (load it in init_bot.py) in text file and add command to start new conv or  default is to continue old 
 #       the issue is that bard.get_answer() itself doesnt take any args put the query prompt (can easly add new param but prefer search more on this first)
 #TODO : wizard bot sqlite DB : design and connect the db with bot code

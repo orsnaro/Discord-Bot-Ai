@@ -21,7 +21,7 @@ async def on_message(message):
 	wizardChannelId = 1118953370510696498 #🧙ask-the-wizard 
 	wizard_ch_msg = message 
  
-	if check_msg(wizard_ch_msg , targetChannelId=wizardChannelId): 
+	if await check_msg(wizard_ch_msg , targetChannelId= wizardChannelId): 
     #NOTE : if want to disable talk to all bots in also check if author.bot != True
 		# print (wizard_ch_msg.content)
 		ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content , user_name= wizard_ch_msg.author.display_name) ) #if error replace display_name with name

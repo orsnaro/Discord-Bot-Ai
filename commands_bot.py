@@ -9,18 +9,20 @@
 from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , check_msg , get_new_reply_prompt
 from init_bot import *	
 import keys
+#------------------------------------------------------------------------------------------------------------------------------------------#
 
+# @bot.command (name="wizmeme" )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
-    await ctx.reply(content= f"Pong! Latency is {bot.latency}")
+    await ctx.reply(content= f"Pong! Latency is {bot.latency}ms")
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
-async def bardAIfast (ctx : commands.Context , * , full_prompt : str ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
+async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 #using BARD API
 
-	temp = ctx
-	valid_reply : tuple(bool , discord.Message ) = check_msg ( _message= temp.message , chk_type= 2 , _prompt = full_prompt)
+	valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
+ 
 	if valid_reply[0] and valid_reply[1] is not  None :
 		full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
 
@@ -33,6 +35,9 @@ async def bardAIfast (ctx : commands.Context , * , full_prompt : str ,  ): #(sea
 	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
 	
+	if len(task_response[2]) == 0 :
+		print("TESTING : EMPTY images")
+    
 	for img in task_response[2] :
 		print (img) #TESTING
 
@@ -41,19 +46,40 @@ async def bardAIfast (ctx : commands.Context , * , full_prompt : str ,  ): #(sea
 		for img in task_response[2]:
 			img_embds.append(discord.Embed(type='image').set_image(img)) 
    
-		send_imgmsg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
-		await send_imgmsg_task
+		send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
+		await send_img_msg_task
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
-# @bot.command(name="wizard" , aliases=["wizard ", "wiz" , "wizardspirit" , "bard"]) # command name is defaulted to method name 'bardAI'
-# async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
-# #using BARD API
-#    send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message.reference ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**")) #if error replace display_name with name
-#    ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
-#    await send_initMsg_task 
-#    task_response = await ask_bard_task
-#    embed = discord.Embed(type='rich' , color= discord.Color.purple() , title="MIGHTY GPTEOUS Wizard Spell Results  has come!! \n" , description=task_response)        
-#    await ctx.reply(embed=embed)# short cut for ctx.send()   
+@bot.command(name="wizard" , aliases=["wizard ", "wiz" , "wizardspirit" , "bard"]) # command name is defaulted to method name 'bardAI'
+async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
+#using BARD API
+	valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
+ 
+	if valid_reply[0] and valid_reply[1] is not  None :
+		full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
+
+	send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))#if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
+	ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
+	await send_initMsg_task 
+	task_response : tuple = await ask_bard_task
+	embed = prepare_discord_embed(task_response , is_reply= valid_reply)
+	
+	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
+	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
+	
+	if len(task_response[2]) == 0 :
+		print("TESTING : EMPTY images")
+    
+	for img in task_response[2] :
+		print (img) #TESTING
+
+	img_embds = list()
+	if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
+		for img in task_response[2]:
+			img_embds.append(discord.Embed(type='image').set_image(img)) 
+   
+		send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
+		await send_img_msg_task
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 # @bot.command(name="wizardgpt" , aliases =["wizardgpt " , "gpt"]) # command name is defaulted to method name 'gpt'
 # async def gpt (ctx : commands.Context , * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
