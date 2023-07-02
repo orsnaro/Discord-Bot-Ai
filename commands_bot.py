@@ -11,7 +11,10 @@ from init_bot import *
 import keys
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
-# @bot.command (name="wizmeme" )
+# @bot.command (name="wisespirit" )
+# async def wise( ctx : commands.Context ):
+   
+
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
@@ -30,24 +33,24 @@ async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PRO
 	ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
 	await send_initMsg_task 
 	task_response : tuple = await ask_bard_task
-	embed = prepare_discord_embed(task_response , is_reply= valid_reply)
+	embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
 	
 	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
 	
-	if len(task_response[2]) == 0 :
-		print("TESTING : EMPTY images")
+	# if len(task_response[2]) == 0 :
+	# 	print("TESTING : EMPTY images")
     
-	for img in task_response[2] :
-		print (img) #TESTING
+	# for img in task_response[2] :
+	# 	print (img) #TESTING
 
-	img_embds = list()
-	if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
-		for img in task_response[2]:
-			img_embds.append(discord.Embed(type='image').set_image(img)) 
+	# img_embds = list()
+	# if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
+	# 	for img in task_response[2]:
+	# 		img_embds.append(discord.Embed(type='image').set_image(img)) 
    
-		send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
-		await send_img_msg_task
+	# 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
+	# 	await send_img_msg_task
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
 @bot.command(name="wizard" , aliases=["wizard ", "wiz" , "wizardspirit" , "bard"]) # command name is defaulted to method name 'bardAI'
@@ -62,24 +65,24 @@ async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search ke
 	ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
 	await send_initMsg_task 
 	task_response : tuple = await ask_bard_task
-	embed = prepare_discord_embed(task_response , is_reply= valid_reply)
+	embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
 	
 	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
 	
-	if len(task_response[2]) == 0 :
-		print("TESTING : EMPTY images")
+	# if len(task_response[2]) == 0 :
+	# 	print("TESTING : EMPTY images")
     
-	for img in task_response[2] :
-		print (img) #TESTING
+	# for img in task_response[2] :
+	# 	print (img) #TESTING
 
-	img_embds = list()
-	if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
-		for img in task_response[2]:
-			img_embds.append(discord.Embed(type='image').set_image(img)) 
+	# img_embds = list()
+	# if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
+	# 	for img in task_response[2]:
+	# 		img_embds.append(discord.Embed(type='image').set_image(img)) 
    
-		send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
-		await send_img_msg_task
+	# 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
+	# 	await send_img_msg_task
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 # @bot.command(name="wizardgpt" , aliases =["wizardgpt " , "gpt"]) # command name is defaulted to method name 'gpt'
 # async def gpt (ctx : commands.Context , * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )

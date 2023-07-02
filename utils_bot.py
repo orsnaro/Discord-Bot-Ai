@@ -71,6 +71,7 @@ async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , 
 
 	elif chk_type == 2 and _message != None:#NOTE : checks for  messages of type: reply
 		msg_channel = _message.channel
+		
 
 		if _message.reference is None or _message.reference.message_id is None :
 				return False , None
@@ -80,9 +81,12 @@ async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , 
 			first_msg_cntnt = await first_msg_cntnt_task
 			first_msg_cntnt = first_msg_cntnt.content
 			first_msg_cntnt_filtered = first_msg_cntnt.replace(f"<@{wizard_bot_id}" , '').strip().replace(" ", '') 
+   
 			if len(first_msg_cntnt_filtered) == 0 :
-				return False , 1000
+				return False , -1
+ 
 			else:
+				print ("TESTING : ID of ref msg:" , _message.reference.message_id ) #TESTING
 				return True , _message
  
  
@@ -95,12 +99,36 @@ bard_conversation_ids_buffer = set()
 def save_last_conv_id() : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_discord_embed( bard_ans_data : tuple  , is_reply : bool = False) -> discord.Embed :
-#EMBED TOTAL MAX SIZE is 6000 chars ( use reactions and pagination if exceeded )
+	'''
+EMBED TOTAL MAX SIZE is 6000 chars ( use reactions and pagination if exceeded )
+class EmbedLimits(object):
+    Total = 6000
+    Title = 256
+    Description = 2048
+    Fields = 25
+    class Field(object):
+        Name = 256
+        Value = 1024
+    class Footer(object):
+        Text = 2048
+    class Author(object):
+        Name = 256
+	'''
+ #TESTING BLOCK
+	print ("\n\n\n TESTING : EMBED conetns lengths :")
+	print ("ans text" , bard_ans_data[0] )
+	print ("#######ans text len" , len(bard_ans_data[0]) )
+	print ("links" , bard_ans_data[1] )
+	print ("#######links len" , len(bard_ans_data[1]) )
+	print ("images" , bard_ans_data[2] )
+	print ("############# len images" , len(bard_ans_data[2]) )
+	tot_len = len(bard_ans_data[0]) + len(bard_ans_data[1]) + len(bard_ans_data[2]) + 200
+ #TESTING BLOCK
 
 	ansText = bard_ans_data[0]
 	footerIcon="https://em-content.zobj.net/thumbs/120/whatsapp/352/scroll_1f4dc.png"
 	wizardChannelLink ="https://discord.com/channels/797143628215877672/1118953370510696498"
-	note_compined_msg = "_This is compined response i.e.(more than one message) and still not perfectly formatted_"
+	note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
 	embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
 	timeNow = datetime.now()
 	author = "Bard AI"
@@ -114,18 +142,43 @@ def prepare_discord_embed( bard_ans_data : tuple  , is_reply : bool = False) -> 
 	if bard_ans_data[1] is not None and len(bard_ans_data[1]) != 0 :
     
 		tot_len_of_links_sections = len(bard_ans_data[1])
-		needed_fields= tot_len_of_links_sections // 1024 #MAX allowed fields are 25 
-  
-		if tot_len_of_links_sections % 1024 != 0:
-			needed_fields += 1
-   
-		for field_no in range (needed_fields + 1):
-				embed.add_field(name= f"_ __Sources({field_no})__  _"  , inline= False , value= bard_ans_data[1])
- 
+
+		if tot_len_of_links_sections > 1024:
+     
+			needed_fields= tot_len_of_links_sections // 1024 #MAX allowed fields are 25 
+			remain = tot_len_of_links_sections % 1024
+			if remain != 0:
+				needed_fields += 1
+		
+			prev_indx = 0
+			for field_no in range (needed_fields):
+					if field_no != needed_fields - 1 :
+						crnt_indx = (field_no) * 1024 
+						embed.add_field(name= f"_ __Sources({field_no + 1})__  _"  , inline= False , value= bard_ans_data[1][prev_indx : crnt_indx - 1])
+						prev_indx += 1024
+					else:
+						embed.add_field(name= f"_ __Sources p({field_no + 1})__  _"  , inline= False , value= bard_ans_data[1][prev_indx :])
+		else:
+			embed.add_field(name= f"_ __Sources__  _"  , inline= False , value= bard_ans_data[1])
+	
 	if is_reply :
 		embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
  
 	embed.set_footer(text= f"Scroll ID({bard_ans_data[3]})" , icon_url= footerIcon )
+ 
+ #TESTING BLOCK
+	field_sz =0
+	for i in range(len(embed.fields)):
+		field_sz += len(embed.fields[i])
+  
+	print ("\n\n###### embed field " ,field_sz)
+	print ("###### embed author sz " ,len(embed.author))
+	print ("###### embed desc sz " ,len(embed.description))
+	print ("###### embed foot sz " ,len(embed.footer))
+	print ("###### embed title " ,len(embed.title))
+	print ("###### embed tot " ,len(embed))
+ #TESTING BLOCK
+ 
 	return embed
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
