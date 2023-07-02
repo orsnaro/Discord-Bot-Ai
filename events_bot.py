@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.0B
-                          version Date :  30 / 6 / 2023
+                          Version : v2.5B
+                          version Date :  2 / 7 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Events code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -32,5 +32,6 @@ async def on_message(message):
 		#TODO : ADD REPLY MESSAGES WITh LINKS IF THERE IS AND IMAGES IF THERE IS 
   
 	await bot.process_commands(message) #add this to prevent on_message() from blocking bot.command
+	del message
 #------------------------------------------------------------------------------------------------------------------------------------------#
 

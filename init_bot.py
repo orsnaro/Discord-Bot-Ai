@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.0B
-                          version Date :  30 / 6 / 2023
+                          Version : v2.5B
+                          version Date :  2 / 7 / 2023
                           Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -78,8 +78,12 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
                    
 						:label:    to get random meme or quote at any time use 'WiseSpirit' 
       
-      
-											 (DISAPPEARANCE SPELL! :face_in_clouds:  )...
+            									(DISAPPEARANCE SPELL! :face_in_clouds:  )...
+                     
+      				```fix
+						**WARNING**: sometimes I won't respond this is mainly due to exceeding max embed char limit 
+      				i.e.(6000chars)
+						```
             
                    ```fix
                    *note : Due to connectivity + billing issues between my country 'Egypt' and GPT API We temporarily moved to using bard via a coockie key

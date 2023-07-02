@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.0B
-                          version Date :  30 / 6 / 2023
+                          Version : v2.5B
+                          version Date :  2 / 7 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -33,10 +33,10 @@ def get_rand_greeting (user_name : str = "Master Narol"):
   	 f"Well met, young adventurer. What brings thee to my humble dwelling? 🧙‍♂️🗺️",
   	 f"Welcome, seeker of knowledge. Pray tell, what vexes thee so? 🧙‍♂️📚",
   	 f"Hail and well met, _{user_name}_. Thou hast come seeking my counsel, I presume? 🧙‍♂️🤔",
-  	 f"Greetings, my dear friend. What brings thee to my door on this fine day? 🧙‍♂️👨‍❤️‍👨",
+  	 f"Greetings, my dear friend. What brings thee to my door on this fine day? 🧙‍♂️👨‍❤️",
   	 f"Ah, _{user_name}_	. I sense a great tumult within thee. Speak, and I shall listen. 🧙‍♂️😞",
   	 f"Salutations, good sir. What brings thee to my humble abode on this day? 🧙‍♂️🏠",
-  	 f"Welcome, young one. What task dost thou require of me? 🧙‍♂️👶",
+  	 f"Welcome, young one. What task dost thou require of me? 🧙‍♂️",
   	 f"Hail, traveler. I sense a great urgency within thee. Speak thy need. 🧙‍♂️🚶‍♂️",
   	 f"Greetings, dear _{user_name}_. What brings thee to my sanctuary of knowledge? 🧙‍♂️📖",
   	 f"Ah, my young friend. Speak thy heart, and I shall lend mine ear. 🧙‍♂️👂",
@@ -99,8 +99,9 @@ bard_conversation_ids_buffer = set()
 def save_last_conv_id() : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_discord_embed( bard_ans_data : tuple  , is_reply : bool = False) -> discord.Embed :
+   #TODO : handle if embed exceeds max size of max size of fields ( bot will continue work anyway but tell user that OF happend of paganating)
 	'''
-EMBED TOTAL MAX SIZE is 6000 chars ( use reactions and pagination if exceeded )
+EMBED TOTAL MAX SIZE is 6000 chars ( # NOTE : use reactions and pagination if exceeded )
 class EmbedLimits(object):
     Total = 6000
     Title = 256
@@ -114,14 +115,25 @@ class EmbedLimits(object):
     class Author(object):
         Name = 256
 	'''
+ 
  #TESTING BLOCK
 	print ("\n\n\n TESTING : EMBED conetns lengths :")
 	print ("ans text" , bard_ans_data[0] )
 	print ("#######ans text len" , len(bard_ans_data[0]) )
+ 
 	print ("links" , bard_ans_data[1] )
-	print ("#######links len" , len(bard_ans_data[1]) )
+	print ("links" , type(bard_ans_data[1]) )
+	link_sz =0
+	for i in range(len(bard_ans_data[1])):
+		link_sz += len(bard_ans_data[1][i])
+	print ("#######links len" , link_sz) 
+ 
 	print ("images" , bard_ans_data[2] )
-	print ("############# len images" , len(bard_ans_data[2]) )
+	imgs_sz =0
+	for img in bard_ans_data[2]:
+		imgs_sz += len(img)
+	print ("#######links len" , imgs_sz) 
+	print ("############# len images" , imgs_sz) 
 	tot_len = len(bard_ans_data[0]) + len(bard_ans_data[1]) + len(bard_ans_data[2]) + 200
  #TESTING BLOCK
 
@@ -136,30 +148,50 @@ class EmbedLimits(object):
 	redTint = 10038562
 	darkGreen = discord.Colour.dark_green()
    
-	embed = discord.Embed(type='rich' , timestamp= timeNow , color= darkGreen , title= embedTitle ,url= wizardChannelLink , description= ansText) #url is hyperlink to title
+	embed = discord.Embed(type='rich' , timestamp= timeNow , color= darkGreen , title= embedTitle ,url= wizardChannelLink , description= ansText + " \n `*END OF ANSWER*` ") #url will be  hyperlink in title
 	embed.set_author(name= author, url="https://bard.google.com" , icon_url= bardIcon )
  
 	if bard_ans_data[1] is not None and len(bard_ans_data[1]) != 0 :
-    
-		tot_len_of_links_sections = len(bard_ans_data[1])
-
-		if tot_len_of_links_sections > 1024:
-     
-			needed_fields= tot_len_of_links_sections // 1024 #MAX allowed fields are 25 
-			remain = tot_len_of_links_sections % 1024
-			if remain != 0:
-				needed_fields += 1
 		
-			prev_indx = 0
-			for field_no in range (needed_fields):
-					if field_no != needed_fields - 1 :
-						crnt_indx = (field_no) * 1024 
-						embed.add_field(name= f"_ __Sources({field_no + 1})__  _"  , inline= False , value= bard_ans_data[1][prev_indx : crnt_indx - 1])
-						prev_indx += 1024
-					else:
-						embed.add_field(name= f"_ __Sources p({field_no + 1})__  _"  , inline= False , value= bard_ans_data[1][prev_indx :])
+		bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so i removed duplicates
+  
+		tot_len_of_links_sections = 0
+		for i in range(len(bard_ans_links)):
+			tot_len_of_links_sections += len(bard_ans_links[i])
+
+		if tot_len_of_links_sections >= 1023:
+    
+			one_field_mx = 1023 #discord_limit - 1 (for safety)
+			super_list = [] #each element is an list of links / content that is tot char counts is <= 1023
+			super_list.append([])
+			links_list = bard_ans_links
+			max_i =  len(bard_ans_links)
+			char_cnt , field_indx , i  = 0 , 0 , 0 # vars controlling while loop
+   
+			while i < max_i:
+				char_cnt += len(links_list[i])
+    
+				if char_cnt >= one_field_mx :
+					super_list[field_indx][0] = '\n * ' + super_list[field_indx][0] #fix join dont format 1st element
+					embed.add_field(name= f"_ __sources p({field_indx + 1})__  _"  , inline= False , value= '\n * '.join(super_list[field_indx]) )
+					char_cnt = 0
+					field_indx += 1
+					super_list.append([])
+					super_list[field_indx].append(links_list[i])
+				else :
+					super_list[field_indx].append(links_list[i])
+    
+				i += 1 #TODO : solve loss of some links
+    
+			del super_list 
+			del links_list
+
+
 		else:
-			embed.add_field(name= f"_ __Sources__  _"  , inline= False , value= bard_ans_data[1])
+			bard_ans_links[0] = '\n * ' + bard_ans_links[0] #fix join dont format 1st element
+			tmp = '\n * '.join(bard_ans_links) #TESTING
+			print ("TESTING final sources format " , tmp)
+			embed.add_field(name= f"_ __sources & links__  _"  , inline= False , value= '\n * '.join(bard_ans_links))
 	
 	if is_reply :
 		embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
@@ -169,11 +201,11 @@ class EmbedLimits(object):
  #TESTING BLOCK
 	field_sz =0
 	for i in range(len(embed.fields)):
-		field_sz += len(embed.fields[i])
+		field_sz += len((embed.fields)[i])
   
-	print ("\n\n###### embed field " ,field_sz)
-	print ("###### embed author sz " ,len(embed.author))
-	print ("###### embed desc sz " ,len(embed.description))
+	print ("\n\n###### embed field sz" ,field_sz)
+	print ("###### embed author sz "  ,len(embed.author))
+	print ("###### embed desc sz "  ,len(embed.description))
 	print ("###### embed foot sz " ,len(embed.footer))
 	print ("###### embed title " ,len(embed.title))
 	print ("###### embed tot " ,len(embed))

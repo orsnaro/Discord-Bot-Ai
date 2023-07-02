@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.0B
-                          version Date :  30 / 6 / 2023
+                          Version : v2.5B
+                          version Date :  2 / 7 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -37,6 +37,9 @@ async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PRO
 	
 	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
+	del embed
+	del valid_reply
+	del ctx
 	
 	# if len(task_response[2]) == 0 :
 	# 	print("TESTING : EMPTY images")
@@ -54,7 +57,7 @@ async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PRO
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
 @bot.command(name="wizard" , aliases=["wizard ", "wiz" , "wizardspirit" , "bard"]) # command name is defaulted to method name 'bardAI'
-async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
+async def bardAI (ctx : commands.Context , * , full_prompt : str = "EMPTY PROMPT. CHECK REPLY :" ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 #using BARD API
 	valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
  
@@ -69,6 +72,9 @@ async def bardAI (ctx : commands.Context , * , full_prompt:str ,  ): #(search ke
 	
 	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
+	del embed
+	del valid_reply
+	del ctx
 	
 	# if len(task_response[2]) == 0 :
 	# 	print("TESTING : EMPTY images")
