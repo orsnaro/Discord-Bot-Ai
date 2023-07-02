@@ -6,7 +6,8 @@
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from init_bot import bot , bard , random , wizard_bot_id
+from init_bot import bot , bard , random , wizard_bot_id , datetime 
+from init_bot import wizard_channel_id , chat_chill_ch_id , pyrandmeme ,RandomWords , quote
 import discord.message
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -121,17 +122,11 @@ class EmbedLimits(object):
 	print ("#######ans text len" , len(bard_ans_data[0]) )
  
 	print ("links" , bard_ans_data[1] )
-	print ("links" , type(bard_ans_data[1]) )
-	link_sz =0
-	for i in range(len(bard_ans_data[1])):
-		link_sz += len(bard_ans_data[1][i])
-	print ("#######links len" , link_sz) 
- 
 	print ("images" , bard_ans_data[2] )
 	imgs_sz =0
 	for img in bard_ans_data[2]:
 		imgs_sz += len(img)
-	print ("#######links len" , imgs_sz) 
+	print ("#######imgs len" , imgs_sz) 
 	print ("############# len images" , imgs_sz) 
 	tot_len = len(bard_ans_data[0]) + len(bard_ans_data[1]) + len(bard_ans_data[2]) + 200
  #TESTING BLOCK
@@ -154,21 +149,29 @@ class EmbedLimits(object):
 		
 		bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so i removed duplicates
   
+  #TESTING BLOCk
+		link_sz =0
+		for i in range(len(bard_ans_data[1])):
+			link_sz += len(bard_ans_data[1][i])
+		print ("#######links len" , link_sz) 
+  #TESTING BLOCk
+	
+  
 		tot_len_of_links_sections = 0
 		for i in range(len(bard_ans_links)):
 			tot_len_of_links_sections += len(bard_ans_links[i])
 
-		if tot_len_of_links_sections >= 1023:
+		if tot_len_of_links_sections >= 1022:
     
-			one_field_mx = 1023 #discord_limit - 1 (for safety)
+			one_field_mx = 1022 #less than discord_limit  (for safety)
 			super_list = [] #each element is an list of links / content that is tot char counts is <= 1023
 			super_list.append([])
 			links_list = bard_ans_links
 			max_i =  len(bard_ans_links)
 			char_cnt , field_indx , i  = 0 , 0 , 0 # vars controlling while loop
-   
+			bullet_point_format_len = 6
 			while i < max_i:
-				char_cnt += len(links_list[i])
+				char_cnt += len(links_list[i]) + bullet_point_format_len #
     
 				if char_cnt >= one_field_mx :
 					super_list[field_indx][0] = '\n * ' + super_list[field_indx][0] #fix join dont format 1st element
@@ -229,6 +232,74 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    
    return new_prompt
 #------------------------------------------------------------------------------------------------------------------------------------------#
-    
+trigger_times = []
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def set_trigger_times() -> list :
+	global trigger_times
+ 
+	if len(trigger_times) == 0 :
+		now = datetime.now() 
+		this_year = now.year
+		this_month = now.month
+		today = now.day
+
+		for i in range(6):
+			rnd_no = random.randint(0 , 23)
+			if rnd_no < 10:
+				rnd_no = "0" + str(rnd_no)
+		
+			wanted_time = datetime.strptime(f"{this_year}"+'-'+f"{this_month}"+'-'+ f"{today} " + f"{rnd_no}"+":00:00", "%Y-%m-%d %H:%M:%S")
+			trigger_times.append(wanted_time)
+
+		trigger_times.sort(reverse= True)
+		print ("TEST:choosen rand times", trigger_times) #TESTING
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def send_rand_quote_meme( message : discord.Message ) :
+
+	global trigger_times
+	set_trigger_times()
+ 
+	for i in range (len(trigger_times)):
+		if i > len(trigger_times) - 1 :
+			break
+
+		if datetime.now() > trigger_times[i] :
+			trigger_times =trigger_times[0: i - 1 ]
+	
+			rnd_no = random.randint(1 , 4) #1:quote:wizard channel  2:quote:chat chill 3:meme:wizard Channel 
+			if rnd_no <= 2 :
+		
+				#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
+				res = None
+				while res is None:
+					random_word = RandomWords()
+					category = random_word.get_random_word()
+					res = quote(category , limit=1)
+
+				quotes2 = " "
+				for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
+					quotes2 : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
+				
+				if rnd_no == 1 :# to wiz ch
+					channel = bot.get_channel(wizard_channel_id)
+					await channel.send(content= quotes2)
+	
+				else: #to chat&chill ch
+					channel = bot.get_channel(chat_chill_ch_id)
+					await channel.send(content= quotes2)
+
+			else: #meme
+				if rnd_no == 3 : #meme to wiz ch
+					channel = bot.get_channel(wizard_channel_id)
+					await channel.send(embed= await pyrandmeme())
+				else : 
+					channel = bot.get_channel(chat_chill_ch_id)
+					await channel.send(embed= await pyrandmeme())
+			break
+ 
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
  
 	
