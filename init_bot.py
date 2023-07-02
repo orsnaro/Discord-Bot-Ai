@@ -14,6 +14,10 @@ from bardapi import BardAsync , Bard
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
+from pyrandmeme import pyrandmeme
+from quote import quote
+from random_word import RandomWords
+from datetime import datetime
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
 from keys import bardAPI_KEY
@@ -44,8 +48,8 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
                    GPTEOUS HELP MESSAGE```
                    **I'M MIGHTY GPTEOUS !** the first GPT-Spirit in Narol's island Volcan guardian , Island's Master right hand  and the begining of Island's new ERA etcetera etcetera... I mean you get it am very special here  :man_mage:
 
-
-						** __COMMAND GROUP 1: ASK , I shall Answer! __ **
+						** :sparkles: __COMMAND GROUP 1: ASK , I shall Answer! __:sparkles:  **
+      
  						:label:    Ask me any where in the Island and  I shall INDEED answer you 
 
 						:label:    The question must start start with mentioning me e.g.( <@{wizard_bot_id}> )
@@ -53,41 +57,34 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
 						:label:    if you want to speak with me more freely with no mentions/commands 
       							   just type anything in my channel <#{wizard_channel_id}> and I shall respond !
       
-						:label:    Due to a bug (FOR NOW) images from bard are included as links in sources section
+						:label:    Due to a bug (FOR NOW) images from bard are included 
+      							  as links in sources section
       
-						:label:    Aditional Functionalities and SPELLS coming soon ...
-
                    
+                 				  ** :sparkles: __COMMAND GROUP 2: Wise Quotes & Deep memes __:sparkles:  **
+                      
+						:label:    to get random meme at any time use 'BoringWizard' 
+						:label:    to get random quote at any time use 'wisewiz' 
+      
+						      		:inbox_tray: _Aditional Functionalities and SPELLS coming soon ..._:inbox_tray: 
+              
                    __COMANDS LIST__
                    ```fix
                    1. @WizardSpirit "your_question" 
-                   3. `wiz` "your_question"
-                   5. `bard` "your_question"
-                   2. `wizard` "your_question"
-                   4. `wizardspirit` "your_question"
+                   2. `wiz` "your_question"
+                   3. `bard` "your_question"
+                   4. `wizard` "your_question"
+                   5. `wizardspirit` "your_question"
                    6. `~ <any_of_prev_CMDs>` "your_question"
+                   7. `wisewiz`
+                   8. `BoringWizard`
                    _(all of them is case INsensitive)_
                    ```
-                   
-                   
-                   
-                   ** __COMMAND GROUP 2: Wise Quotes & Deep memes __ **
-                   
-						:label:    multiple time a day the spirit will send a chosen meme or 
-									  quote to <#{wizard_channel_id}> and <#{chat_chill_ch_id}>
-                   
-						:label:    to get random meme or quote at any time use 'WiseSpirit' 
-      
-            									(DISAPPEARANCE SPELL! :face_in_clouds:  )...
                      
       				```fix
 						**WARNING**: sometimes I won't respond this is mainly due to exceeding max embed char limit 
       				i.e.(6000chars)
 						```
-            
-                   ```fix
-                   *note : Due to connectivity + billing issues between my country 'Egypt' and GPT API We temporarily moved to using bard via a coockie key
-                   ```
                    """)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # pagHelp = commands.Paginator(suffix="")

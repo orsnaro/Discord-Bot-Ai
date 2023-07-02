@@ -7,7 +7,6 @@
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 from init_bot import bot , bard , random , wizard_bot_id
-from datetime import datetime
 import discord.message
 #------------------------------------------------------------------------------------------------------------------------------------------#
 

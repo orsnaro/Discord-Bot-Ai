@@ -13,15 +13,70 @@ from utils_bot import ask_bard , check_msg
 # async def on_any_event_update_DB_buffer():... #TODO if bot does any action or any thing trigger it save needed info in your own DB for later....
 # #if buffer surpasses certain size | bot is acitve for certain time  flush all to db 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-
-
+trigger_times = []
+#------------------------------------------------------------------------------------------------------------------------------------------#
 # on_message_in_wizard_channel = discord.on_message  #TODO if alias work use instead to diffrentiate between many > on message events
 @bot.event #if used @client.event bot could reply to him self i.e.(trigger him self ) which could cause recursion and replay loop issue
 async def on_message(message):
-	wizardChannelId = 1118953370510696498 #🧙ask-the-wizard 
-	wizard_ch_msg = message 
+	global trigger_times
+	if len(trigger_times) == 0 :
+		now = datetime.now() 
+		this_year = now.year
+		this_month = now.month
+		today = now.day
+  
+		for i in range(6):
+			rnd_no = random.randint(0 , 23)
+			if rnd_no < 10:
+				rnd_no = "0" + str(rnd_no)
+		
+			wanted_time = datetime.strptime(f"{this_year}"+'-'+f"{this_month}"+'-'+ f"{today} " + f"{rnd_no}"+":00:00", "%Y-%m-%d %H:%M:%S")
+			trigger_times.append(wanted_time)
+	
+		trigger_times.sort(reverse= True)
+	
  
-	if await check_msg(wizard_ch_msg , targetChannelId= wizardChannelId): 
+	wizard_ch_msg = message 
+	
+	for i in range (len(trigger_times)):
+		if i > len(trigger_times) - 1 :
+			break
+  
+		if datetime.now() > trigger_times[i] :
+			trigger_times =trigger_times[0: i - 1 ]
+   
+			rnd_no = random.randint(1 , 4) #1:quote:wizard channel  2:quote:chat chill 3:meme:wizard Channel 
+			if rnd_no <= 2 :
+      
+				#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
+				res = None
+				while res is None:
+					random_word = RandomWords()
+					category = random_word.get_random_word()
+					res = quote(category , limit=1)
+  
+				quotes2 = " "
+				for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
+					quotes2 : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
+				
+				if rnd_no == 1 :# to wiz ch
+					channel = bot.get_channel(wizard_channel_id)
+					await channel.send(content= quotes2)
+     
+				else: #to chat&chill ch
+					channel = bot.get_channel(chat_chill_ch_id)
+					await channel.send(content= quotes2)
+
+			else: #meme
+				if rnd_no == 3 : #meme to wiz ch
+					channel = bot.get_channel(wizard_channel_id)
+					await channel.send(embed= await pyrandmeme())
+				else : 
+					channel = bot.get_channel(chat_chill_ch_id)
+					await channel.send(embed= await pyrandmeme())
+			break
+ 
+	if await check_msg(wizard_ch_msg , targetChannelId= wizard_channel_id): 
     #NOTE : if want to disable talk to all bots in also check if author.bot != True
 		# print (wizard_ch_msg.content)
 		ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content , user_name= wizard_ch_msg.author.display_name) ) #if error replace display_name with name

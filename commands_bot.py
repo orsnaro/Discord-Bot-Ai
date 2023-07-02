@@ -11,10 +11,26 @@ from init_bot import *
 import keys
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
-# @bot.command (name="wisespirit" )
-# async def wise( ctx : commands.Context ):
-   
+@bot.command (name="boringwizard" )
+async def boring( ctx : commands.Context ):
+   await ctx.send(embed=await pyrandmeme())
+#------------------------------------------------------------------------------------------------------------------------------------------#
 
+@bot.command (name="wisewiz" )
+async def wise( ctx : commands.Context ):
+	#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
+	res = None
+	
+	while res is None :
+		random_word = RandomWords()
+		category = random_word.get_random_word()
+		res = quote(category , limit=1)
+  
+	quotes = " "
+	for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
+		quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;` '"
+		
+	await ctx.reply(content= quotes)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
