@@ -13,7 +13,7 @@ import keys
 
 @bot.command (name="boringwizard" )
 async def boring( ctx : commands.Context ):
-   await ctx.send(embed=await pyrandmeme())
+   await ctx.send(embed=await pyrandmeme("Some Wizardy Humor👻"))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.command (name="wisewiz" )

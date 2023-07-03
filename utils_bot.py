@@ -291,12 +291,14 @@ async def send_rand_quote_meme( message : discord.Message ) :
 					await channel.send(content= quotes2)
 
 			else: #meme
+				meme_embed_title = "It's Meme Time!🤹🏻‍♀️"
 				if rnd_no == 3 : #meme to wiz ch
 					channel = bot.get_channel(wizard_channel_id)
-					await channel.send(embed= await pyrandmeme())
+					meme_embed_title = "It's Meme Time!"
+					await channel.send(embed= await pyrandmeme( meme_embed_title ))
 				else : 
 					channel = bot.get_channel(chat_chill_ch_id)
-					await channel.send(embed= await pyrandmeme())
+					await channel.send(embed= await pyrandmeme(meme_embed_title ))
 			break
  
    
