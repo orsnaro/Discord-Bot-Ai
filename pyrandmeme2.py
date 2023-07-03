@@ -1,3 +1,5 @@
+# belongs to : https://pypi.org/project/pyrandmeme/#files
+
 import aiohttp
 import discord
 import random2
