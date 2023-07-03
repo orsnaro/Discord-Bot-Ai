@@ -7,7 +7,7 @@
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 from init_bot import bot , bard , random , wizard_bot_id , datetime 
-from init_bot import wizard_channel_id , chat_chill_ch_id , pyrandmeme ,RandomWords , quote
+from init_bot import wizard_channel_id , chat_chill_ch_id , pyrandmeme2 ,RandomWords , quote
 import discord.message
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -295,10 +295,10 @@ async def send_rand_quote_meme( message : discord.Message ) :
 				if rnd_no == 3 : #meme to wiz ch
 					channel = bot.get_channel(wizard_channel_id)
 					meme_embed_title = "It's Meme Time!"
-					await channel.send(embed= await pyrandmeme( meme_embed_title ))
+					await channel.send(embed= await pyrandmeme2(_title= meme_embed_title))
 				else : 
 					channel = bot.get_channel(chat_chill_ch_id)
-					await channel.send(embed= await pyrandmeme(meme_embed_title ))
+					await channel.send(embed= await pyrandmeme2(_title= meme_embed_title ))
 			break
  
    

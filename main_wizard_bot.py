@@ -36,6 +36,7 @@ import utils_bot
 import events_bot
 import commands_bot
 import help_bot
+import pyrandmeme2
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 init_bot.bot.run(keys.Token_gpteousBot)

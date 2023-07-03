@@ -14,7 +14,7 @@ from bardapi import BardAsync , Bard
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
-from pyrandmeme import pyrandmeme
+from pyrandmeme2 import pyrandmeme2
 from quote import quote
 from random_word import RandomWords
 from datetime import datetime
