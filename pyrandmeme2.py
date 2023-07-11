@@ -6,7 +6,7 @@ import random2
 
 
 async def pyrandmeme2( _title : str = "Random meme"):
-    pymeme = discord.Embed(title= _title , description="gpteuos find this funny", color=0xe91e63)
+    pymeme = discord.Embed(title= _title , description="gpteous finds this funny", color=0xe91e63)
     async with aiohttp.ClientSession() as cs:
         async with cs.get('https://www.reddit.com/r/memes/new.json?sort=hot') as r:
             res = await r.json()

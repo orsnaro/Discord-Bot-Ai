@@ -6,7 +6,8 @@
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , check_msg , get_new_reply_prompt
+from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed 
+from utils_bot import check_msg , get_new_reply_prompt , meme_quote_sender_is_on_flag
 from init_bot import *	
 import keys
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -14,6 +15,13 @@ import keys
 @bot.command (name="boringwizard" )
 async def boring( ctx : commands.Context ):
    await ctx.send(embed= await pyrandmeme2(_title= "Some Wizardy Humor👻"))
+#------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.command (name="togglerandom" )
+async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
+	global meme_quote_sender_is_on_flag 
+	meme_quote_sender_is_on_flag = not meme_quote_sender_is_on_flag
+	await ctx.reply(content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
+   
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.command (name="wisewiz" )
