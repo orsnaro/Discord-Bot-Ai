@@ -1,4 +1,5 @@
-# __Discord Bot Project (Wizard GPTeous)__ 
+# __Discord Bot Project (Wizard GPTeous)__  ![version badge](https://img.shields.io/badge/v2.5B-green?logo=github)
+
 
 ##### Discord Bot with generative AI features using python as main project language
 
