@@ -18,6 +18,7 @@ from pyrandmeme2 import pyrandmeme2
 from quote import quote
 from random_word import RandomWords
 from datetime import datetime
+# from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
 from keys import bardAPI_KEY
@@ -27,18 +28,27 @@ from keys import bardAPI_KEY
 def init_bard_session () :
 	# session = requests.Session()
 	# session.headers = {
-   #          "Host": "bard.google.com",
-   #          "X-Same-Domain": "1",
-   #          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
-   #          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-   #          "Origin": "https://bard.google.com",
-   #          "Referer": "https://bard.google.com/",
-   #      }
+	#          "Host": "bard.google.com",
+	#          "X-Same-Domain": "1",
+	#          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+	#          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+	#          "Origin": "https://bard.google.com",
+	#          "Referer": "https://bard.google.com/",
+	#      }
 	# session.cookies.set("__Secure-1PSID", bardAPI_KEY) 
 	# bard = Bard(token=bardAPI_KEY , session=session, timeout=30)
-	bard = BardAsync(token=bardAPI_KEY) #add -> language= 'ar' to respond in arabic only (experimental)
+	bard = BardAsync(token= bardAPI_KEY ) #add -> language= 'ar' to respond in arabic only (experimental)
+	# while True:
+	# 	try :
+	# 		bard = BardAsync(token= bardAPI_KEY ) #add -> language= 'ar' to respond in arabic only (experimental)
+	# 		break;
+
+	# 	except Exception as e :
+	# 		regenerate_cookie()
+	# 		print ( e.__str__() + " TESTING NOTE : this is manual error message from init_bard_session() function")
 
 	return bard
+
 bard = init_bard_session()
 
 wizard_bot_id = 1117540489365827594
@@ -86,10 +96,6 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
       				i.e.(6000chars)
 						```
                    """)
-#------------------------------------------------------------------------------------------------------------------------------------------#
-# pagHelp = commands.Paginator(suffix="")
-# minHelp = commands.MinimalHelpCommand()
-# help = commands.HelpCommand()
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.event

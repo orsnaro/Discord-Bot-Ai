@@ -42,7 +42,7 @@ async def wise( ctx : commands.Context ):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
-    await ctx.reply(content= f"Pong! Latency is {bot.latency}ms")
+	await ctx.reply(content= f"Pong! Latency is {bot.latency}ms" )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
