@@ -30,6 +30,7 @@
 #TODO : ADD voice to text feature to enable full voice chat feature between bot and island server's users
 #TODO : add and test poe-API (starred at GH)
 #TODO : add command to switch between BARD mode and poe-GPT mode 
+#TODO : Edit your bard args and prompt to send full arabic query to bard (bard now has arabic lang suuport )
 
 #       the issue is that bard.get_answer() itself doesnt take any args put the query prompt (can easly add new param but prefer search more on this first)
 
