@@ -14,3 +14,9 @@ with open(r"../discordBotToken_Gpteous.txt" , 'r') as discordfile :
    
 with open(r"../bard_apiKey.txt" , 'r') as bardfile : #actually is  a coockie named : "__Secure-1PSID" from bard website coockies
    bardAPI_KEY = bardfile.read().strip() 
+   
+with open(r"../bard_gmail.txt" , 'r') as bardfile : 
+   bardGmail = bardfile.read().strip() 
+   
+with open(r"../bard_gmailPass.txt" , 'r') as bardfile : 
+   bardGmail_KEY = bardfile.read().strip() 

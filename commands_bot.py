@@ -6,14 +6,22 @@
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , check_msg , get_new_reply_prompt
+from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed 
+from utils_bot import check_msg , get_new_reply_prompt , meme_quote_sender_is_on_flag
 from init_bot import *	
 import keys
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.command (name="boringwizard" )
 async def boring( ctx : commands.Context ):
-   await ctx.send(embed=await pyrandmeme())
+   await ctx.send(embed= await pyrandmeme2(_title= "Some Wizardy Humor👻"))
+#------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.command (name="togglerandom" )
+async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
+	global meme_quote_sender_is_on_flag 
+	meme_quote_sender_is_on_flag = not meme_quote_sender_is_on_flag
+	await ctx.reply(content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
+   
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.command (name="wisewiz" )
@@ -34,7 +42,7 @@ async def wise( ctx : commands.Context ):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
-    await ctx.reply(content= f"Pong! Latency is {bot.latency}ms")
+	await ctx.reply(content= f"Pong! Latency is {bot.latency}ms" )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )

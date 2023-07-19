@@ -7,7 +7,7 @@
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 from init_bot import bot , bard , random , wizard_bot_id , datetime 
-from init_bot import wizard_channel_id , chat_chill_ch_id , pyrandmeme ,RandomWords , quote
+from init_bot import wizard_channel_id , chat_chill_ch_id , pyrandmeme2 ,RandomWords , quote
 import discord.message
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -61,7 +61,11 @@ def skip_line(full_ans):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tuple: 
-   bard_ans = await bard.get_answer(f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}")
+   character= "GPTeous Wizard whose now living in discord server called Narol's Island "
+   series = "Harry Potter"
+   classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}"
+   new_prompt = f"I want you to act like {character} from {series}. I want you to respond and answer like {character} using the tone, manner and vocabulary {character} would use. Do not write any explanations. Only answer like {character}. You must know all of the knowledge of {character}. My first sentence is \"Hi {character} I'm {user_name}. {user_query} .\""
+   bard_ans = await bard.get_answer(classic_prmpt)
    # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt 
    return bard_ans['content'] , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id']
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -255,49 +259,52 @@ def set_trigger_times() -> list :
 		print ("TEST:choosen rand times", trigger_times) #TESTING
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
-#------------------------------------------------------------------------------------------------------------------------------------------#
-async def send_rand_quote_meme( message : discord.Message ) :
-
-	global trigger_times
-	set_trigger_times()
- 
-	for i in range (len(trigger_times)):
-		if i > len(trigger_times) - 1 :
-			break
-
-		if datetime.now() > trigger_times[i] :
-			trigger_times =trigger_times[0: i - 1 ]
+meme_quote_sender_is_on_flag : bool = False
+#------------------------------------------------------------------------------------------------------------------------------------------
+async def send_rand_quote_meme( message : discord.Message  , is_active : bool = meme_quote_sender_is_on_flag) :
+	if is_active : #TODO : until i fix the logix of the function i will control it 
+		global trigger_times
+		set_trigger_times()
 	
-			rnd_no = random.randint(1 , 4) #1:quote:wizard channel  2:quote:chat chill 3:meme:wizard Channel 
-			if rnd_no <= 2 :
+		for i in range (len(trigger_times)):
+			if i > len(trigger_times) - 1 :
+				break
+
+			if datetime.now() > trigger_times[i] :
+				trigger_times =trigger_times[0: i - 1 ]
 		
-				#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
-				res = None
-				while res is None:
-					random_word = RandomWords()
-					category = random_word.get_random_word()
-					res = quote(category , limit=1)
+				rnd_no = random.randint(1 , 4) #1:quote:wizard channel  2:quote:chat chill 3:meme:wizard Channel 
+				if rnd_no <= 2 :
+			
+					#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
+					res = None
+					while res is None:
+						random_word = RandomWords()
+						category = random_word.get_random_word()
+						res = quote(category , limit=1)
 
-				quotes2 = " "
-				for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
-					quotes2 : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
-				
-				if rnd_no == 1 :# to wiz ch
-					channel = bot.get_channel(wizard_channel_id)
-					await channel.send(content= quotes2)
-	
-				else: #to chat&chill ch
-					channel = bot.get_channel(chat_chill_ch_id)
-					await channel.send(content= quotes2)
+					quotes2 = " "
+					for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
+						quotes2 : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
+					
+					if rnd_no == 1 :# to wiz ch
+						channel = bot.get_channel(wizard_channel_id)
+						await channel.send(content= quotes2)
+		
+					else: #to chat&chill ch
+						channel = bot.get_channel(chat_chill_ch_id)
+						await channel.send(content= quotes2)
 
-			else: #meme
-				if rnd_no == 3 : #meme to wiz ch
-					channel = bot.get_channel(wizard_channel_id)
-					await channel.send(embed= await pyrandmeme())
-				else : 
-					channel = bot.get_channel(chat_chill_ch_id)
-					await channel.send(embed= await pyrandmeme())
-			break
+				else: #meme
+					meme_embed_title = "It's Meme Time!🤹🏻‍♀️"
+					if rnd_no == 3 : #meme to wiz ch
+						channel = bot.get_channel(wizard_channel_id)
+						meme_embed_title = "It's Meme Time!"
+						await channel.send(embed= await pyrandmeme2(_title= meme_embed_title))
+					else : 
+						channel = bot.get_channel(chat_chill_ch_id)
+						await channel.send(embed= await pyrandmeme2(_title= meme_embed_title ))
+				break
  
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
