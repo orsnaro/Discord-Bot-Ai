@@ -5,7 +5,7 @@
 
 ---
 
-> ### 📣 Beta (v2.5) is out!
+> ## 📣 Beta (v2.5) is out!
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
  * now can learn for the Wisest on [Discord's Island](https//discord.gg/R52kY9mG9c) using `WiseWiz` command
  * now long Bard AI answers is working in Wizard Bot Channel
@@ -20,11 +20,25 @@
 
 ---
 
+> ## 🧙 How to Use Me?!
 
-> ###  🛠 
-####     DO THIS BEFORE any other big task -> (FINSIH THOSE & FIX BIG BUGS ) THEN => MIGRATE TO PYCORD
+ ***FIRST***:✔️  Invite me to a server  [`invite link`](https://discordapp.com/oauth2/authorize?&client_id=1117540489365827594&scope=bot)
+
+***SECOND***: ✔️ type `help` in any Chat channel to learn my commands!
+   
+***FINALLY***: ✔️report me any issues!
+   
+<sub> ***NOTE:*** its locally hosted so its not 24h online. also you wouldnt be able to use the sepcial channel (`Ask-wizard-channel`) for now only try it in our [**server**](https//discord.gg/R52kY9mG9c) </sub>
+
+---
+
+
+> ##  🛠 TODO :
+####     DO THIS _BEFORE_ any other big task ->  **MIGRATE TO PYCORD**
 
 *   Documentaion for functions / classes and repo readme.md
+    
+*   Use any free hosting service for `beta` versions
 
 *   send Embed in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
 
@@ -36,7 +50,6 @@
 
 *   OOP it more and handle errors!
 
-*   connect to cdn that has memes / quotes  and set on_time() event to send to chat chill and ask-wizard-channel (duplicated in  discord channel)
 
 *   save last conversation id (load it in init_bot.py) in text file and add command to start new conv or  default is to continue old
 
@@ -52,6 +65,8 @@
 *   add command to switch between BARD mode and poe-GPT mode
 
 *   Edit your bard args and prompt to send full arabic query to bard (bard now has arabic lang suuport )
+
+* **(DONE)** connect to cdn that has memes / quotes  and set on_time() event to send to chat chill and ask-wizard-channel (duplicated in  discord channel)
 
 * **(DONE)**   make bot see prev messages (use session)
 
@@ -80,7 +95,7 @@
 ---
 
 
-> #### [🧾 References ](./sources&refs.md)
+> ### [🧾 References ](./sources&refs.md)
 
  
 
