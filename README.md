@@ -8,7 +8,7 @@
 > ## 📣 Beta (v2.5) is out!
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
  * now can learn for the Wisest on [Discord's Island](https//discord.gg/R52kY9mG9c) using `WiseWiz` command
- * now long Bard AI answers is working in Wizard Bot Channel
+ * now long Bard AI answers is working in [🧙Ask-the-Wizard Channel](https://discord.gg/ptAVHmrtJX)
  * now Bot sends random quotes and memes multiple times a day
  * ~~fixed some bugs~~
  
@@ -28,7 +28,7 @@
    
 ***FINALLY***: ✔️report me any issues!
    
-<sub> ***NOTE:*** its locally hosted so its not 24h online. also you wouldnt be able to use the sepcial channel (`Ask-wizard-channel`) for now only try it in our [**server**](https//discord.gg/R52kY9mG9c) </sub>
+<sub> ***NOTE:*** its locally hosted so its not 24h online. also you wouldnt be able to use the sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https//discord.gg/R52kY9mG9c) </sub>
 
 <sub> ***NOTE:*** the bot does not have any `adminstration` / `managing` / `moving` /  etc.. permissions. though I  recommend always you take a look at allowed permissions in `beta-bot invite link`. also sneak peak at our soucre code for any future changing of them💙 </sub>
 
