@@ -28,7 +28,7 @@
    
 ***FINALLY***: ✔️report me any issues!
    
-<sub> ***NOTE:*** its locally hosted so its not 24h online. also you wouldnt be able to use the sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https//discord.gg/R52kY9mG9c) </sub>
+<sub> ***NOTE:*** its locally hosted so its not 24/7 online. also you wouldnt be able to use the sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https//discord.gg/R52kY9mG9c) </sub>
 
 <sub> ***NOTE:*** the bot does not have any `adminstration` / `managing` / `moving` /  etc.. permissions. though I  recommend always you take a look at allowed permissions in `beta-bot invite link`. also sneak peak at our soucre code for any future changing of them💙 </sub>
 
