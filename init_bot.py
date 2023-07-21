@@ -13,7 +13,6 @@ import random
 from bardapi import BardAsync , Bard
 from inspect import getmembers , isfunction
 import aiohttp
-from aiohttp import ProxyConnector, BasicAuth
 import requests
 from pyrandmeme2 import pyrandmeme2
 from quote import quote
