@@ -1,0 +1,17 @@
+aiohttp==3.8.4
+asyncio==3.4.3
+bardapi==0.1.24
+discord==2.3.1
+discord.py==2.3.1
+gazpacho==1.1
+google-api-core==1.34.0
+google-auth==1.35.0
+google-cloud-core==1.7.3
+google-cloud-translate==2.0.1
+googleapis-common-protos==1.59.1
+poe-api==0.4.10
+quote==2.0.4
+Random-Word==1.0.11
+random2==1.0.1
+requests==2.31.0
+
