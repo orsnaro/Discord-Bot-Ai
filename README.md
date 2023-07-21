@@ -7,7 +7,7 @@
 
 > ## 📣 Beta (v2.5) is out!
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
- * now can learn for the Wisest on [Discord's Island](https//discord.gg/R52kY9mG9c) using `WiseWiz` command
+ * now can learn for the Wisest on [Discord's Island](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
  * now long Bard AI answers is working in [🧙Ask-the-Wizard Channel](https://discord.gg/ptAVHmrtJX)
  * now Bot sends random quotes and memes multiple times a day <sub> (_🔴disabled temporarily_: &nbsp; you can toggle it via `toggle random`) command </sub>
  * ~~fixed some bugs~~
@@ -28,7 +28,7 @@
    
 ***FINALLY***: ✔️report me any issues!
    
-<sub> ***NOTE:*** _for now_ you wouldn't be able to make your own  sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https//discord.gg/R52kY9mG9c) </sub>
+<sub> ***NOTE:*** _for now_ you wouldn't be able to make your own  sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https://discord.com/invite/Y23B7R3FPq) </sub>
 
 <sub> ***NOTE:*** the bot does not have any `adminstration` / `managing` / `moving` /  etc.. permissions. though I  recommend always to take a look at allowed permissions in [`beta-bot invite link`](https://discord.com/api/oauth2/authorize?client_id=1117540489365827594&permissions=69241357196993&redirect_uri=https%3A%2F%2Fdiscordapp.com%2Foauth2%2Fauthorize%3F%26client_id%3D1117540489365827594%26scope%3Dbot&response_type=code&scope=identify%20guilds%20gdm.join%20rpc.voice.read%20rpc.video.write%20rpc.activities.write%20messages.read%20applications.commands%20activities.read%20voice%20applications.commands.permissions.update%20dm_channels.read%20activities.write%20applications.store.update%20applications.builds.upload%20bot%20rpc.screenshare.read%20rpc.voice.write%20rpc%20guilds.join%20email%20role_connections.write%20relationships.read%20applications.entitlements%20applications.builds.read%20webhook.incoming%20rpc.screenshare.write%20rpc.video.read%20rpc.notifications.read%20guilds.members.read%20connections). feel free to sneak peak at our soucre code for any future changing of these intents/permissions💙 </sub>
 
