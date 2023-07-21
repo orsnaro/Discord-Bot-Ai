@@ -4,6 +4,7 @@
 ##### Discord Bot with generative AI features using python as main project language
 
 ---
+---
 
 > ## 📣 Beta (v2.5) is out!
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
@@ -20,6 +21,7 @@
 
 ---
 
+
 > ## 🧙 How to Use Me?!
 
  ***FIRST***:&nbsp;✔️Invite me to a server  [`invite link`](https://discord.com/api/oauth2/authorize?client_id=1117540489365827594&permissions=69241357196993&redirect_uri=https%3A%2F%2Fdiscordapp.com%2Foauth2%2Fauthorize%3F%26client_id%3D1117540489365827594%26scope%3Dbot&response_type=code&scope=identify%20guilds%20gdm.join%20rpc.voice.read%20rpc.video.write%20rpc.activities.write%20messages.read%20applications.commands%20activities.read%20voice%20applications.commands.permissions.update%20dm_channels.read%20activities.write%20applications.store.update%20applications.builds.upload%20bot%20rpc.screenshare.read%20rpc.voice.write%20rpc%20guilds.join%20email%20role_connections.write%20relationships.read%20applications.entitlements%20applications.builds.read%20webhook.incoming%20rpc.screenshare.write%20rpc.video.read%20rpc.notifications.read%20guilds.members.read%20connections)
@@ -33,6 +35,7 @@
 <sub> ***NOTE:*** the bot does not have any `adminstration` / `managing` / `moving` /  etc.. permissions. though I  recommend always to take a look at allowed permissions in [`beta-bot invite link`](https://discord.com/api/oauth2/authorize?client_id=1117540489365827594&permissions=69241357196993&redirect_uri=https%3A%2F%2Fdiscordapp.com%2Foauth2%2Fauthorize%3F%26client_id%3D1117540489365827594%26scope%3Dbot&response_type=code&scope=identify%20guilds%20gdm.join%20rpc.voice.read%20rpc.video.write%20rpc.activities.write%20messages.read%20applications.commands%20activities.read%20voice%20applications.commands.permissions.update%20dm_channels.read%20activities.write%20applications.store.update%20applications.builds.upload%20bot%20rpc.screenshare.read%20rpc.voice.write%20rpc%20guilds.join%20email%20role_connections.write%20relationships.read%20applications.entitlements%20applications.builds.read%20webhook.incoming%20rpc.screenshare.write%20rpc.video.read%20rpc.notifications.read%20guilds.members.read%20connections). feel free to sneak peak at our soucre code for any future changing of these intents/permissions💙 </sub>
 
 ---
+
 
 
 > ##  🛠 TODO :
@@ -67,35 +70,47 @@
 
 *   Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
----
 
-* **(DONE)**   Use any free hosting service for `beta` versions
 
-* **(DONE)** connect to a cdn that has memes / quotes  and set on_time() event to send to `chat-chill` and `Ask-the-Wizard`
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)   ~Use any free hosting service for `beta` versions~
 
-* **(DONE)**   make bot see prev messages (use session)
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) ~connect to a cdn that has memes / quotes  and set on_time() event to send to `chat-chill` and `Ask-the-Wizard`~
 
-* **(DONE)**  talk to bot by mention him  
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)   ~make bot see prev messages (use session)~
 
-* **(DONE)**  talk to bot in specific channel no need to mention or trigger him by command just send the question as plain message
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)
+  ~talk to bot by mention him~  
 
-* **(DONE)**   reply to his message (take the content of replayed message and respond accordingly to it + new message)
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)  ~talk to bot in specific channel no need to mention or trigger him by command just send the question as plain message~
 
-* **(DONE)**  use SESSION with ASYNC BARD ( contact BardAPI maker or raise issue in their repo)(I was  kinda  wrong)
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)   ~reply to his message (take the content of replayed message and respond accordingly to it + new message)~
 
-* **(DONE)**  show embedded links in bard answer
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)  ~use SESSION with ASYNC BARD ( contact BardAPI maker or raise issue in their repo)(I was  kinda  wrong)~
 
-* **(DONE)**  show  images in Wizard special channel
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)  ~show embedded links in bard answer~
 
-* **(DONE)**  send msg in parts is it exceeds max size in bot special channel
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)  ~show  images in Wizard special channel~
 
-<sub> <sub> more todoes and tasks in discrod `testing` channel and in [`main_wizard_bot.py`](./main_wizard_bot.py) </sub></sub>
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)  ~send msg in parts is it exceeds max size in bot special channel~
+
+<sub>  _more todoes and tasks in discrod `testing` channel and in [`main_wizard_bot.py`](./main_wizard_bot.py)_ </sub>
 
 
 
 </br>
 </br>
 </br>
+
 
 ---
 
