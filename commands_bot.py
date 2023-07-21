@@ -28,8 +28,9 @@ async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
 async def wise( ctx : commands.Context ):
 	#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
 	res = None
+	discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
 	
-	while res is None :
+	while res is None or  len(res) >= discord_msg_mx_len :
 		random_word = RandomWords()
 		category = random_word.get_random_word()
 		res = quote(category , limit=1)
