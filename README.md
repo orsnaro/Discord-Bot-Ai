@@ -40,7 +40,6 @@
 
 *   Documentaion for functions / classes and repo readme.md
     
-*   Use any free hosting service for `beta` versions
 
 *   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
 
@@ -67,6 +66,10 @@
 *   add command to switch between BARD mode and poe-GPT mode
 
 *   Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
+
+---
+
+* **(DONE)**   Use any free hosting service for `beta` versions
 
 * **(DONE)** connect to a cdn that has memes / quotes  and set on_time() event to send to `chat-chill` and `Ask-the-Wizard`
 
