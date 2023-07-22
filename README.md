@@ -9,7 +9,7 @@
 > ## 📣 Beta (v2.5) is out!
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
  * now can learn for the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
- * now long Bard AI answers is working in [🧙Ask-the-Wizard Channel](https://discord.gg/ptAVHmrtJX)
+ * now long Bard AI answers is working in [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
  * now Bot sends random quotes and memes multiple times a day
     - <sub> (_🔴disabled temporarily_: &nbsp; not stable. though you can toggle  it via `toggle random`) command </sub>
  * ~~fixed some bugs~~
@@ -42,9 +42,9 @@
 
 
 > ##  🛠 TODO :
-####     DO THIS _BEFORE_ any other big tasks ->  **MIGRATE TO PYCORD**
+#### ⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD!*
 
-*   Documentaion for functions / classes and repo readme.md
+*   Documentation for functions / classes and repo readme.md
     
 
 *   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
