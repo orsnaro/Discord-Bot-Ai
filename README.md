@@ -44,7 +44,7 @@
 > ##  🛠 TODO :
 #### ⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD!*
 
-*   Documentation for functions / classes and repo readme.md
+*   Documentation for functions / classes repo. first readme.md draft
     
 
 *   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
@@ -74,6 +74,8 @@
 *   Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
 
+ ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) ~repo. first readme.md draft~
 
  ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 )   ~Use any free hosting service for `beta` versions~
