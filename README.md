@@ -8,7 +8,7 @@
 
 > ## 📣 Beta (v2.5) is out!
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
- * now can learn for the Wisest on [Discord's Island](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
+ * now can learn for the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
  * now long Bard AI answers is working in [🧙Ask-the-Wizard Channel](https://discord.gg/ptAVHmrtJX)
  * now Bot sends random quotes and memes multiple times a day
     - <sub> (_🔴disabled temporarily_: &nbsp; not stable. though you can toggle  it via `toggle random`) command </sub>
@@ -30,7 +30,7 @@
 
 ***SECOND***: ✔️type `help` in any Chat channel to learn my commands then use them!
    
-***FINALLY***: ✔️report me any issues!
+***FINALLY***: &nbsp;✔️report me any issues!
    
 <sub> ***NOTE:*** _for now_ you wouldn't be able to make your own  sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https://discord.com/invite/Y23B7R3FPq) </sub>
 
