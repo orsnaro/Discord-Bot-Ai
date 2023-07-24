@@ -45,19 +45,17 @@
 #### ⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD!*
 
 *   Documentation for functions / classes repo. first readme.md draft
+  
+*   implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
+  
     
-
 *   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
 
-*   show embedded images in bard answer (shows with the links aswell)
+*   show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
 
 *   wizard bot sqlite-DB  design and connect the DB with bot code
 
-*   use google translator API
-
 *   OOP it!  and handle errors!
-
-*   make message fragmenter function for both msg and links msg in utils_bot.py
 
 *   save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
 
@@ -71,10 +69,17 @@
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
 
 *   add command to switch between BARD mode and poe-GPT mode
-
+  
+*   ~use google translator API~
+  
+       *  _(NOT necessary  NEED any more! now bard speaks arabic and bard API python wrapper also supports that  just edit your internal prompt / appendings and formating to discord messages to have arabic variation)_
+    
 *   Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
 
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)  ~make message fragmenter function for both msg and links msg in utils_bot.py~
+  
  ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 ) ~repo. first readme.md draft~
 
@@ -123,7 +128,7 @@
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-  * **Active Branches lately:**  `main` and [`bot_pycordv2.5B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5B)
+  * **Active Branches lately:**  `main` and [`bot_pycordv2.5B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
 
  
 
