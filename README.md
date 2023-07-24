@@ -51,13 +51,11 @@
     
 *   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
 
-*   show embedded images in bard answer (shows with the links aswell)
+*   show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
 
 *   wizard bot sqlite-DB  design and connect the DB with bot code
 
 *   OOP it!  and handle errors!
-
-*   make message fragmenter function for both msg and links msg in utils_bot.py
 
 *   save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
 
@@ -79,6 +77,9 @@
 *   Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
 
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+)  ~make message fragmenter function for both msg and links msg in utils_bot.py~
+  
  ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 ) ~repo. first readme.md draft~
 
