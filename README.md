@@ -45,15 +45,15 @@
 #### ⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD!*
 
 *   Documentation for functions / classes repo. first readme.md draft
+  
+*   implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
+  
     
-
 *   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
 
 *   show embedded images in bard answer (shows with the links aswell)
 
 *   wizard bot sqlite-DB  design and connect the DB with bot code
-
-*   use google translator API
 
 *   OOP it!  and handle errors!
 
@@ -71,7 +71,11 @@
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
 
 *   add command to switch between BARD mode and poe-GPT mode
-
+  
+*   ~use google translator API~
+  
+       *  _(NOT necessary  NEED any more! now bard speaks arabic and bard API python wrapper also supports that  just edit your internal prompt / appendings and formating to discord messages to have arabic variation)_
+    
 *   Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
 
