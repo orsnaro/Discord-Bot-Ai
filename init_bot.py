@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5B
-                          version Date :  2 / 7 / 2023
+                          Version : v2.5.1B
+                          version Date :  24 / 7 / 2023
                           Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -51,8 +51,10 @@ def init_bard_session () :
 
 bard = init_bard_session()
 
+narols_island_wizard_channel_id = 1118953370510696498
+testing_wizard_channel_id = 1133103993942462577
+wizard_channels = (narols_island_wizard_channel_id , testing_wizard_channel_id )
 wizard_bot_id = 1117540489365827594
-wizard_channel_id = 1118953370510696498
 chat_chill_ch_id = 889535812167938088
 proxy_sites = ["https://Proxy.server:3128" ,"https://95.217.167.241:8080"]#first one is the only proxy server available for free in pythonanywhere for more servers: https://hidemyna.me/en/proxy-list/?type=s#list
 bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , strip_after_prefix= True , intents=discord.Intents.all() , allowed_mentions= discord.AllowedMentions(everyone= False) , description= f""" 
@@ -66,7 +68,7 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
 						:label:    The question must start start with mentioning me e.g.( <@{wizard_bot_id}> )
       
 						:label:    if you want to speak with me more freely with no mentions/commands 
-      							   just type anything in my channel <#{wizard_channel_id}> and I shall respond !
+      							   just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond !
       
 						:label:    Due to a bug (FOR NOW) images from bard are included 
       							  as links in sources section

@@ -1,14 +1,160 @@
 """
                           Coder : Omar
-                          Version : v2.5B
-                          version Date :  2 / 7 / 2023
+                          Version : v2.5.1B
+                          version Date :  24 / 7 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 from init_bot import bot , bard , random , wizard_bot_id , datetime 
-from init_bot import wizard_channel_id , chat_chill_ch_id , pyrandmeme2 ,RandomWords , quote
+from init_bot import narols_island_wizard_channel_id , chat_chill_ch_id , pyrandmeme2 ,RandomWords , quote
 import discord.message
+import re
+
+
+# TODO : join all prepare funcs in one class or control function
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def supress_msg_body_url_embeds ( text : str ) -> str :
+  url_regex = r"(https?://\S+)(\s|\n|$)"
+  matches = re.finditer(url_regex, text)
+  for match in matches:
+    text = text.replace(match.group(0), f"<{match.group(0).strip()}> \n")
+  return text
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def prepare_send_wizard_channel_ans_msg( _bard_response : tuple  , message , discord_msg_limit = 2000) : 
+   
+   #Supress i.e.(no embed) any URL inside the msg body and not in links msg section
+	bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
+	full_response = bot_msg_header + _bard_response[0] 
+ 
+	print ("TESTING: " , full_response) #TESTING
+ 
+#MSG FRAGMENTER SECTION ( TODO : make message fragmenter function for both msg and links msg in utils_bot.py )
+	full_resp_len = len(full_response)
+	if full_resp_len >= discord_msg_limit : #break bard response   to smaller messages to fit in discord msg
+	
+		bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** `[this msg will be fragmented: exceeds 2000chars]`\n"
+		full_response = bot_msg_header + _bard_response[0] 
+		full_response = supress_msg_body_url_embeds(full_response)
+  
+		full_resp_len = len(full_response) #re-calc
+
+		needed_msgs = full_resp_len // discord_msg_limit
+		remain = full_resp_len % discord_msg_limit
+		if remain != 0 :
+			needed_msgs += 1
+	
+		msg_frag : str
+		end_flag = "\n```ini\n [END OF MSG]```"
+		while needed_msgs != 0 :
+			
+
+			if needed_msgs == 1 and remain != 0 :
+				if remain > len(end_flag) : #there is place to add in flag in same last msg frag
+					msg_frag = full_response[ : ] + "\n```ini\n [END OF MSG]```"
+					await message.reply(content= msg_frag  , mention_author= True)
+					break
+				else :#no place to add end flag send it seperatly in new discord msg
+					msg_frag = full_response[ : ] 
+					await message.reply(content= msg_frag  , mention_author= True)
+					await message.reply(content= end_flag  , mention_author= True)
+					break
+					
+				
+			elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full bard response 
+				msg_frag = full_response[ : ] 
+				await message.reply(content= msg_frag  , mention_author= True)
+				await message.reply(content= end_flag  , mention_author= True)
+				break
+
+			else :
+				msg_frag = full_response[ : discord_msg_limit] # from 0 to limit i.e.( 0 -> 1998 = 2000char)  end is not taken ( exclusisve )
+				await message.reply(content= msg_frag  , mention_author= True)
+			
+			full_response = full_response[discord_msg_limit : ] # skip the sent fragment of message start after it for rest fragments
+			needed_msgs -= 1
+			
+		
+	else: #all bard response can fit in one discord msg
+		full_response = supress_msg_body_url_embeds(full_response)
+		await message.reply(content= full_response  , mention_author= True)
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000) -> tuple :
+   
+			
+	links_msg_header = f"\n```ini\n [Sources & links]``` \n"
+	links_list = list( set(_bard_response[1]) ) #remove duplicate links
+
+	#CHECK if there is images between the links and move them to bard_images_list(at_end):
+
+	i = 0
+	while len(links_list) != 0  and i < len(links_list) :
+		link = links_list[i]
+		if link.endswith((".jpg",".png",".webp"))  or link.startswith( ("https://lh3.googleusercontent.com" , "https://www.freepik.com") ) :
+			links_list.remove(link)
+			link = set(link)
+			if _bard_response[2] is not None:
+				_bard_response[2].union(link)
+
+			i = 0 # not to got out of index after removal of a link
+			continue #to prevent  inc and skip zeroth element!
+		i += 1
+
+		
+	#LINKS MSG FRAGMENTER SECTION (send only first set of links until 'links_length <= 2000char' thats enough)
+	tot_lnk_len = 0
+	links_list_sz = len(links_list)
+	extra_format_chars =  10 #newline and bullet points also is included in length
+	links_msg_header_len = len(links_msg_header) 
+	lnks_no_lmt = 0 # while loop iterator + used later to find last allowed link indx
+	lnk_cstm_lmt = 5 #TODO make discord sever admins can change custom links limit
+	while  tot_lnk_len < discord_msg_limit - 1  and lnks_no_lmt < links_list_sz  and lnks_no_lmt < lnk_cstm_lmt: # msg_limit set to = actual_limit - 1 for safety
+			tot_lnk_len += links_msg_header_len if  lnks_no_lmt == 0 else 0 #include link msg header length in tot len
+		
+			tot_lnk_len += len(links_list[lnks_no_lmt]) + extra_format_chars
+			lnks_no_lmt += 1
+			
+	#if last link exceeds discord msg limit then will leave it else will take it 
+	lnks_no_lmt -= 1 if tot_lnk_len > discord_msg_limit - 1 else 0
+	# (any way we take all links until first link  that its sum with the earlier links exceeds the limit for now we discard the rest of  links from bard ans)
+	
+	#remove embed from all links except the first ( also works in discord chat !)
+	for i in range(1 , lnks_no_lmt) :
+		links_list[i] = '<' + links_list[i] + '>'
+	
+		
+		#FINAL FORMAT FOR LINKS MESSAGE
+	links_list[0] = '\n * '+ links_list[0]  # prepend with each link with bullet point
+	final_links = links_msg_header  + '\n* '.join(links_list[ : lnks_no_lmt])  #list is zero based and end at limit - 1
+
+	return (final_links , _bard_response)
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_msg_limit = 2000) -> str :
+	
+	imgs_msg_header = f"\n```ini\n [Images]``` \n"
+	bard_imgs_list = list( set(_bard_response[2]) ) #remove duplicate imgs
+
+	#IMAGES MSG FRAGMENTER SECTION (currently discord only allow 5 messages per message and ignores the later ones and we'll stick with 5 images also at max)
+	tot_img_len = 0
+	imgs_list_sz = len(bard_imgs_list)
+	imgs_discord_lmt = 5 
+	imgs_crnt_lmt = _imgs_limit # while loop iterator + used later to find last allowed img indx
+
+	i = 0
+	while  tot_img_len < discord_msg_limit - 1  and i < imgs_crnt_lmt  and i < imgs_list_sz : # make sure i dont send more than 5 images + make sure that  links of images doesnt exceed 2000char + also make sure  dont go passs bard_imgs_list size
+			tot_img_len += len(bard_imgs_list[i])
+			i += 1
+
+	allowed_imgs : int = i
+	#if last imgs link length exceeds discord msg limit then will leave it else will take it 
+	allowed_imgs -= 1 if tot_img_len > discord_msg_limit - 1 else 0
+	# (any way we take all imgs until first img  that its sum with the earlier imgs exceeds the limit of (links chars len or imgs no.)for now we discard the rest of  imgs from bard ans)
+		
+						
+	#FINAL FORMAT FOR imgs MESSAGE
+	final_imgs = imgs_msg_header + '\n'.join(bard_imgs_list[ : imgs_crnt_lmt])  #list is zero based and end at limit - 1
+	return final_imgs
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 def get_rand_greeting (user_name : str = "Master Narol"):
@@ -71,7 +217,7 @@ async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tup
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class
 	if chk_type == 1 and _message != None : #NOTE : checks for on_message() in wizard channel 
-		return True if  _message != None and _message.channel.id == targetChannelId and _message.author.id != bot.user.id else False 
+		return True if  _message != None and _message.channel.id in targetChannelId and _message.author.id != bot.user.id else False 
 
 	elif chk_type == 2 and _message != None:#NOTE : checks for  messages of type: reply
 		msg_channel = _message.channel
@@ -179,7 +325,7 @@ class EmbedLimits(object):
     
 				if char_cnt >= one_field_mx :
 					super_list[field_indx][0] = '\n * ' + super_list[field_indx][0] #fix join dont format 1st element
-					embed.add_field(name= f"_ __sources p({field_indx + 1})__  _"  , inline= False , value= '\n * '.join(super_list[field_indx]) )
+					embed.add_field(name= f"_ __sources p({field_indx + 1})__  _"  , inline= False , value= '\n* '.join(super_list[field_indx]) )
 					char_cnt = 0
 					field_indx += 1
 					super_list.append([])
@@ -288,7 +434,7 @@ async def send_rand_quote_meme( message : discord.Message  , is_active : bool = 
 						quotes2 : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
 					
 					if rnd_no == 1 :# to wiz ch
-						channel = bot.get_channel(wizard_channel_id)
+						channel = bot.get_channel(narols_island_wizard_channel_id)
 						await channel.send(content= quotes2)
 		
 					else: #to chat&chill ch
@@ -298,7 +444,7 @@ async def send_rand_quote_meme( message : discord.Message  , is_active : bool = 
 				else: #meme
 					meme_embed_title = "It's Meme Time!🤹🏻‍♀️"
 					if rnd_no == 3 : #meme to wiz ch
-						channel = bot.get_channel(wizard_channel_id)
+						channel = bot.get_channel(narols_island_wizard_channel_id)
 						meme_embed_title = "It's Meme Time!"
 						await channel.send(embed= await pyrandmeme2(_title= meme_embed_title))
 					else : 

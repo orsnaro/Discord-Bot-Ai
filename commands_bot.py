@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5B
-                          version Date :  2 / 7 / 2023
+                          Version : v2.5.1B
+                          version Date :  24 / 7 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -29,8 +29,8 @@ async def wise( ctx : commands.Context ):
 	#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
 	res = None
 	discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
-	
-	while res is None or  len(res) >= discord_msg_mx_len :
+	custom_threshhold = 250 #TODO : make admins can edit it later to get longer quotes
+	while res is None or  len(res) >= custom_threshhold :
 		random_word = RandomWords()
 		category = random_word.get_random_word()
 		res = quote(category , limit=1)
