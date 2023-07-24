@@ -54,6 +54,7 @@
 
 *   OOP it!  and handle errors!
 
+*   make message fragmenter function for both msg and links msg in utils_bot.py
 
 *   save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
 
