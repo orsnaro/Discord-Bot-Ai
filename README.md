@@ -1,4 +1,4 @@
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5B-green)](https://free.pylexnodes.net/)
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.1B-green)](https://free.pylexnodes.net/)
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
@@ -6,14 +6,43 @@
 ---
 
 
-> ## 📣 Beta (v2.5) is out!
+> ## 📣 new  patch (`v2.5.1B`) is out!
+
+<details>
+<summary><em>  ✨Patch notes </em> </summary>
+    
+  * messages to special wizard channel formats edits
+  * limit quote length to 250char  
+  * supress embeds in message body via regex
+  * also supress all links in links section except first link 
+  * add image section to `wizard channel` messages
+  * move all images from links section to image section (for some reason bard buts alot of images URL in links & sources section)
+  * limit links size in `wizard channel` messages to 5
+  * fix indentation bug in links sections in  `embed messages` and `wizard channel` message  
+  * change channel_target_id var to be a tuble instead of one channel for upcoming (make your own wizard channel feature)
+
+ </details> 
+      
+  
+
+<details>
+<summary><em>  ✨ main version (v2.5B) new features! </em> </summary>
+    
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
+
  * now can learn for the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
+
  * now long Bard AI answers is working in [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
+
  * now Bot sends random quotes and memes multiple times a day
+
     - <sub> (_🔴disabled temporarily_: &nbsp; not stable. though you can toggle  it via `toggle random`) command </sub>
+
  * ~~fixed some bugs~~
- 
+
+ </details>
+
+
 ![ alt text for screen readers](./wizard_bot.ico "icon") 
 
 </br>
