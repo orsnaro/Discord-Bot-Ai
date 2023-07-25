@@ -9,7 +9,7 @@
 #TODO :  make message fragmenter function for  msg and links msg and img msg  in utils_bot.py
 
 from init_bot import *
-from utils_bot import ask_bard , check_msg ,send_rand_quote_meme , supress_msg_body_url_embeds , prepare_imgs_msg , prepare_links_msg , prepare_send_wizard_channel_ans_msg
+from utils_bot import ask_bard , check_msg ,send_rand_quote_meme , supress_msg_body_url_embeds , prepare_imgs_msg , prepare_links_msg , prepare_send_wizard_channel_ans_msg , sub_sections_msg_sending_ctrl
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # @bot.event
 # async def on_any_event_update_DB_buffer():... #TODO if bot does any action or any thing trigger it save needed info in your own DB for later....
@@ -31,14 +31,24 @@ async def on_message(message):
   
 		await prepare_send_wizard_channel_ans_msg( task_response , wizard_ch_msg )
 
+		final_imgs  , final_links , lnk1_len = None , None , -1#lnk1_len will be needed in sub_sections_msg_sending_ctrl()
+		have_links = False
 		if task_response is not None and len(task_response) >= 2 and len(task_response[1]) > 0 :
-			final_links , task_response = prepare_links_msg(task_response)
-			await message.reply(content= final_links  , mention_author= False)
+			final_links , task_response , lnk1_len = prepare_links_msg(task_response)
+			if len(final_links) > 0:
+				have_links = True
 
+		have_imgs = False
 		if task_response is not None and len(task_response) >= 3 and len(task_response[2]) > 0 :
 			final_imgs = prepare_imgs_msg(task_response)
-			await message.reply(content= final_imgs  , mention_author= False)
-
+			if len(final_imgs) > 0:
+				have_imgs = True
+    
+		await sub_sections_msg_sending_ctrl( wizard_ch_msg  ,  final_links , lnk1_len , final_imgs ,  have_imgs	 , have_links)
+		
+		
+		
+  
 	await bot.process_commands(message) #add this to prevent on_message() from blocking bot.command
 	del message
 #------------------------------------------------------------------------------------------------------------------------------------------#
