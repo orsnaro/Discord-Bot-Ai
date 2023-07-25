@@ -6,13 +6,32 @@
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from init_bot import bot , bard , random , wizard_bot_id , datetime 
+from init_bot import bot , bard , random , wizard_bot_id , datetime , re
 from init_bot import narols_island_wizard_channel_id , chat_chill_ch_id , pyrandmeme2 ,RandomWords , quote
 import discord.message
-import re
 
 
-# TODO : join all prepare funcs in one class or control function
+
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links_msg : str , lnk1_len : int , final_imgs_msg : str , lnks_flag = False , imgs_flag = True) :
+	if  lnks_flag and imgs_flag : # meaning I will supress first link also cuz there is imgs already
+		#SUPRESS FIRST LINK  (first parse the message)
+		fst_char_1st_link = 33 #29 chars for header [0~28] then 3 chars  bullet point [29~31]
+		seg_before_1st_link = final_links_msg[0 : fst_char_1st_link] #end is excluded	
+		lnk1 = final_links_msg[fst_char_1st_link : fst_char_1st_link + lnk1_len] #end is excluded
+		lnk1 = '<' + lnk1 + '>'
+		seg_aft_1st_link = final_links_msg[fst_char_1st_link + lnk1_len : ]
+  
+		final_links_msg = seg_before_1st_link + lnk1 + seg_aft_1st_link #now 1st link and all links are supressed !
+		await message.reply(content= final_links_msg , mention_author= False)
+		await message.reply(content= final_imgs_msg  , mention_author= False)
+  
+	elif lnks_flag and not imgs_flag : # means I will not supress first link embed (prepare funcs done this already)
+		await message.reply(content= final_links_msg , mention_author= False)
+	elif imgs_flag and not lnks_flag : #send only imgs
+		await message.reply(content= final_imgs_msg  , mention_author= False)
+	else: #no imgs or links sections is present
+		pass
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def supress_msg_body_url_embeds ( text : str ) -> str :
   url_regex = r"(https?://\S+)(\s|\n|$)"
@@ -21,7 +40,8 @@ def supress_msg_body_url_embeds ( text : str ) -> str :
     text = text.replace(match.group(0), f"<{match.group(0).strip()}> \n")
   return text
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def prepare_send_wizard_channel_ans_msg( _bard_response : tuple  , message , discord_msg_limit = 2000) : 
+# TODO : join all prepare funcs in one class or control function
+async def prepare_send_wizard_channel_ans_msg( _bard_response : tuple  , message : discord.Message , discord_msg_limit = 2000) : 
    
    #Supress i.e.(no embed) any URL inside the msg body and not in links msg section
 	bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
@@ -82,7 +102,7 @@ async def prepare_send_wizard_channel_ans_msg( _bard_response : tuple  , message
 def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000) -> tuple :
    
 			
-	links_msg_header = f"\n```ini\n [Sources & links]``` \n"
+	links_msg_header = f"\n```ini\n [Sources & links]```" #len = 29 [0 -> 28]
 	links_list = list( set(_bard_response[1]) ) #remove duplicate links
 
 	#CHECK if there is images between the links and move them to bard_images_list(at_end):
@@ -119,6 +139,7 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
 	# (any way we take all links until first link  that its sum with the earlier links exceeds the limit for now we discard the rest of  links from bard ans)
 	
 	#remove embed from all links except the first ( also works in discord chat !)
+	lnk1_len = len(links_list[0]) # will be needed later in sub_sections_msg_sending_ctrl()
 	for i in range(1 , lnks_no_lmt) :
 		links_list[i] = '<' + links_list[i] + '>'
 	
@@ -127,7 +148,7 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
 	links_list[0] = '\n * '+ links_list[0]  # prepend with each link with bullet point
 	final_links = links_msg_header  + '\n* '.join(links_list[ : lnks_no_lmt])  #list is zero based and end at limit - 1
 
-	return (final_links , _bard_response)
+	return (final_links , _bard_response , lnk1_len)
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_msg_limit = 2000) -> str :

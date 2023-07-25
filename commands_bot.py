@@ -65,12 +65,6 @@ async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PRO
 	del embed
 	del valid_reply
 	del ctx
-	
-	# if len(task_response[2]) == 0 :
-	# 	print("TESTING : EMPTY images")
-    
-	# for img in task_response[2] :
-	# 	print (img) #TESTING
 
 	# img_embds = list()
 	# if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
@@ -81,7 +75,7 @@ async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PRO
 	# 	await send_img_msg_task
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
-@bot.command(name="wizard" , aliases=["wizard ", "wiz" , "wizardspirit" , "bard"]) # command name is defaulted to method name 'bardAI'
+@bot.command(name="wizard" , aliases=["wizard ", "wizy" , "wizardspirit" , "bard"]) # command name is defaulted to method name 'bardAI'
 async def bardAI (ctx : commands.Context , * , full_prompt : str = "EMPTY PROMPT. CHECK REPLY :" ,  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 #using BARD API
 	valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
@@ -101,11 +95,6 @@ async def bardAI (ctx : commands.Context , * , full_prompt : str = "EMPTY PROMPT
 	del valid_reply
 	del ctx
 	
-	# if len(task_response[2]) == 0 :
-	# 	print("TESTING : EMPTY images")
-    
-	# for img in task_response[2] :
-	# 	print (img) #TESTING
 
 	# img_embds = list()
 	# if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():

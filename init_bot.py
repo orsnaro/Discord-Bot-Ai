@@ -18,6 +18,7 @@ from pyrandmeme2 import pyrandmeme2
 from quote import quote
 from random_word import RandomWords
 from datetime import datetime
+import re
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
