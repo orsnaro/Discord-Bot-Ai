@@ -6,8 +6,8 @@
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed 
-from utils_bot import check_msg , get_new_reply_prompt , meme_quote_sender_is_on_flag
+from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed
+from utils_bot import check_msg , get_new_reply_prompt
 from init_bot import *	
 import keys
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -43,7 +43,14 @@ async def wise( ctx : commands.Context ):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
-	await ctx.reply(content= f"Pong! Latency is {bot.latency}ms" )
+	host = "194.15.36.128"
+	ping_try = 3
+	disocrd_to_host_ping = await ping_bot.ping (host,ping_try)
+	discord_to_host
+	if host_ping == False :
+		await ctx.reply(content= "Failed! very high ping possibly __Timedout!__" )
+	else :
+		await ctx.reply(content= f"Pong! Latency is `{bot.latency + host_ping}ms`" )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
