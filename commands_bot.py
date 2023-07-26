@@ -45,12 +45,13 @@ async def wise( ctx : commands.Context ):
 async def ping(ctx : commands.Context):
 	host = "194.15.36.128"
 	ping_try = 3
-	disocrd_to_host_ping = await ping_bot.ping (host,ping_try)
-	discord_to_host
+	host_ping = await ping_bot.ping (host,ping_try)
+	bot_latency = bot.latency
+	tot_ping = round(bot_latency + host_ping , 3)
 	if host_ping == False :
 		await ctx.reply(content= "Failed! very high ping possibly __Timedout!__" )
 	else :
-		await ctx.reply(content= f"Pong! Latency is `{bot.latency + host_ping}ms`" )
+		await ctx.reply(content= f"Pong! Latency is `{tot_ping}ms`" )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
