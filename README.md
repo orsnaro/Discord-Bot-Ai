@@ -1,4 +1,4 @@
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.1B-green)](https://free.pylexnodes.net/)
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.1B-red)](https://free.pylexnodes.net/)
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
@@ -28,6 +28,8 @@
 <details>
 <summary><em>  ✨ main version (v2.5B) new features! </em> </summary>
     
+ * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
+
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
 
  * now can learn for the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
