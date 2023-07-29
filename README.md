@@ -13,13 +13,13 @@
     
   * messages to special wizard channel formats edits
   * limit quote length to 250char  
-  * supress embeds in message body via regex
-  * also supress all links in links section except first link 
-  * add image section to `wizard channel` messages
+  * suppress embeds in message body via regex
+  * also suppress all links in links section except first link 
+  * add image section to  [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX) messages
   * move all images from links section to image section (for some reason bard buts alot of images URL in links & sources section)
-  * limit links size in `wizard channel` messages to 5
-  * fix indentation bug in links sections in  `embed messages` and `wizard channel` message  
-  * change channel_target_id var to be a tuble instead of one channel for upcoming (make your own wizard channel feature)
+  * limit links size in  [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX) messages to 5
+  * fix bulletpoint indentation  in links sections in  `embed messages` and  [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX) message  
+  * change `channel_target_id` var. to be a tuble instead of one channel for upcoming -_make your own wizard channel feature_- 
 
  </details> 
       
