@@ -26,7 +26,7 @@
   
 
 <details>
-<summary><em>  ✨ main version (v2.5B) new features! </em> </summary>
+<summary><em>  ✨ Current version (v2.5B) main features! </em> </summary>
     
  * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
 
