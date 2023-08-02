@@ -159,7 +159,7 @@
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-  * **Active Branches lately:**  `main` and [`bot_pycordv2.5B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
+  * **Active Branches lately:**  `main` and [`bot_pycordv2.5.1B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
 
  
 
