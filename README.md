@@ -9,7 +9,7 @@
 > ## 📣 new  patch (`v2.5.1B`) is out!
 
 <details>
-<summary><em>  ✨Patch notes </em> </summary>
+<summary><em>  ✨Patch `2.5.1B` notes </em> </summary>
     
   * messages to special wizard channel formats edits
   * limit quote length to 250char  
@@ -26,7 +26,7 @@
   
 
 <details>
-<summary><em>  ✨ Current version (v2.5B) main features! </em> </summary>
+<summary><em>  ✨ Current version (`v2.5B`) main features! </em> </summary>
     
  * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
 
