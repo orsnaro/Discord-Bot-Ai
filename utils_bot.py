@@ -110,7 +110,7 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
 	i = 0
 	while len(links_list) != 0  and i < len(links_list) :
 		link = links_list[i]
-		if link.endswith((".jpg",".png",".webp"))  or link.startswith( ("https://lh3.googleusercontent.com" , "https://www.freepik.com") ) :
+		if link.endswith((".jpg",".png",".webp"))  or link.startswith( ("https://lh3.googleusercontent.com" , "https://www.freepik.com") ) or (link.find(".jpg") != -1) :
 			links_list.remove(link)
 			link = set(link)
 			if _bard_response[2] is not None:
