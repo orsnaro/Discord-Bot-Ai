@@ -1,4 +1,4 @@
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.1B-red)](https://free.pylexnodes.net/)
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.1B-green)](https://free.pylexnodes.net/)
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
@@ -9,24 +9,24 @@
 > ## 📣 new  patch (`v2.5.1B`) is out!
 
 <details>
-<summary><em>  ✨Patch notes </em> </summary>
+<summary><em>  ✨Patch (2.5.1B) notes </em> </summary>
     
   * messages to special wizard channel formats edits
   * limit quote length to 250char  
-  * supress embeds in message body via regex
-  * also supress all links in links section except first link 
-  * add image section to `wizard channel` messages
+  * suppress embeds in message body via regex
+  * also suppress all links in links section except first link 
+  * add image section to  [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX) messages
   * move all images from links section to image section (for some reason bard buts alot of images URL in links & sources section)
-  * limit links size in `wizard channel` messages to 5
-  * fix indentation bug in links sections in  `embed messages` and `wizard channel` message  
-  * change channel_target_id var to be a tuble instead of one channel for upcoming (make your own wizard channel feature)
+  * limit links size in  [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX) messages to 5
+  * fix bulletpoint indentation  in links sections in  `embed messages` and  [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX) message  
+  * change `channel_target_id` var. to be a tuble instead of one channel for upcoming -_make your own wizard channel feature_- 
 
  </details> 
       
   
 
 <details>
-<summary><em>  ✨ main version (v2.5B) new features! </em> </summary>
+<summary><em>  ✨ Current version (v2.5B) main features! </em> </summary>
     
  * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
 
@@ -159,7 +159,7 @@
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-  * **Active Branches lately:**  `main` and [`bot_pycordv2.5B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
+  * **Active Branches lately:**  `main` and [`bot_pycordv2.5.1B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
 
  
 
