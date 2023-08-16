@@ -85,6 +85,8 @@
 *   show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
 
 *   wizard bot sqlite-DB  design and connect the DB with bot code
+  
+*   Implement `Competitive Programming` Features on Bot and [Narol's Island](https://discord.com/invite/Y23B7R3FPq) server  <sub>( more in  M O D S channels in the server)</sub>
 
 *   OOP it!  and handle errors!
 
