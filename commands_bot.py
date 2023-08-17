@@ -43,15 +43,27 @@ async def wise( ctx : commands.Context ):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
-	host = "194.15.36.128"
-	ping_try = 3
-	host_ping = await ping_bot.ping (host,ping_try)
-	bot_latency = bot.latency
-	tot_ping = round(bot_latency + host_ping , 3)
-	if host_ping == False :
-		await ctx.reply(content= "Failed! very high ping possibly __Timedout!__" )
-	else :
-		await ctx.reply(content= f"Pong! Latency is `{tot_ping}ms`" )
+	bot_latency  = bot.latency
+	send_time    = ctx.message.created_at 
+	recieve_time = datetime.now() # this is naieve datetime obj (all datime obj must be in same type naieve/aware  in order to do arithmatics on them)
+	recieve_time = recieve_time.astimezone(pytz.utc) # converte aware time zone  to naieve time zone and set tz to utc
+	msg_latency  = (recieve_time - send_time).total_seconds()  * 1000 #mul by 1000 to get in ms
+	tot_ping = round(msg_latency , 2)
+	await ctx.reply(content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
+#------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.command (name="wiz_ping" )
+async def ping(ctx : commands.Context):
+	await ctx.reply(f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') #NOTE : this gets bot latency between discord servers and the bot client
+   #OLD METHOD : not accurate at all + dont work for remotly hosted 
+	# host = "194.15.36.128" # NOTE: pylexnode server ip
+	# ping_try = 3
+	# host_ping = await ping_bot.ping (host,ping_try) #wont work if not local (1.pylexnode does not have cmd  2.you are pinging the server from inside the server! either will time out or will get unreal low ping)
+	# bot_latency = bot.latency
+	# tot_ping = round(bot_latency + host_ping , 3)
+	# if host_ping == False :
+	# 	await ctx.reply(content= "Failed! very high ping possibly __Timedout!__" )
+	# else :
+	# 	await ctx.reply(content= f"Pong! Latency is `{tot_ping}ms`" )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
