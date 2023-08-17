@@ -71,11 +71,8 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
       
 						:label:    if you want to speak with me more freely with no mentions/commands 
       							   just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond !
+
       
-						:label:    Due to a bug (FOR NOW) images from bard are included 
-      							  as links in sources section
-      
-                   
                  				  ** :sparkles: __COMMAND GROUP 2: Wise Quotes & Deep memes __:sparkles:  **
                       
 						:label:    to get random meme at any time use 'BoringWizard' 
