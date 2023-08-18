@@ -9,19 +9,19 @@
 > ## 📣 new  patch (`v2.5.2B`) is out!
 
 <details>
-<summary><em>  ✨Patch notes </em> </summary>
+<summary><em>  ✨Patch (2.5.2B) notes </em> </summary>
     
-  * messages to special wizard channel formats edits
-  * limit quote length to 250char  
-  * supress embeds in message body via regex
-  * also supress all links in links section except first link 
-  * add image section to `wizard channel` messages
-  * move all images from links section to image section (for some reason bard buts alot of images URL in links & sources section)
-  * limit links size in `wizard channel` messages to 5
-  * fix indentation bug in links sections in  `embed messages` and `wizard channel` message  
-  * change channel_target_id var to be a tuble instead of one channel for upcoming (make your own wizard channel feature)
-
+* fixed quote length  in-accuracy 
+* added new command `quotesz` to controll quote length only for admins (also `togglerandom` is now only for admins and some special role)
+* wizard tells you if you cant use specific command and who cans!
+* no some command messages will be deleted after being read to keep server channels clean
+* fixed quote feature blocks bot event loop (tempror solution)
+* fixed auto meme/quote sender feature!
+* bot ping now is separated from users commands latency (still not 100% accurate)
+* now bot can join and leave voice channels! (if not moved he stays most of time in  `admins room`)
+* updated bard cookie 
  </details> 
+      
       
   
 
