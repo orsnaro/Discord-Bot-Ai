@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.1B-green)](https://free.pylexnodes.net/)
-=======
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.2B-red)](https://free.pylexnodes.net/)
->>>>>>> bot_pycordv2.5.1B
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host%20(down)-v2.5.1B-FF0000)](https://free.pylexnodes.net/)
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
@@ -84,11 +80,13 @@
 *   implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
   
     
-*   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
+*   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)  <sub>note: use pagination </sub>
 
 *   show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
 
 *   wizard bot sqlite-DB  design and connect the DB with bot code
+  
+*   Implement `Competitive Programming` Features on Bot and [Narol's Island](https://discord.com/invite/Y23B7R3FPq) server  <sub>( more in  M O D S channels in the server)</sub>
 
 *   OOP it!  and handle errors!
 
@@ -167,15 +165,4 @@
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-<<<<<<< HEAD
   * **Active Branches lately:**  `main` and [`bot_pycordv2.5.1B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
-=======
-  * **Active Branches lately:**  `main` and [`bot_pycordv2.5B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.2B)
->>>>>>> bot_pycordv2.5.1B
-
- 
-
-
-
-
-
