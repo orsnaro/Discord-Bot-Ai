@@ -37,13 +37,30 @@ async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
                   content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.command (name="quoteSz" )
+async def wise( ctx : commands.Context ):
+#------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.command (name="wizyleave" )
+async def leave_voice_wizard( ctx : commands.Context ):
+	await ctx.guild.voice_client.disconnect()
+#------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.command (name="wizyjoin" )
+async def join_voice_wizard( ctx : commands.Context ):
+	if ( ctx.author.voice ):
+		target_voice_channel = ctx.message.author.voice.channel
+		await  target_voice_channel.connect()
+	else : 
+		user = ctx.message.author.mention
+		await ctx.reply(delete_after= 30.0 , content= f"Ops! {user}  you must be in a voice channel!")
+#------------------------------------------------------------------------------------------------------------------------------------------#
 
+custom_threshhold = 250 #TODO : make admins can edit it later to get longer quotes
 @bot.command (name="wisewiz" )
 async def wise( ctx : commands.Context ):
 	#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
 	res = None
 	discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
-	custom_threshhold = 250 #TODO : make admins can edit it later to get longer quotes
+	global custom_threshhold
 	while res is None or  len(res) >= custom_threshhold :
 		random_word = RandomWords()
 		category = random_word.get_random_word()
@@ -68,19 +85,9 @@ async def ping(ctx : commands.Context):
 	await ctx.reply(delete_after= 30.0 , content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wiz_ping" )
-async def ping(ctx : commands.Context):
+async def wiz_ping(ctx : commands.Context):
 	await ctx.message.delete(delay= 30.0)
 	await ctx.reply(delete_after= 30.0 , contetnt= f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') #NOTE : this gets bot latency between discord servers and the bot client
-   #OLD METHOD : not accurate at all + dont work for remotly hosted 
-	# host = "194.15.36.128" # NOTE: pylexnode server ip
-	# ping_try = 3
-	# host_ping = await ping_bot.ping (host,ping_try) #wont work if not local (1.pylexnode does not have cmd  2.you are pinging the server from inside the server! either will time out or will get unreal low ping)
-	# bot_latency = bot.latency
-	# tot_ping = round(bot_latency + host_ping , 3)
-	# if host_ping == False :
-	# 	await ctx.reply(content= "Failed! very high ping possibly __Timedout!__" )
-	# else :
-	# 	await ctx.reply(content= f"Pong! Latency is `{tot_ping}ms`" )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
