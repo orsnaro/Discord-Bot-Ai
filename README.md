@@ -101,7 +101,7 @@
 
 * use [`Rapidapi`](https://rapidapi.com)
 
-* complete your [`quote`](from ../repo_Quote_async/quote/quote import quote) lib fork and make it fully async.
+* complete your [`quote`](https://github.com/orsnaro/quote-async) lib fork and make it fully async.
 
 *   add and test poe-API (starred at my GitHub)
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
