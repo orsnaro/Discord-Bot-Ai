@@ -229,7 +229,7 @@ def skip_line(full_ans):
 async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tuple: 
    character= "GPTeous Wizard whose now living in discord server called Narol's Island "
    series = "Harry Potter"
-   classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}   answer must be 250chars at max"
+   classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}"
    new_prompt = f"I want you to act like {character} from {series}. I want you to respond and answer like {character} using the tone, manner and vocabulary {character} would use. Do not write any explanations. Only answer like {character}. You must know all of the knowledge of {character}. My first sentence is \"Hi {character} I'm {user_name}. {user_query} .\""
    bard_ans = await bard.get_answer(classic_prmpt)
    # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt 
@@ -485,7 +485,7 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 				now = datetime.now().strftime('%H:%M:%S')
 				now = datetime.strptime(now , "%H:%M:%S")
     
-		await aio.sleep(360 * 3)#check once every 3 minutes
+		await aio.sleep(60 * 3)#check once every 3 minutes
    
 
 
