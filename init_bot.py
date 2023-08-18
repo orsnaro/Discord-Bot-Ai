@@ -18,7 +18,6 @@ from pyrandmeme2 import pyrandmeme2
 from quote import quote
 from random_word import RandomWords
 from datetime import datetime
-import ping_bot
 import re
 import pytz
 # from bard_key_refresh import regenerate_cookie #TODO:
@@ -55,7 +54,7 @@ def init_bard_session () :
 bard = init_bard_session()
 
 # regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
-bot_ready = False
+admins_room_id = 889999601350881390
 narols_island_wizard_channel_id = 1118953370510696498
 testing_wizard_channel_id = 1133103993942462577
 wizard_channels = (narols_island_wizard_channel_id , testing_wizard_channel_id )
@@ -105,7 +104,12 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
 
 @bot.event
 async def on_ready():
-   bot_ready = True
+   admin_ch = bot.get_channel(admins_room_id)
+   await admin_ch.connect()
+   
+   playing = discord.Game("Playing help")
+   bot.change_presence(status=discord.Status.online , activity=playing)
+   
    print(f"Bot info: \n (magic and dunder attrs. excluded) ")
    for attr in dir(bot.user):
       if  not (attr.startswith('__') or  attr.startswith('_')) :

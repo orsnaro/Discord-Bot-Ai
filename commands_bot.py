@@ -16,17 +16,19 @@ import keys
 async def boring( ctx : commands.Context ):
    await ctx.send(embed= await pyrandmeme2(_title= "Some Wizardy Humor👻"))
 #------------------------------------------------------------------------------------------------------------------------------------------#
+# allowed_roles = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
+allowed_roles_togglerandom = {"ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
+allowed_roles_quotesz = {"ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
 @bot.command (name="togglerandom")
 async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
-   
+	global allowed_roles_togglerandom
 	global meme_quote_sender_is_on_flag 
  
-	# allowed_roles = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
 	user_comanded_roles : list[discord.Role] = ctx.message.author.roles
-	is_allowed = [role for role in user_comanded_roles if role.id in tuple(allowed_roles.values()) ]
+	is_allowed = [role for role in user_comanded_roles if role.id in tuple(allowed_roles_togglerandom.values()) ]
 	
 	if  is_allowed == None or  len(is_allowed) <= 0 :
-		allowed_ids = list(allowed_roles.values())
+		allowed_ids = list(allowed_roles_togglerandom.values())
 		await ctx.message.delete(delay= 30.0) #delete user message it self ( then in .reply we delete bot msg also)
 		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 30.0 , 
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
@@ -37,31 +39,34 @@ async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
                   content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.command (name="quoteSz" )
-async def wise( ctx : commands.Context ):
-#------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wizyleave" )
 async def leave_voice_wizard( ctx : commands.Context ):
 	await ctx.guild.voice_client.disconnect()
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wizyjoin" )
 async def join_voice_wizard( ctx : commands.Context ):
+ 
 	if ( ctx.author.voice ):
+		if ctx.guild.voice_client is not None:
+			await ctx.guild.voice_client.disconnect()
+   
 		target_voice_channel = ctx.message.author.voice.channel
+		await ctx.message.delete(delay= 30.0)
 		await  target_voice_channel.connect()
+  
 	else : 
 		user = ctx.message.author.mention
+		await ctx.message.delete(delay= 30.0)
 		await ctx.reply(delete_after= 30.0 , content= f"Ops! {user}  you must be in a voice channel!")
 #------------------------------------------------------------------------------------------------------------------------------------------#
-
-custom_threshhold = 250 #TODO : make admins can edit it later to get longer quotes
+custom_quote_threshhold = 250 
 @bot.command (name="wisewiz" )
 async def wise( ctx : commands.Context ):
 	#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
 	res = None
 	discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
-	global custom_threshhold
-	while res is None or  len(res) >= custom_threshhold :
+	global custom_quote_threshhold
+	while res is None or  len(res) >= custom_quote_threshhold :
 		random_word = RandomWords()
 		category = random_word.get_random_word()
 		res = quote(category , limit=1)
@@ -71,6 +76,27 @@ async def wise( ctx : commands.Context ):
 		quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;` '"
 		
 	await ctx.reply(content= quotes)
+#------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.command (name="quoteSz" )
+@commands.has_any_role(list(allowed_roles_quotesz.values()))
+async def change_quote_mx_sz( ctx : commands.Context  ,  *args ):
+   
+	global custom_quote_threshhold
+	if args is  None or len(args) <= 0 :
+		await ctx.message.delete(delay= 30.0)
+		await ctx.reply(delete_after= 30.0 , content=f"please provide a Quote size limit")
+	else:  
+		custom_quote_threshhold = args[0]
+		await ctx.message.delete(delay= 30.0)
+		await ctx.reply(delete_after= 30.0 , content=f"Quotes max size are now set to `{custom_quote_threshhold}`")
+  
+@change_quote_mx_sz.error
+async def quoteSz_cmd_error(ctx , error):
+	if isinstance(error , commands.BotMissingAnyRole):	
+		allowed_ids = list(allowed_roles_quotesz.values())
+		await ctx.send(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 30.0 , 
+                  content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
+
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
 async def ping(ctx : commands.Context):
@@ -137,8 +163,7 @@ async def bardAI (ctx : commands.Context , * , full_prompt : str = "EMPTY PROMPT
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
 	del embed
 	del valid_reply
-	del ctx
-	
+	del ctx	
 
 	# img_embds = list()
 	# if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
@@ -148,6 +173,7 @@ async def bardAI (ctx : commands.Context , * , full_prompt : str = "EMPTY PROMPT
 	# 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
 	# 	await send_img_msg_task
 # #------------------------------------------------------------------------------------------------------------------------------------------#
+#TODO
 # @bot.command(name="wizardgpt" , aliases =["wizardgpt " , "gpt"]) # command name is defaulted to method name 'gpt'
 # async def gpt (ctx : commands.Context , * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 #    async with aiohttp.ClientSession() as session: #with just is for handling errors and session ending
