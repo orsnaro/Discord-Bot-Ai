@@ -12,9 +12,9 @@
 <summary><em>  ✨Patch (2.5.2B) notes </em> </summary>
     
 * fixed quote length  in-accuracy 
-* added new command `quotesz` to controll quote length only for admins (also `togglerandom` is now only for admins and some special role)
-* wizard tells you if you cant use specific command and who cans!
-* no some command messages will be deleted after being read to keep server channels clean
+* added new command `quotesz` to control quote length only for admins (btw `togglerandom` is now only for admins and some special roles)
+* wizard tells you if you cant use specific command and who can!
+* now some command messages will be deleted after being read to keep server channels clean
 * fixed quote feature blocks bot event loop (tempror solution)
 * fixed auto meme/quote sender feature!
 * bot ping now is separated from users commands latency (still not 100% accurate)
