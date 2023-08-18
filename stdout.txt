@@ -1,0 +1,66 @@
+Bot info: 
+ (magic and dunder attrs. excluded) 
+accent_color: None
+accent_colour: None
+avatar: https://cdn.discordapp.com/avatars/1117540489365827594/2d832a00146e1d77ccb8eb41bc53cb63.png?size=1024
+banner: None
+bot: True
+color: #000000
+colour: #000000
+created_at: 2023-06-11 19:46:55.563000+00:00
+default_avatar: https://cdn.discordapp.com/embed/avatars/4.png
+discriminator: 3869
+display_avatar: https://cdn.discordapp.com/avatars/1117540489365827594/2d832a00146e1d77ccb8eb41bc53cb63.png?size=1024
+display_name: Gpteous-Wizard
+edit: <bound method ClientUser.edit of <ClientUser id=1117540489365827594 name='Gpteous-Wizard' discriminator='3869' bot=True verified=True mfa_enabled=False>>
+id: 1117540489365827594
+locale: None
+mention: <@1117540489365827594>
+mentioned_in: <bound method BaseUser.mentioned_in of <ClientUser id=1117540489365827594 name='Gpteous-Wizard' discriminator='3869' bot=True verified=True mfa_enabled=False>>
+mfa_enabled: False
+name: Gpteous-Wizard
+public_flags: <PublicUserFlags value=0>
+system: False
+verified: True
+
+
+ Bot 'Gpteous-Wizard#3869' Sucessfully connected to Discord!
+
+
+TIMES for meme/quote SENDER trigger
+1900-01-01 00:00:00 1900-01-01 02:00:00 1900-01-01 04:00:00 1900-01-01 06:00:00 1900-01-01 08:00:00 1900-01-01 10:00:00 1900-01-01 12:00:00 1900-01-01 14:00:00 1900-01-01 16:00:00 1900-01-01 18:00:00 1900-01-01 20:00:00 1900-01-01 22:00:00 
+time NOW 2023-08-18 17:07:03.287683
+Bot info: 
+ (magic and dunder attrs. excluded) 
+accent_color: None
+accent_colour: None
+avatar: https://cdn.discordapp.com/avatars/1117540489365827594/2d832a00146e1d77ccb8eb41bc53cb63.png?size=1024
+banner: None
+bot: True
+color: #000000
+colour: #000000
+created_at: 2023-06-11 19:46:55.563000+00:00
+default_avatar: https://cdn.discordapp.com/embed/avatars/4.png
+discriminator: 3869
+display_avatar: https://cdn.discordapp.com/avatars/1117540489365827594/2d832a00146e1d77ccb8eb41bc53cb63.png?size=1024
+display_name: Gpteous-Wizard
+edit: <bound method ClientUser.edit of <ClientUser id=1117540489365827594 name='Gpteous-Wizard' discriminator='3869' bot=True verified=True mfa_enabled=False>>
+id: 1117540489365827594
+locale: None
+mention: <@1117540489365827594>
+mentioned_in: <bound method BaseUser.mentioned_in of <ClientUser id=1117540489365827594 name='Gpteous-Wizard' discriminator='3869' bot=True verified=True mfa_enabled=False>>
+mfa_enabled: False
+name: Gpteous-Wizard
+public_flags: <PublicUserFlags value=0>
+system: False
+verified: True
+
+
+ Bot 'Gpteous-Wizard#3869' Sucessfully connected to Discord!
+
+
+TIMES for meme/quote SENDER trigger
+1900-01-01 00:00:00 1900-01-01 02:00:00 1900-01-01 04:00:00 1900-01-01 06:00:00 1900-01-01 08:00:00 1900-01-01 10:00:00 1900-01-01 12:00:00 1900-01-01 14:00:00 1900-01-01 16:00:00 1900-01-01 18:00:00 1900-01-01 20:00:00 1900-01-01 22:00:00 
+time NOW 2023-08-18 17:07:26.630822
+TRIGGER TIME  True
+1900-01-01 17:07:34 1900-01-01 16:00:00 1900-01-01 18:00:00 False

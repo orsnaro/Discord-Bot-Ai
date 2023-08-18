@@ -1,13 +1,12 @@
 """
                           Coder : Omar
-                          Version : v2.5.1B
-                          version Date :  24 / 7 / 2023
+                          Version : v2.5.2B
+                          version Date :  17 / 8 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from init_bot import bot , bard , random , wizard_bot_id , datetime , re
-from init_bot import narols_island_wizard_channel_id , chat_chill_ch_id , pyrandmeme2 ,RandomWords , quote
+from init_bot import *
 import discord.message
 
 
@@ -110,7 +109,7 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
 	i = 0
 	while len(links_list) != 0  and i < len(links_list) :
 		link = links_list[i]
-		if link.endswith((".jpg",".png",".webp"))  or link.startswith( ("https://lh3.googleusercontent.com" , "https://www.freepik.com") ) or (link.find(".jpg") != -1):
+		if link.endswith((".jpg",".png",".webp"))  or link.startswith( ("https://lh3.googleusercontent.com" , "https://www.freepik.com") ) or (link.find(".jpg") != -1) :
 			links_list.remove(link)
 			link = set(link)
 			if _bard_response[2] is not None:
@@ -230,7 +229,7 @@ def skip_line(full_ans):
 async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tuple: 
    character= "GPTeous Wizard whose now living in discord server called Narol's Island "
    series = "Harry Potter"
-   classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}"
+   classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}   answer must be 250chars at max"
    new_prompt = f"I want you to act like {character} from {series}. I want you to respond and answer like {character} using the tone, manner and vocabulary {character} would use. Do not write any explanations. Only answer like {character}. You must know all of the knowledge of {character}. My first sentence is \"Hi {character} I'm {user_name}. {user_query} .\""
    bard_ans = await bard.get_answer(classic_prmpt)
    # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt 
@@ -318,7 +317,7 @@ class EmbedLimits(object):
  
 	if bard_ans_data[1] is not None and len(bard_ans_data[1]) != 0 :
 		
-		bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so i removed duplicates
+		bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so I removed duplicates
   
   #TESTING BLOCk
 		link_sz =0
@@ -403,77 +402,123 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    
    return new_prompt
 #------------------------------------------------------------------------------------------------------------------------------------------#
-trigger_times = []
-#------------------------------------------------------------------------------------------------------------------------------------------#
-def set_trigger_times() -> list :
-	global trigger_times
- 
-	if len(trigger_times) == 0 :
-		now = datetime.now() 
-		this_year = now.year
-		this_month = now.month
-		today = now.day
-
-		for i in range(6):
-			rnd_no = random.randint(0 , 23)
-			if rnd_no < 10:
-				rnd_no = "0" + str(rnd_no)
-		
-			wanted_time = datetime.strptime(f"{this_year}"+'-'+f"{this_month}"+'-'+ f"{today} " + f"{rnd_no}"+":00:00", "%Y-%m-%d %H:%M:%S")
-			trigger_times.append(wanted_time)
-
-		trigger_times.sort(reverse= True)
-		print ("TEST:choosen rand times", trigger_times) #TESTING
+def set_trigger_times() : #called once when bot is ready inside init_bot.py
+	is_triggered_time : list[datetime,bool] = [ [datetime.strptime(('0'+ str(time) if time < 10 else  str(time) ) + ":00:00" , "%H:%M:%S"), False]  for time in range(0,24,2)] # make a list of lists. each inner list has datetime obj and state in bool
+    
+	return is_triggered_time
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
-meme_quote_sender_is_on_flag : bool = False
-#------------------------------------------------------------------------------------------------------------------------------------------
-async def send_rand_quote_meme( message : discord.Message  , is_active : bool = meme_quote_sender_is_on_flag) :
-	if is_active : #TODO : until i fix the logix of the function i will control it 
-		global trigger_times
-		set_trigger_times()
-	
-		for i in range (len(trigger_times)):
-			if i > len(trigger_times) - 1 :
-				break
+is_triggered_time = set_trigger_times() #12 triggers(1 each 2 hours)  Initially all set to False. After any trigger activates  switch it to True and all else to false
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def prepare_quote() -> str :
+	from commands_bot import custom_quote_threshhold
+   #res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]c
+	res = None
+	discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
+	while res is None  or len(res[0]['quote']) > int(custom_quote_threshhold):
+		random_word = RandomWords()
+		category = random_word.get_random_word()
+		res = quote(category , limit=1)
 
-			if datetime.now() > trigger_times[i] :
-				trigger_times =trigger_times[0: i - 1 ]
+	quotes = " "
+	for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
+		quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
+  
+	return quotes
+#------------------------------------------------------------------------------------------------------------------------------------------#
+meme_quote_sender_is_on_flag : bool = True #a command in command_bot.py sets und resets it 
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is_active : bool = meme_quote_sender_is_on_flag ) :
+	from commands_bot import custom_quote_threshhold
+	target_channel = bot.get_channel(memes_highlights_ch_id)
+ 
+	global custom_quotes_threshhold
+	global is_triggered_time
+ 
+	#TESTING BLOCK
+	print(f"TIMES for meme/quote SENDER trigger")
+	for trig in is_triggered_time :
+		print(trig[0] , end= ' ')
+  
+	print("\ntime NOW" ,datetime.now() )
+	#END TESTING BLOCK
+ 
+	while(True):
+		if is_active : 
+
+			now = datetime.now().strftime('%H:%M:%S')
+			now = datetime.strptime(now , "%H:%M:%S")
+			trigg_sz = len(is_triggered_time)
+			lst_trig_time = is_triggered_time[-1][0]
+			lst_trig_state = is_triggered_time[-1][1]
+	
+	
+			for i in range( trigg_sz - 1 ) : 
+				i_trig_time = is_triggered_time[i][0]
+				i_trig_state = is_triggered_time[i][1]
+				nxt_i_trig_time = is_triggered_time[i + 1][0]
+
+				is_triggered = (now >= i_trig_time and now < nxt_i_trig_time and i_trig_state == False)
+				is_triggered = True if (now >= lst_trig_time and lst_trig_state == False) else is_triggered #to aviod two branches of else statements with almost same code
 		
-				rnd_no = random.randint(1 , 4) #1:quote:wizard channel  2:quote:chat chill 3:meme:wizard Channel 
-				if rnd_no <= 2 :
+				if is_triggered  :
+     
+					is_triggered_time = [ [trig[0],True] if trig[0] != nxt_i_trig_time else  [trig[0],False]  for trig in is_triggered_time]
+					skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
+     
+					print("TRIGGER TIME " ,is_triggered) if not skip_trig else None#TESTING
+					print(now , i_trig_time , nxt_i_trig_time , i_trig_state ) if not skip_trig else None#TESTING
+     
+					meme_or_quote  = True if random.randint(1,2) == 1 else False   #0 == meme  1 == quote  50% chance for each
+					if not skip_trig  and meme_or_quote == 0 : #meme
+							meme_get_task = bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
+							meme_embed : discord.Embed = await meme_get_task
+							await target_channel.send(embed= meme_embed)
+					elif not skip_trig and meme_or_quote == 1 : #quote
+						prepare_quote_task =  bot.loop.create_task(prepare_quote())
+						quote = await prepare_quote_task
+						await target_channel.send(content= quote)
+					# elif (for jokes and gming news api) #TODO
 			
-					#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
-					res = None
-					while res is None:
-						random_word = RandomWords()
-						category = random_word.get_random_word()
-						res = quote(category , limit=1)
-
-					quotes2 = " "
-					for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
-						quotes2 : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
 					
-					if rnd_no == 1 :# to wiz ch
-						channel = bot.get_channel(narols_island_wizard_channel_id)
-						await channel.send(content= quotes2)
-		
-					else: #to chat&chill ch
-						channel = bot.get_channel(chat_chill_ch_id)
-						await channel.send(content= quotes2)
+				await aio.sleep(1)
+				now = datetime.now().strftime('%H:%M:%S')
+				now = datetime.strptime(now , "%H:%M:%S")
+    
+		await aio.sleep(360 * 3)#check once every 3 minutes
+   
 
-				else: #meme
-					meme_embed_title = "It's Meme Time!🤹🏻‍♀️"
-					if rnd_no == 3 : #meme to wiz ch
-						channel = bot.get_channel(narols_island_wizard_channel_id)
-						meme_embed_title = "It's Meme Time!"
-						await channel.send(embed= await pyrandmeme2(_title= meme_embed_title))
-					else : 
-						channel = bot.get_channel(chat_chill_ch_id)
-						await channel.send(embed= await pyrandmeme2(_title= meme_embed_title ))
-				break
- 
+
+
+
+
+# import asyncio
+# import datetime
+
+
+# async def listen_for_time(time_to_send):
+#     now = datetime.datetime.now()
+#     while now < time_to_send:
+#         await asyncio.sleep(1)
+#         now = datetime.datetime.now()
+
+#     # Send the message
+#     await bot.send_message("It's now 12:00!")
+
+
+# async def send_message(message):
+#     # Send the message to the Discord channel
+#     await bot.send_message(message)
+
+
+# # Set the time to send the message
+# time_to_send = datetime.datetime.now() + datetime.timedelta(hours=12)
+
+# # Run the listen_for_time() function in the background
+
+# # Send the message
+# await send_message("It's now 12:00!")
+
+		
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
- 
-	

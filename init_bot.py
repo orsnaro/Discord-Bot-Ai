@@ -1,13 +1,14 @@
 """
                           Coder : Omar
-                          Version : v2.5.1B
-                          version Date :  24 / 7 / 2023
+                          Version : v2.5.2B
+                          version Date :  17 / 8 / 2023
                           Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 import discord
 from discord.ext import commands
+from discord import app_commands
 import asyncio as aio
 import random
 from bardapi import BardAsync , Bard
@@ -15,11 +16,12 @@ from inspect import getmembers , isfunction
 import aiohttp
 import requests
 from pyrandmeme2 import pyrandmeme2
+# from quote_async.quote import quote #TODO ( complete your quote lib fork and make it fully async )
 from quote import quote
 from random_word import RandomWords
 from datetime import datetime
-import ping_bot
 import re
+import pytz
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
@@ -53,6 +55,9 @@ def init_bard_session () :
 
 bard = init_bard_session()
 
+# regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
+admins_room_id = 889999601350881390
+memes_highlights_ch_id = 1137242260203909151
 narols_island_wizard_channel_id = 1118953370510696498
 testing_wizard_channel_id = 1133103993942462577
 wizard_channels = (narols_island_wizard_channel_id , testing_wizard_channel_id )
@@ -71,11 +76,8 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
       
 						:label:    if you want to speak with me more freely with no mentions/commands 
       							   just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond !
+
       
-						:label:    Due to a bug (FOR NOW) images from bard are included 
-      							  as links in sources section
-      
-                   
                  				  ** :sparkles: __COMMAND GROUP 2: Wise Quotes & Deep memes __:sparkles:  **
                       
 						:label:    to get random meme at any time use 'BoringWizard' 
@@ -105,12 +107,23 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
 
 @bot.event
 async def on_ready():
-   print(f"Bot info: \n (magic and dunder attrs. excluded) ")
-   for attr in dir(bot.user):
-      if  not (attr.startswith('__') or  attr.startswith('_')) :
-         value = getattr(bot.user, attr)
-         print(f'{attr}: {value}')
-   print(f"\n\n Bot '{bot.user}' Sucessfully connected to Discord!\n\n")
+	admin_ch = bot.get_channel(admins_room_id)
+	await admin_ch.connect()
+
+	playing = discord.Game("help")
+	await bot.change_presence(status=discord.Status.online , activity=playing)
+
+	print(f"Bot info: \n (magic and dunder attrs. excluded) ")
+	for attr in dir(bot.user):
+		if  not (attr.startswith('__') or  attr.startswith('_')) :
+			value = getattr(bot.user, attr)
+			print(f'{attr}: {value}')
+	print(f"\n\n Bot '{bot.user}' Sucessfully connected to Discord!\n\n")
+	
+
+	from utils_bot import send_rand_quote_meme 
+	bot.loop.create_task(await send_rand_quote_meme())
+
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def get_last_conv_id()  : ...  #TODO
 

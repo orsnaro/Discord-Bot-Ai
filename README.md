@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.1B-green)](https://free.pylexnodes.net/)
+=======
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.2B-red)](https://free.pylexnodes.net/)
+>>>>>>> bot_pycordv2.5.1B
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
@@ -6,7 +10,7 @@
 ---
 
 
-> ## 📣 new  patch (`v2.5.1B`) is out!
+> ## 📣 new  patch (`v2.5.2B`) is out!
 
 <details>
 <summary><em>  ✨Patch (2.5.1B) notes </em> </summary>
@@ -96,6 +100,10 @@
 
 *   ADD `STT`  feature to enable full voice chat feature between bot and island server's users ( make bot make real voice chat with members)
 
+* use [`Rapidapi`](https://rapidapi.com)
+
+* complete your [`quote`](from ../repo_Quote_async/quote/quote import quote) lib fork and make it fully async.
+
 *   add and test poe-API (starred at my GitHub)
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
 
@@ -159,7 +167,11 @@
 ---
 > ### [🧾 References ](./sources&refs.md)
 
+<<<<<<< HEAD
   * **Active Branches lately:**  `main` and [`bot_pycordv2.5.1B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
+=======
+  * **Active Branches lately:**  `main` and [`bot_pycordv2.5B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.2B)
+>>>>>>> bot_pycordv2.5.1B
 
  
 
