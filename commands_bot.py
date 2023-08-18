@@ -10,6 +10,7 @@ from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , pre
 from utils_bot import check_msg , get_new_reply_prompt , meme_quote_sender_is_on_flag
 from init_bot import *	
 import keys
+from typing import List
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.command (name="boringwizard" )

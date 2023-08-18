@@ -8,6 +8,7 @@
 """
 import discord
 from discord.ext import commands
+from discord import app_commands
 import asyncio as aio
 import random
 from bardapi import BardAsync , Bard
@@ -118,6 +119,7 @@ async def on_ready():
 			value = getattr(bot.user, attr)
 			print(f'{attr}: {value}')
 	print(f"\n\n Bot '{bot.user}' Sucessfully connected to Discord!\n\n")
+	
 
 	from utils_bot import send_rand_quote_meme 
 	bot.loop.create_task(await send_rand_quote_meme())

@@ -432,6 +432,9 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 	from commands_bot import custom_quote_threshhold
 	target_channel = bot.get_channel(memes_highlights_ch_id)
  
+	global custom_quotes_threshhold
+	global is_triggered_time
+ 
 	#TESTING BLOCK
 	print(f"TIMES for meme/quote SENDER trigger")
 	for trig in is_triggered_time :
@@ -442,8 +445,6 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
  
 	while(True):
 		if is_active : 
-			global custom_quotes_threshhold
-			global is_triggered_time
 
 			now = datetime.now().strftime('%H:%M:%S')
 			now = datetime.strptime(now , "%H:%M:%S")
@@ -461,11 +462,13 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 				is_triggered = True if (now >= lst_trig_time and lst_trig_state == False) else is_triggered #to aviod two branches of else statements with almost same code
 		
 				if is_triggered  :
-					print("TRIGGER TIME " ,is_triggered)#TESTING
-					print(now , i_trig_time , nxt_i_trig_time , i_trig_state )#TESTING
      
 					is_triggered_time = [ [trig[0],True] if trig[0] != nxt_i_trig_time else  [trig[0],False]  for trig in is_triggered_time]
 					skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
+     
+					print("TRIGGER TIME " ,is_triggered) if not skip_trig else None#TESTING
+					print(now , i_trig_time , nxt_i_trig_time , i_trig_state ) if not skip_trig else None#TESTING
+     
 					meme_or_quote  = True if random.randint(1,2) == 1 else False   #0 == meme  1 == quote  50% chance for each
 					if not skip_trig  and meme_or_quote == 0 : #meme
 							meme_get_task = bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
