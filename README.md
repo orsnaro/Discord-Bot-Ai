@@ -1,4 +1,4 @@
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.2B-red)](https://free.pylexnodes.net/)
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host%20(down)-v2.5.2B-FF0000)](https://free.pylexnodes.net/)
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
@@ -9,24 +9,24 @@
 > ## 📣 new  patch (`v2.5.2B`) is out!
 
 <details>
-<summary><em>  ✨Patch notes </em> </summary>
+<summary><em>  ✨Patch (2.5.2B) notes </em> </summary>
     
-  * messages to special wizard channel formats edits
-  * limit quote length to 250char  
-  * supress embeds in message body via regex
-  * also supress all links in links section except first link 
-  * add image section to `wizard channel` messages
-  * move all images from links section to image section (for some reason bard buts alot of images URL in links & sources section)
-  * limit links size in `wizard channel` messages to 5
-  * fix indentation bug in links sections in  `embed messages` and `wizard channel` message  
-  * change channel_target_id var to be a tuble instead of one channel for upcoming (make your own wizard channel feature)
-
+* fixed quote length  in-accuracy 
+* added new command `quotesz` to control quote length only for admins (btw `togglerandom` is now only for admins and some special roles)
+* wizard tells you if you cant use specific command and who can!
+* now some command messages will be deleted after being read to keep server channels clean
+* fixed quote feature blocks bot event loop (tempror solution)
+* fixed auto meme/quote sender feature!
+* bot ping now is separated from users commands latency (still not 100% accurate)
+* now bot can join and leave voice channels! (if not moved he stays most of time in  `admins room`)
+* updated bard cookie 
  </details> 
+      
       
   
 
 <details>
-<summary><em>  ✨ main version (v2.5B) new features! </em> </summary>
+<summary><em>  ✨ Current version (v2.5B) main features! </em> </summary>
     
  * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
 
@@ -37,6 +37,8 @@
  * now long Bard AI answers is working in [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
 
  * now Bot sends random quotes and memes multiple times a day
+
+ * now bot has basic voice commands e.g.(`wizyjoin`/`wizyleave`) commands
 
     - <sub> (_🔴disabled temporarily_: &nbsp; not stable. though you can toggle  it via `toggle random`) command </sub>
 
@@ -80,11 +82,13 @@
 *   implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
   
     
-*   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)
+*   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)  <sub>note: use pagination </sub>
 
 *   show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
 
 *   wizard bot sqlite-DB  design and connect the DB with bot code
+  
+*   Implement `Competitive Programming` Features on Bot and [Narol's Island](https://discord.com/invite/Y23B7R3FPq) server  <sub>( more in  M O D S channels in the server)</sub>
 
 *   OOP it!  and handle errors!
 
@@ -98,7 +102,7 @@
 
 * use [`Rapidapi`](https://rapidapi.com)
 
-* complete your [`quote`](from ../repo_Quote_async/quote/quote import quote) lib fork and make it fully async.
+* complete your [`quote`](https://github.com/orsnaro/quote-async) lib fork and make it fully async.
 
 *   add and test poe-API (starred at my GitHub)
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
@@ -163,11 +167,4 @@
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-  * **Active Branches lately:**  `main` and [`bot_pycordv2.5B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.2B)
-
- 
-
-
-
-
-
+  * **Active Branches lately:**  `main` and [`bot_pycordv2.5.1B`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
