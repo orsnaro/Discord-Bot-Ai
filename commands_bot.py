@@ -6,7 +6,7 @@
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed
+from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , prepare_quote
 from utils_bot import check_msg , get_new_reply_prompt , meme_quote_sender_is_on_flag
 from init_bot import *	
 import keys
@@ -16,9 +16,8 @@ import keys
 async def boring( ctx : commands.Context ):
    await ctx.send(embed= await pyrandmeme2(_title= "Some Wizardy Humor👻"))
 #------------------------------------------------------------------------------------------------------------------------------------------#
-# allowed_roles = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
-allowed_roles_togglerandom = {"ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
-allowed_roles_quotesz = {"ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
+allowed_roles_togglerandom = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
+allowed_roles_quotesz = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
 @bot.command (name="togglerandom")
 async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
 	global allowed_roles_togglerandom
@@ -29,13 +28,13 @@ async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
 	
 	if  is_allowed == None or  len(is_allowed) <= 0 :
 		allowed_ids = list(allowed_roles_togglerandom.values())
-		await ctx.message.delete(delay= 30.0) #delete user message it self ( then in .reply we delete bot msg also)
-		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 30.0 , 
+		await ctx.message.delete(delay= 15.0) #delete user message it self ( then in .reply we delete bot msg also)
+		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 15.0 , 
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
 	else :
 		meme_quote_sender_is_on_flag = not meme_quote_sender_is_on_flag
-		await ctx.message.delete(delay= 30.0)
-		await ctx.reply(delete_after= 30.0 , 
+		await ctx.message.delete(delay= 15.0)
+		await ctx.reply(delete_after= 15.0 , 
                   content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -51,50 +50,38 @@ async def join_voice_wizard( ctx : commands.Context ):
 			await ctx.guild.voice_client.disconnect()
    
 		target_voice_channel = ctx.message.author.voice.channel
-		await ctx.message.delete(delay= 30.0)
+		await ctx.message.delete(delay= 15.0)
 		await  target_voice_channel.connect()
   
 	else : 
 		user = ctx.message.author.mention
-		await ctx.message.delete(delay= 30.0)
-		await ctx.reply(delete_after= 30.0 , content= f"Ops! {user}  you must be in a voice channel!")
+		await ctx.message.delete(delay= 15.0)
+		await ctx.reply(delete_after= 15.0 , content= f"Ops! {user}  you must be in a voice channel!")
 #------------------------------------------------------------------------------------------------------------------------------------------#
-custom_quote_threshhold = 250 
+custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
 @bot.command (name="wisewiz" )
 async def wise( ctx : commands.Context ):
-	#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]
-	res = None
-	discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
-	global custom_quote_threshhold
-	while res is None or  len(res) >= custom_quote_threshhold :
-		random_word = RandomWords()
-		category = random_word.get_random_word()
-		res = quote(category , limit=1)
-  
-	quotes = " "
-	for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
-		quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;` '"
-		
+	prepare_quote_task =  bot.loop.create_task(prepare_quote())
+	quotes = await prepare_quote_task
 	await ctx.reply(content= quotes)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="quoteSz" )
-@commands.has_any_role(list(allowed_roles_quotesz.values()))
+@commands.has_any_role(*list(allowed_roles_quotesz.values()))
 async def change_quote_mx_sz( ctx : commands.Context  ,  *args ):
-   
 	global custom_quote_threshhold
 	if args is  None or len(args) <= 0 :
-		await ctx.message.delete(delay= 30.0)
-		await ctx.reply(delete_after= 30.0 , content=f"please provide a Quote size limit")
+		await ctx.message.delete(delay= 15.0)
+		await ctx.reply(delete_after= 15.0 , content=f"please specify  `Quotes max size` current is `{custom_quote_threshhold}` ")
 	else:  
 		custom_quote_threshhold = args[0]
-		await ctx.message.delete(delay= 30.0)
-		await ctx.reply(delete_after= 30.0 , content=f"Quotes max size are now set to `{custom_quote_threshhold}`")
+		await ctx.message.delete(delay= 15.0)
+		await ctx.reply(delete_after= 15.0 , content=f"Quotes max size are now set to `{custom_quote_threshhold}`")
   
-@change_quote_mx_sz.error
-async def quoteSz_cmd_error(ctx , error):
+@change_quote_mx_sz.error #TODO : fix this working in preventing but doesnot send any message!
+async def change_quote_mx_sz_error(error , ctx : commands.Context):
 	if isinstance(error , commands.BotMissingAnyRole):	
 		allowed_ids = list(allowed_roles_quotesz.values())
-		await ctx.send(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 30.0 , 
+		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 15.0 , 
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -104,16 +91,16 @@ async def ping(ctx : commands.Context):
 	send_time    = ctx.message.created_at 
 	recieve_time = datetime.now() # this is naieve datetime obj (all datime obj must be in same type naieve/aware  in order to do arithmatics on them)
 	recieve_time = recieve_time.astimezone(pytz.utc) # converte aware time zone  to naieve time zone and set tz to utc
-	msg_latency  = (recieve_time - send_time).total_seconds()  * 1000 #mul by 1000 to get in ms
+	msg_latency  = (abs(recieve_time - send_time)).total_seconds()  * 1000 #mul by 1000 to get in ms
 	tot_ping = round(msg_latency , 2)
  
-	await ctx.message.delete(delay= 30.0)
-	await ctx.reply(delete_after= 30.0 , content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
+	await ctx.message.delete(delay= 15.0)
+	await ctx.reply(delete_after= 15.0 , content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wiz_ping" )
 async def wiz_ping(ctx : commands.Context):
-	await ctx.message.delete(delay= 30.0)
-	await ctx.reply(delete_after= 30.0 , contetnt= f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') #NOTE : this gets bot latency between discord servers and the bot client
+	await ctx.message.delete(delay= 15.0)
+	await ctx.reply(delete_after= 15.0 , content= f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') #NOTE : this gets bot latency between discord servers and the bot client
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
