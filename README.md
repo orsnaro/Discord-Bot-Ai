@@ -37,6 +37,8 @@
 
  * now Bot sends random quotes and memes multiple times a day
 
+ * now bot has basic voice commands e.g.(`wizyjoin`/`wizyleave`) commands
+
     - <sub> (_🔴disabled temporarily_: &nbsp; not stable. though you can toggle  it via `toggle random`) command </sub>
 
  * ~~fixed some bugs~~
