@@ -6,8 +6,7 @@
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from init_bot import bot , bard , random , wizard_bot_id , datetime , re , bot_ready
-from init_bot import narols_island_wizard_channel_id , chat_chill_ch_id , pyrandmeme2 ,RandomWords , quote
+from init_bot import *
 import discord.message
 
 
@@ -403,19 +402,120 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    
    return new_prompt
 #------------------------------------------------------------------------------------------------------------------------------------------#
-time_is_triggered = [] #12 triggers(1 each 2 hours)  Initially all set to False. After any trigger activates  switch it to True and all else to false
-#------------------------------------------------------------------------------------------------------------------------------------------#
-def set_trigger_times() -> list : #called once when bot is ready inside init_bot.py
-	global trigger_times
+def set_trigger_times() : #called once when bot is ready inside init_bot.py
+	is_triggered_time : list[datetime,bool] = [ [datetime.strptime(('0'+ str(time) if time < 10 else  str(time) ) + ":00:00" , "%H:%M:%S"), False]  for time in range(0,24,2)] # make a list of lists. each inner list has datetime obj and state in bool
+    
+	return is_triggered_time
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
-set_trigger_times() if bot_ready == True else False
+is_triggered_time = set_trigger_times() #12 triggers(1 each 2 hours)  Initially all set to False. After any trigger activates  switch it to True and all else to false
 #------------------------------------------------------------------------------------------------------------------------------------------#
-meme_quote_sender_is_on_flag : bool = False #a command in command_bot.py sets und resets it 
+async def prepare_quote() -> str :
+	from commands_bot import custom_quote_threshhold
+   #res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]c
+	res = None
+	discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
+	while res is None  or len(res[0]['quote']) > int(custom_quote_threshhold):
+		random_word = RandomWords()
+		category = random_word.get_random_word()
+		res = quote(category , limit=1)
+
+	quotes = " "
+	for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)
+		quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
+  
+	return quotes
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def send_rand_quote_meme( message : discord.Message  , is_active : bool = meme_quote_sender_is_on_flag) :
-	if is_active : 
-		pass		
-   
+meme_quote_sender_is_on_flag : bool = True #a command in command_bot.py sets und resets it 
 #------------------------------------------------------------------------------------------------------------------------------------------#
+async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is_active : bool = meme_quote_sender_is_on_flag ) :
+	from commands_bot import custom_quote_threshhold
+	target_channel = bot.get_channel(memes_highlights_ch_id)
  
+	#TESTING BLOCK
+	print(f"TIMES for meme/quote SENDER trigger")
+	for trig in is_triggered_time :
+		print(trig[0] , end= ' ')
+  
+	print("\ntime NOW" ,datetime.now() )
+	#END TESTING BLOCK
+ 
+	while(True):
+		if is_active : 
+			global custom_quotes_threshhold
+			global is_triggered_time
+
+			now = datetime.now().strftime('%H:%M:%S')
+			now = datetime.strptime(now , "%H:%M:%S")
+			trigg_sz = len(is_triggered_time)
+			lst_trig_time = is_triggered_time[-1][0]
+			lst_trig_state = is_triggered_time[-1][1]
+	
+	
+			for i in range( trigg_sz - 1 ) : 
+				i_trig_time = is_triggered_time[i][0]
+				i_trig_state = is_triggered_time[i][1]
+				nxt_i_trig_time = is_triggered_time[i + 1][0]
+
+				is_triggered = (now >= i_trig_time and now < nxt_i_trig_time and i_trig_state == False)
+				is_triggered = True if (now >= lst_trig_time and lst_trig_state == False) else is_triggered #to aviod two branches of else statements with almost same code
+		
+				if is_triggered  :
+					print("TRIGGER TIME " ,is_triggered)#TESTING
+					print(now , i_trig_time , nxt_i_trig_time , i_trig_state )#TESTING
+     
+					is_triggered_time = [ [trig[0],True] if trig[0] != nxt_i_trig_time else  [trig[0],False]  for trig in is_triggered_time]
+					skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
+					meme_or_quote  = True if random.randint(1,2) == 1 else False   #0 == meme  1 == quote  50% chance for each
+					if not skip_trig  and meme_or_quote == 0 : #meme
+							meme_get_task = bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
+							meme_embed : discord.Embed = await meme_get_task
+							await target_channel.send(embed= meme_embed)
+					elif not skip_trig and meme_or_quote == 1 : #quote
+						prepare_quote_task =  bot.loop.create_task(prepare_quote())
+						quote = await prepare_quote_task
+						await target_channel.send(content= quote)
+					# elif (for jokes and gming news api) #TODO
+			
+					
+				await aio.sleep(1)
+				now = datetime.now().strftime('%H:%M:%S')
+				now = datetime.strptime(now , "%H:%M:%S")
+    
+		await aio.sleep(360 * 3)#check once every 3 minutes
+   
+
+
+
+
+
+# import asyncio
+# import datetime
+
+
+# async def listen_for_time(time_to_send):
+#     now = datetime.datetime.now()
+#     while now < time_to_send:
+#         await asyncio.sleep(1)
+#         now = datetime.datetime.now()
+
+#     # Send the message
+#     await bot.send_message("It's now 12:00!")
+
+
+# async def send_message(message):
+#     # Send the message to the Discord channel
+#     await bot.send_message(message)
+
+
+# # Set the time to send the message
+# time_to_send = datetime.datetime.now() + datetime.timedelta(hours=12)
+
+# # Run the listen_for_time() function in the background
+
+# # Send the message
+# await send_message("It's now 12:00!")
+
+		
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#

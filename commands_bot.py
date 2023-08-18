@@ -91,7 +91,8 @@ async def ping(ctx : commands.Context):
 	send_time    = ctx.message.created_at 
 	recieve_time = datetime.now() # this is naieve datetime obj (all datime obj must be in same type naieve/aware  in order to do arithmatics on them)
 	recieve_time = recieve_time.astimezone(pytz.utc) # converte aware time zone  to naieve time zone and set tz to utc
-	msg_latency  = (abs(recieve_time - send_time)).total_seconds()  * 1000 #mul by 1000 to get in ms
+ 
+	msg_latency  = (abs(recieve_time - send_time)).total_seconds() * 1000 #mul by 1000 to get in ms #TODO : why  recieve time happends before create time !?
 	tot_ping = round(msg_latency , 2)
  
 	await ctx.message.delete(delay= 15.0)

@@ -18,9 +18,6 @@ from utils_bot import ask_bard , check_msg ,send_rand_quote_meme , supress_msg_b
 # on_message_in_wizard_channel = discord.on_message  #TODO if alias work use instead to diffrentiate between many > on message events
 @bot.event #if used @client.event bot could reply to him self i.e.(trigger him self ) which could cause recursion and replay loop issue
 async def on_message(message):
- 
-	await send_rand_quote_meme( message )
- 
 	wizard_ch_msg = message 
 	if await check_msg(wizard_ch_msg , targetChannelId= wizard_channels):
     #NOTE : if want to disable talk to all bots in also check if author.bot != True in check_msg() func
