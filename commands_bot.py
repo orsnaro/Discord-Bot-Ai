@@ -1,13 +1,13 @@
 """
                           Coder : Omar
-                          Version : v2.5.1B
-                          version Date :  24 / 7 / 2023
+                          Version : v2.5.2B
+                          version Date :  17 / 8 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed
-from utils_bot import check_msg , get_new_reply_prompt
+from utils_bot import check_msg , get_new_reply_prompt , meme_quote_sender_is_on_flag
 from init_bot import *	
 import keys
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -16,11 +16,25 @@ import keys
 async def boring( ctx : commands.Context ):
    await ctx.send(embed= await pyrandmeme2(_title= "Some Wizardy Humor👻"))
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.command (name="togglerandom" )
+@bot.command (name="togglerandom")
 async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
+   
 	global meme_quote_sender_is_on_flag 
-	meme_quote_sender_is_on_flag = not meme_quote_sender_is_on_flag
-	await ctx.reply(content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
+ 
+	# allowed_roles = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
+	user_comanded_roles : list[discord.Role] = ctx.message.author.roles
+	is_allowed = [role for role in user_comanded_roles if role.id in tuple(allowed_roles.values()) ]
+	
+	if  is_allowed == None or  len(is_allowed) <= 0 :
+		allowed_ids = list(allowed_roles.values())
+		await ctx.message.delete(delay= 30.0) #delete user message it self ( then in .reply we delete bot msg also)
+		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 30.0 , 
+                  content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
+	else :
+		meme_quote_sender_is_on_flag = not meme_quote_sender_is_on_flag
+		await ctx.message.delete(delay= 30.0)
+		await ctx.reply(delete_after= 30.0 , 
+                  content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -49,11 +63,14 @@ async def ping(ctx : commands.Context):
 	recieve_time = recieve_time.astimezone(pytz.utc) # converte aware time zone  to naieve time zone and set tz to utc
 	msg_latency  = (recieve_time - send_time).total_seconds()  * 1000 #mul by 1000 to get in ms
 	tot_ping = round(msg_latency , 2)
-	await ctx.reply(content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
+ 
+	await ctx.message.delete(delay= 30.0)
+	await ctx.reply(delete_after= 30.0 , content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wiz_ping" )
 async def ping(ctx : commands.Context):
-	await ctx.reply(f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') #NOTE : this gets bot latency between discord servers and the bot client
+	await ctx.message.delete(delay= 30.0)
+	await ctx.reply(delete_after= 30.0 , contetnt= f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') #NOTE : this gets bot latency between discord servers and the bot client
    #OLD METHOD : not accurate at all + dont work for remotly hosted 
 	# host = "194.15.36.128" # NOTE: pylexnode server ip
 	# ping_try = 3

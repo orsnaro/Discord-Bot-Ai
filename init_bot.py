@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.1B
-                          version Date :  24 / 7 / 2023
+                          Version : v2.5.2B
+                          version Date :  17 / 8 / 2023
                           Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -20,6 +20,7 @@ from random_word import RandomWords
 from datetime import datetime
 import ping_bot
 import re
+import pytz
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
@@ -53,6 +54,8 @@ def init_bard_session () :
 
 bard = init_bard_session()
 
+# regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
+bot_ready = False
 narols_island_wizard_channel_id = 1118953370510696498
 testing_wizard_channel_id = 1133103993942462577
 wizard_channels = (narols_island_wizard_channel_id , testing_wizard_channel_id )
@@ -102,6 +105,7 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
 
 @bot.event
 async def on_ready():
+   bot_ready = True
    print(f"Bot info: \n (magic and dunder attrs. excluded) ")
    for attr in dir(bot.user):
       if  not (attr.startswith('__') or  attr.startswith('_')) :

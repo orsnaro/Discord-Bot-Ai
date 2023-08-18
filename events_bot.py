@@ -1,12 +1,11 @@
 """
                           Coder : Omar
-                          Version : v2.5.1B
-                          version Date :  24 / 7 / 2023
+                          Version : v2.5.2B
+                          version Date :  17 / 8 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Events code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-#TODO :  make message fragmenter function for  msg and links msg and img msg  in utils_bot.py
 
 from init_bot import *
 from utils_bot import ask_bard , check_msg ,send_rand_quote_meme , supress_msg_body_url_embeds , prepare_imgs_msg , prepare_links_msg , prepare_send_wizard_channel_ans_msg , sub_sections_msg_sending_ctrl
@@ -15,7 +14,6 @@ from utils_bot import ask_bard , check_msg ,send_rand_quote_meme , supress_msg_b
 # async def on_any_event_update_DB_buffer():... #TODO if bot does any action or any thing trigger it save needed info in your own DB for later....
 # #if buffer surpasses certain size | bot is acitve for certain time  flush all to db 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-trigger_times = []
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # on_message_in_wizard_channel = discord.on_message  #TODO if alias work use instead to diffrentiate between many > on message events
 @bot.event #if used @client.event bot could reply to him self i.e.(trigger him self ) which could cause recursion and replay loop issue
