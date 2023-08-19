@@ -46,7 +46,7 @@ import keys
 import utils_bot
 import events_bot
 import commands_bot
-import help_bot
+# import help_bot #TODO
 import pyrandmeme2
 #------------------------------------------------------------------------------------------------------------------------------------------#
 

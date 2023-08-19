@@ -403,12 +403,18 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    return new_prompt
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def set_trigger_times() : #called once when bot is ready inside init_bot.py
-	is_triggered_time : list[datetime,bool] = [ [datetime.strptime(('0'+ str(time) if time < 10 else  str(time) ) + ":00:00" , "%H:%M:%S"), False]  for time in range(0,24,2)] # make a list of lists. each inner list has datetime obj and state in bool
-    
-	return is_triggered_time
+   
+   #TRIGGERS queue :
+   # at first : all starts with True state so any one can be activated and be the queue starting point , after first trigger and on :  all are set to false accept the next one in queue. the  send_rand_quote_meme() ensures each trigger ran once(no infinity loop) then waits  its next turn to run again
+	triggers_queue : list[datetime,bool] = [ [datetime.strptime( ( '0'+ str(time) if time < 10 else  str(time) ) , "%H"), True]  for time in range(0,24,2)] # queue : a list of lists. each inner list has datetime obj and state in bool
+ 
+	#NOTE : TESTING CODE ( shortend intervals  dramatically )
+	# triggers_queue : list[datetime,bool] = [ [datetime.strptime(('0'+ str(time) if time < 10 else  str(time) ) , "%M"), True]  for time in range(0,60,1)] # make a list of lists. each inner list has datetime obj and state in bool
+ 
+	return triggers_queue
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
-is_triggered_time = set_trigger_times() #12 triggers(1 each 2 hours)  Initially all set to False. After any trigger activates  switch it to True and all else to false
+triggers_queue = set_trigger_times() #12 triggers(1 each 2 hours)  Initially all set to False. After any trigger activates  switch it to True and all else to false
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def prepare_quote() -> str :
 	from commands_bot import custom_quote_threshhold
@@ -433,11 +439,11 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 	target_channel = bot.get_channel(memes_highlights_ch_id)
  
 	global custom_quotes_threshhold
-	global is_triggered_time
+	global triggers_queue
  
 	#TESTING BLOCK
 	print(f"TIMES for meme/quote SENDER trigger")
-	for trig in is_triggered_time :
+	for trig in triggers_queue :
 		print(trig[0] , end= ' ')
   
 	print("\ntime NOW" ,datetime.now() )
@@ -446,28 +452,34 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 	while(True):
 		if is_active : 
 
-			now = datetime.now().strftime('%H:%M:%S')
-			now = datetime.strptime(now , "%H:%M:%S")
-			trigg_sz = len(is_triggered_time)
-			lst_trig_time = is_triggered_time[-1][0]
-			lst_trig_state = is_triggered_time[-1][1]
+			now = datetime.now().strftime('%H')
+			now = datetime.strptime(now , "%H")
+			trigg_sz = len(triggers_queue)
+			lst_trig_time = triggers_queue[-1][0]
 	
 	
 			for i in range( trigg_sz - 1 ) : 
-				i_trig_time = is_triggered_time[i][0]
-				i_trig_state = is_triggered_time[i][1]
-				nxt_i_trig_time = is_triggered_time[i + 1][0]
+				i_trig_time = triggers_queue[i][0]
+				i_trig_state = triggers_queue[i][1]
+				nxt_i_trig_time = triggers_queue[i + 1][0]
+				lst_trig_state = triggers_queue[-1][1]
 
-				is_triggered = (now >= i_trig_time and now < nxt_i_trig_time and i_trig_state == False)
-				is_triggered = True if (now >= lst_trig_time and lst_trig_state == False) else is_triggered #to aviod two branches of else statements with almost same code
+				is_triggered = (now >= i_trig_time and now < nxt_i_trig_time and i_trig_state == True)
+				is_triggered_c2 = (now >= lst_trig_time and lst_trig_state == True)#case2 trigger flag: to aviod two branches of else statements with almost same code
 		
-				if is_triggered  :
-     
-					is_triggered_time = [ [trig[0],True] if trig[0] != nxt_i_trig_time else  [trig[0],False]  for trig in is_triggered_time]
+				if is_triggered or is_triggered_c2 :
+       
 					skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
+					print("TRIGGERED! and NOT! skiped") if not skip_trig else None#TESTING
+					
+					if is_triggered_c2 : #handles case2 trigger (make hour 00:00:00 the next trigger by setting iTS state to true which is element with index [0][0])
+						print("time now: " , now , " current trigger: " , lst_trig_time ," next trigger time: " , nxt_i_trig_time , " was its turn? " , lst_trig_state ) if not skip_trig else None#TESTING
+						triggers_queue = [ [trig[0],False] if trig[0] != triggers_queue[0] else [trig[0],True] for trig in triggers_queue]
+					elif is_triggered  :
+						print("time now: " , now , " current trigger: " , i_trig_time ," next trigger time: " , nxt_i_trig_time , " was its turn?  " , i_trig_state ) if not skip_trig else None#TESTING
+						triggers_queue = [ [trig[0],False] if trig[0] != nxt_i_trig_time else [trig[0],True] for trig in triggers_queue]
+        
      
-					print("TRIGGER TIME " ,is_triggered) if not skip_trig else None#TESTING
-					print(now , i_trig_time , nxt_i_trig_time , i_trig_state ) if not skip_trig else None#TESTING
      
 					meme_or_quote  = True if random.randint(1,2) == 1 else False   #0 == meme  1 == quote  50% chance for each
 					if not skip_trig  and meme_or_quote == 0 : #meme
@@ -482,43 +494,52 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 			
 					
 				await aio.sleep(1)
-				now = datetime.now().strftime('%H:%M:%S')
-				now = datetime.strptime(now , "%H:%M:%S")
-    
-		await aio.sleep(60 * 3)#check once every 3 minutes
+				now = datetime.now().strftime('%H')
+				now = datetime.strptime(now , "%H")
    
+		await aio.sleep(60)#check once every 1 minutes
+  
+   #NOTE : TESTING CODE ( shortend triggers intervals dramatically to find the bugs )
+	# while(True):
+	# 	if is_active : 
 
+	# 		now = datetime.now().strftime('%M')
+	# 		now = datetime.strptime(now , "%M")
+	# 		trigg_sz = len(triggers_queue)
+	# 		lst_trig_time = triggers_queue[-1][0]
+	# 		lst_trig_state = triggers_queue[-1][1]
+	
+	
+	# 		for i in range( trigg_sz - 1 ) : 
+	# 			i_trig_time = triggers_queue[i][0]
+	# 			i_trig_state = triggers_queue[i][1]
+	# 			nxt_i_trig_time = triggers_queue[i + 1][0]
 
-
-
-
-# import asyncio
-# import datetime
-
-
-# async def listen_for_time(time_to_send):
-#     now = datetime.datetime.now()
-#     while now < time_to_send:
-#         await asyncio.sleep(1)
-#         now = datetime.datetime.now()
-
-#     # Send the message
-#     await bot.send_message("It's now 12:00!")
-
-
-# async def send_message(message):
-#     # Send the message to the Discord channel
-#     await bot.send_message(message)
-
-
-# # Set the time to send the message
-# time_to_send = datetime.datetime.now() + datetime.timedelta(hours=12)
-
-# # Run the listen_for_time() function in the background
-
-# # Send the message
-# await send_message("It's now 12:00!")
-
+	# 			is_triggered = (now >= i_trig_time and now < nxt_i_trig_time and i_trig_state == False)
+	# 			is_triggered = True if (now >= lst_trig_time and lst_trig_state == False) else is_triggered #to aviod two branches of else statements with almost same code
 		
+	# 			if is_triggered  :
+     
+	# 				triggers_queue = [ [trig[0],True] if trig[0] != nxt_i_trig_time else  [trig[0],False]  for trig in triggers_queue]
+	# 				skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
+     
+	# 				print("TRIGGERED! TIME" ,is_triggered) if not skip_trig else None#TESTING
+	# 				print(now , i_trig_time , nxt_i_trig_time , i_trig_state ) if not skip_trig else None#TESTING
+     
+	# 				meme_or_quote  = True if random.randint(1,2) == 1 else False   #0 == meme  1 == quote  50% chance for each
+	# 				if not skip_trig  and meme_or_quote == 0 : #meme
+	# 						meme_get_task = bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
+	# 						meme_embed : discord.Embed = await meme_get_task
+	# 						await target_channel.send(embed= meme_embed)
+	# 				elif not skip_trig and meme_or_quote == 1 : #quote
+	# 					prepare_quote_task =  bot.loop.create_task(prepare_quote())
+	# 					quote = await prepare_quote_task
+	# 					await target_channel.send(content= quote)
+	# 				# elif (for jokes and gming news api) #TODO
+			
+					
+	# 			await aio.sleep(1)
+	# 			now = datetime.now().strftime('%M')
+	# 			now = datetime.strptime(now , "%M")
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
