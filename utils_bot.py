@@ -235,7 +235,7 @@ async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tup
    # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt 
    return bard_ans['content'] , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id']
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class
+async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : tuple = None , only_admins : bool = False , **extraArgs ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class
 	if chk_type == 1 and _message != None : #NOTE : checks for on_message() in wizard channel 
 		return True if  _message != None and _message.channel.id in targetChannelId and _message.author.id != bot.user.id else False 
 
