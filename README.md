@@ -1,4 +1,4 @@
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host%20(down)-v2.5.2B-FF0000)](https://free.pylexnodes.net/)
+# __Discord Bot Project (Wizard GPTeous)__ 
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
