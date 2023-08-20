@@ -8,7 +8,6 @@
 """
 import discord
 from discord.ext import commands
-from discord import app_commands
 import asyncio as aio
 import random
 from bardapi import BardAsync , Bard
