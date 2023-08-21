@@ -9,3 +9,5 @@ build/*
 avatars/
 avatars/*
 Wizard_bot_local_runner.exe
+node_modules/
+node_modules/*
