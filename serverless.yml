@@ -1,4 +1,4 @@
-service: basic-serverless-AWS-Lambda-discord-bot
+service: serverless-AWS-discord-bot
 
 provider:
   name: aws
