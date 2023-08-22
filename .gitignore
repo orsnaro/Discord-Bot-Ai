@@ -1,7 +1,4 @@
-Gpteous_botToken.txt
-openai_apiKey.txt
-
-
+#fsdf
 __pycache__/
 _pycache__/*
 build/
@@ -9,3 +6,5 @@ build/*
 avatars/
 avatars/*
 Wizard_bot_local_runner.exe
+node_modules/
+node_modules/*
