@@ -34,7 +34,6 @@ jobs:
 
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
-       
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
@@ -46,3 +45,6 @@ jobs:
             pkill python3
             cd src
             python3 main_wizard_bot.py
+      - name:  exit on success
+        run: |
+          exit success
