@@ -1,4 +1,4 @@
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.2B-green)](https://aws.amazon.com/ec2/?did=ft_card&trk=ft_card)
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Live-v2.5.2B-green)](https://aws.amazon.com/ec2/?did=ft_card&trk=ft_card)
 
 
 ##### _Discord Bot with generative AI features using python as main project language_
