@@ -1,4 +1,4 @@
-service: basic-serverless-lambda-python
+service: basic-serverless-AWS-Lambda-discord-bot
 
 provider:
   name: aws
@@ -13,11 +13,11 @@ package:
   individually: true
 
 functions:
-  theLambda:
-    name: test-lambda
-    handler: lambda.handler
-    description: test-lambda
-    timeout: 5 # seconds
+  discord-bot-runner:
+    name: bot-runner
+    handler: main_wizard_bot
+    description: wizard GPTeous discord bot runner
+    timeout: 30 # seconds
     memorySize: 512 # mb
     package:
       patterns:
