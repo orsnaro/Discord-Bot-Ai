@@ -1,7 +1,6 @@
-Gpteous_botToken.txt
-openai_apiKey.txt
-
-
+# default push ignores those unless pushed by force
+.github/
+.github/*
 __pycache__/
 _pycache__/*
 build/
