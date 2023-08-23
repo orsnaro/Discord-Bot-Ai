@@ -307,7 +307,7 @@ class EmbedLimits(object):
 	note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
 	embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
 	timeNow = datetime.now()
-	author = "Bard AI"cl
+	author = "Bard AI"
 	bardIcon = "https://i.imgur.com/u0J6wRz.png"
 	redTint = 10038562
 	darkGreen = discord.Colour.dark_green()
