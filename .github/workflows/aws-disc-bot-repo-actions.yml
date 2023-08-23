@@ -40,9 +40,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo apt-get -y update
-            sudo apt-get -y install python3
             sudo apt-get -y install python3-pip
+            cd $DIR
             pkill python3
-            cd src
+            export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
+            echo '#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME  \n\n\n#################################### \n' >> std_log.txt
             python3 main_wizard_bot.py
+            exit 0
