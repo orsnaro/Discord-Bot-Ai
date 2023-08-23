@@ -94,7 +94,7 @@ async def ping(ctx : commands.Context):
 	recieve_time = recieve_time.astimezone(pytz.utc) # converte aware time zone  to naieve time zone and set tz to utc
  
 	msg_latency  = (abs(recieve_time - send_time)).total_seconds() * 1000 #mul by 1000 to get in ms #TODO : why  recieve time happends before create time !?
-	tot_www = round(msg_latency , 2)
+	tot_ping = round(msg_latency , 2)
  
 	await ctx.message.delete(delay= 15.0)
 	await ctx.reply(delete_after= 15.0 , content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
