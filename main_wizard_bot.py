@@ -48,6 +48,10 @@ import events_bot
 import commands_bot
 # import help_bot #TODO
 import pyrandmeme2
+import contextlib
 #------------------------------------------------------------------------------------------------------------------------------------------#
-
-init_bot.bot.run(keys.Token_gpteousBot)
+log_bot = open("std_log.txt" , 'a')
+#------------------------------------------------------------------------------------------------------------------------------------------#
+with contextlib.redirect_stdout(log_bot):
+	with contextlib.redirect_stderr(log_bot):
+		init_bot.bot.run(keys.Token_gpteousBot)

@@ -8,7 +8,7 @@
 """
 import discord
 from discord.ext import commands
-from discord import app_commands
+# from discord import app_commands
 import asyncio as aio
 import random
 from bardapi import BardAsync , Bard
@@ -105,6 +105,7 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
                    """)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
+#------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.event
 async def on_ready():
 	admin_ch = bot.get_channel(admins_room_id)
@@ -126,4 +127,4 @@ async def on_ready():
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def get_last_conv_id()  : ...  #TODO
-
+#------------------------------------------------------------------------------------------------------------------------------------------#
