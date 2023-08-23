@@ -1,0 +1,60 @@
+name: push-aws-bot-server
+
+# Trigger deployment only on push to production-AWS branch
+on:
+  push:
+    branches:
+      - production-AWS
+
+jobs:
+  deploy:
+    name: Deploy to EC2 on every production-AWS branch push
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - 3.11 # with a build matrix, you can specify a list of python versions to deploy with
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      - name: Install python project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Deploy to AWS EC2 discord bot server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST_DNS }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          TARGET: ${{ secrets.TARGET_DIR }}
+
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        env: 
+          BARD_GMAILPASS: ${{ secrets.BARD_GMAILPASS }}
+          BARD_GMAIL: ${{ secrets.BARD_GMAIL }}
+          BARD_APIKEY: ${{ secrets.BARD_APIKEY }}
+          DISCORDBOTTOKEN_GPTEOUS: ${{ secrets.DISCORDBOTTOKEN_GPTEOUS }}
+          OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
+          DIR : ${{ secrets.TARGET_DIR }}   
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_SSH_PORT }}
+        # script_stop: true
+          envs: DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
+          script: |
+            sudo apt-get -y update
+            sudo apt-get -y install python3
+            sudo apt-get -y install python3-pip
+            cd $DIR
+            pkill python3
+            export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
+            echo '#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME  \n\n\n#################################### \n' >> std_log.txt
+            python3 main_wizard_bot.py
