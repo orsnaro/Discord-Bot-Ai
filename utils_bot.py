@@ -481,8 +481,8 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
         
      
      
-					meme_or_quote  = True if random.randint(1,2) == 1 else False   #0 == meme  1 == quote  50% chance for each
-					if not skip_trig  and meme_or_quote == 0 : #meme
+					meme_or_quote  = True if random.randint(1,3) == 1 else False   #1 == quote  else = meme   (~66% to get meme)
+					if not skip_trig  and meme_or_quote != 1 : #meme
 							meme_get_task = bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
 							meme_embed : discord.Embed = await meme_get_task
 							await target_channel.send(embed= meme_embed)
