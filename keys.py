@@ -27,7 +27,7 @@ if(os.path.isfile("../discordBotToken_Gpteous.txt")):
 else :
 	openaiAPI_KEY = os.environ['OPENAI_APIKEY']
 
-	oken_gpteousBot = os.environ['DISCORDBOTTOKEN_GPTEOUS']
+	token_gpteousBot = os.environ['DISCORDBOTTOKEN_GPTEOUS']
 
 	bardAPI_KEY = os.environ['BARD_APIKEY'] 
 
