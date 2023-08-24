@@ -19,10 +19,11 @@
 * wizard tells you if you cant use specific command and who can!
 * now some command messages will be deleted after being read to keep server channels clean
 * fixed quote feature blocks bot event loop (tempror solution)
-* fixed auto meme/quote sender feature!
+* fixed auto random meme/quote sender feature!
 * bot ping now is separated from users commands latency (still not 100% accurate)
 * now bot can join and leave voice channels! (if not moved he stays most of time in  `admins room`)
-* updated bard cookie 
+* updated bard cookie
+* now we can log all `stdout , stderr` of bot in AWS for better debugging
  </details> 
       
       
@@ -43,7 +44,6 @@
 
  * now bot has basic voice commands e.g.(`wizyjoin`/`wizyleave`) commands
 
-    - <sub> (_🔴disabled temporarily_: &nbsp; not stable. though you can toggle  it via `toggle random`) command </sub>
 
  * ~~fixed some bugs~~
 
