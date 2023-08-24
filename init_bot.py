@@ -64,7 +64,7 @@ wizard_channels = (narols_island_wizard_channel_id , testing_wizard_channel_id )
 wizard_bot_id = 1117540489365827594
 chat_chill_ch_id = 889535812167938088
 proxy_sites = ["https://Proxy.server:3128" ,"https://95.217.167.241:8080"]#first one is the only proxy server available for free in pythonanywhere for more servers: https://hidemyna.me/en/proxy-list/?type=s#list
-bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , strip_after_prefix= True , intents=discord.Intents.all() , allowed_mentions= discord.AllowedMentions(everyone= False) , description= f""" 
+default_help_msg = f""" 
                    GPTEOUS HELP MESSAGE```
                    **I'M MIGHTY GPTEOUS !** the first GPT-Spirit in Narol's island Volcan guardian , Island's Master right hand  and the begining of Island's new ERA etcetera etcetera... I mean you get it am very special here  :man_mage:
 
@@ -102,7 +102,87 @@ bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , st
 						**WARNING**: sometimes I won't respond this is mainly due to exceeding max embed char limit 
       				i.e.(6000chars)
 						```
-                   """)
+                  ```fix
+                  
+                  
+                   """
+override_help_msgP1 = f"""
+
+> ***MIGHTY GPTEOUS I AM:man_mage:! *** `The first GPT-Spirit in Narol's island.  Volcan guardian. Island Master's right hand. The begining of Island's new ERA etcetera etcetera... I mean you get it am very special here` <:yaranaikathinkin:1014312745845391390>
+
+
+					            	
+:label:    Ask me any where in the Island and  I shall INDEED answer you
+
+:label:    The question must start start with mentioning me e.g.( <@{wizard_bot_id}> ) or just `wizy` <:shyomen:1014210603969171526>  
+
+:label:    if you want to speak with me more freely with `chat-mode` instead of `single-prompt` mode
+				just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond! _(if my creds :key:  and :cookie:  still valid and fresh!)_
+		
+:label:    to get a random meme at any time use `BoringWizard` :ghost: 
+
+:label:    to get random quote at any time use `wisewiz` :man_mage: 
+
+:label:    to make me join a voice channel use `wizyjoin` :green_circle:  _(you must be inside it first)_ 
+
+:label:    to make me leave a voice channel use `wizyleave` :o:
+
+      
+						          			:inbox_tray: ***PLUS Additional Functionalities and SPELLS coming soon ...*** :inbox_tray: \n\n\n
+              \n
+              
+                   """
+override_help_msgP2 = f"""
+
+
+
+* __FULL COMANDS LIST & ALIASES__
+                   1. Ask The wizard 
+                   ```fix
+                   • `wizy` "your_question"
+                   • `bard` "your_question"
+                   • `wizard` "your_question"
+                   • `wizardspirit` "your_question"
+                   • @WizardSpirit "your_question" 
+                   • `~ <any_of_prev_CMDs>` "your_question"
+                   ```
+						
+			2. Get a Wizardy Quote 
+			```fix
+			• wisewiz
+			```
+			
+			3. Get a Wizardy Meme 
+			```fix
+			• boringwizard
+			```
+			
+			4. Check Status & Latency 
+			```fix
+			• ping (gets your message latency)
+			• wiz_ping (gets bots latency)
+			```
+			
+			5. Control Commands _(only specific roles are eligible to use)_
+			```fix
+			• quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
+			• togglerandom (control activity of #memes-highlights channel)
+			```
+			
+			6. Voice Activity 
+			```fix
+			• wizyjoin
+			• wizyleave
+			```
+                   
+               
+                                                                    (ALL COMMANDS ARE CASE INsensitive :man_mage:!)\n\n
+__for known issues/bugs and planned updates please check wizy's GitHub repo. So long Isalnder <:rayleighs_:1014312686168850502>!__
+                     * <https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS> \n\n
+                       
+                                                                           `END OF WIZARD HELP MESSAGE`
+						"""
+bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , strip_after_prefix= True , intents=discord.Intents.all() , allowed_mentions= discord.AllowedMentions(everyone= False) , description= default_help_msg)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
