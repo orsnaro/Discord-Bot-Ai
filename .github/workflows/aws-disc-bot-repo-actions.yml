@@ -58,7 +58,9 @@ jobs:
             pkill python3
             cd $DIR
             echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std_log.txt
-            ../bot_runner.sh & disown
+            echo "python3 /home/ubuntu/src/main_wizard_bot.py" > ../bot_runner.sh
+            chmod u+x ../bot_runner.sh
+            tmux new -d -s bot_runner_tmux '../bot_runner.sh >> ../tmux_bot_log.txt'
             exit 0
 
             
