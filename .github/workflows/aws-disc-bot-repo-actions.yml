@@ -60,4 +60,4 @@ jobs:
             echo "python3 ./src/main_wizard_bot.py" > bot_runner.sh
             chmod u+x bot_runner.sh
             ./bot_runner.sh
-            
+            exit 0
