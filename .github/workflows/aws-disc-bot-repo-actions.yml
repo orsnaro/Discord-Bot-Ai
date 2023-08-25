@@ -58,7 +58,7 @@ jobs:
             pkill python3
             cd $DIR
             echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std_log.txt
-            ../bot_runner.sh &
+            timeout 15s ../bot_runner.sh &
             exit 0
 
             
