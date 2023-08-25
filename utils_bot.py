@@ -470,7 +470,7 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 				if is_triggered or is_triggered_c2 :
        
 					skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
-					print("TRIGGERED! and NOT! skiped") if not skip_trig else None#TESTING
+					print("TRIGGERED! and NOT skipped!") if not skip_trig else print("TRIGGERED! but skipped")#TESTING
 					
 					if is_triggered_c2 : #handles case2 trigger (make hour 00:00:00 the next trigger by setting iTS state to true which is element with index [0][0])
 						print("time now: " , now , " current trigger: " , lst_trig_time ," next trigger time: " , triggers_queue[0][0] , " was its turn? " , lst_trig_state ) if not skip_trig else None#TESTING
