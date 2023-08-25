@@ -50,12 +50,13 @@ jobs:
           command_timeout: 3m
         # script_stop: true
           envs: DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
-          script: |
+          script: | # chmod u+x bot_runner.sh : 'u' owner permission and 'x' is execute permission
             sudo apt-get -y update
             sudo apt-get -y install python3
             sudo apt-get -y install python3-pip
-            cd $DIR
-            pkill python3
             export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
-            echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> std_log.txt
-            python3 main_wizard_bot.py
+            pkill python3
+            echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./src/std_log.txt
+            chmod u+x bot_runner.sh
+            ./bot_runner.sh
+            exit 0
