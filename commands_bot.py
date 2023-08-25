@@ -12,6 +12,13 @@ from init_bot import *
 import keys
 from typing import List
 #------------------------------------------------------------------------------------------------------------------------------------------#
+#NOTE:tempror solution to override default help message fixed format (possible better solution is to construct my cog class)
+bot.remove_command("help")
+@bot.command (name="help" ) 
+async def help( ctx : commands.Context ):
+	await ctx.send(content= override_help_msgP1)
+	await ctx.send(content= override_help_msgP2)
+#------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.command (name="boringwizard" )
 async def boring( ctx : commands.Context ):
@@ -60,21 +67,28 @@ async def join_voice_wizard( ctx : commands.Context ):
 		await ctx.reply(delete_after= 15.0 , content= f"Ops! {user}  you must be in a voice channel!")
 #------------------------------------------------------------------------------------------------------------------------------------------#
 custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
+max_quote_size = 5070
 @bot.command (name="wisewiz" )
 async def wise( ctx : commands.Context ):
 	prepare_quote_task =  bot.loop.create_task(prepare_quote())
 	quotes = await prepare_quote_task
 	await ctx.reply(content= quotes)
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.command (name="quoteSz" )
+@bot.command (name="quoteSz" )#defaulted to 200
 @commands.has_any_role(*list(allowed_roles_quotesz.values()))
 async def change_quote_mx_sz( ctx : commands.Context  ,  *args ):
 	global custom_quote_threshhold
 	if args is  None or len(args) <= 0 :
 		await ctx.message.delete(delay= 15.0)
-		await ctx.reply(delete_after= 15.0 , content=f"please specify  `Quotes max size` current is `{custom_quote_threshhold}` ")
+		await ctx.reply(delete_after= 15.0 , content=f"Ops! please specify  `Quotes max size` current is `{custom_quote_threshhold}` ")
+	elif not args[0].isnumeric() :
+		await ctx.message.delete(delay= 15.0)
+		await ctx.reply(delete_after= 15.0 , content=f"Ops! Quote size must be a numeric value! current is `{custom_quote_threshhold}` ")
+	elif int(args[0]) > max_quote_size :
+		await ctx.message.delete(delay= 15.0)
+		await ctx.reply(delete_after= 15.0 , content=f"Ops! max Quote size is {max_quote_size}! current size is `{custom_quote_threshhold}` ")
 	else:  
-		custom_quote_threshhold = args[0]
+		custom_quote_threshhold = int(args[0])
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , content=f"Quotes max size are now set to `{custom_quote_threshhold}`")
   
