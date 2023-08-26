@@ -432,7 +432,7 @@ async def prepare_quote() -> str :
   
 	return quotes
 #------------------------------------------------------------------------------------------------------------------------------------------#
-meme_quote_sender_is_on_flag : bool = True #a command in command_bot.py sets und resets it 
+meme_quote_sender_is_on_flag : bool = False #a command in command_bot.py sets and resets it 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is_active : bool = meme_quote_sender_is_on_flag ) :
 	from commands_bot import custom_quote_threshhold
@@ -442,11 +442,12 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 	global triggers_queue
  
 	#TESTING BLOCK
-	print(f"TIMES for meme/quote SENDER trigger")
+	print(f"\n\nTIMES for meme/quote SENDER trigger\n")
 	for trig in triggers_queue :
-		print(trig[0] , end= ' ')
+		print(f"[{trig[0]}]" , end= ' ')
   
 	print("\ntime NOW" ,datetime.now() )
+	print(f"\n\n")
 	#END TESTING BLOCK
  
 	while(True):
@@ -473,13 +474,21 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 					print("TRIGGERED! and NOT skipped!") if not skip_trig else print("TRIGGERED! but skipped")#TESTING
 					
 					if is_triggered_c2 : #handles case2 trigger (make hour 00:00:00 the next trigger by setting iTS state to true which is element with index [0][0])
-						print("time now: " , now , " current trigger: " , lst_trig_time ," next trigger time: " , triggers_queue[0][0] , " was its turn? " , lst_trig_state ) if not skip_trig else None#TESTING
+						print("time now: " , datetime.now() , " current trigger: " , lst_trig_time ," next trigger time: " , triggers_queue[0][0] , " was its turn? " , lst_trig_state ) if not skip_trig else None#TESTING
 						triggers_queue = [ [trig[0],False] if trig[0] != triggers_queue[0][0] else [trig[0],True] for trig in triggers_queue]
 					elif is_triggered  :
-						print("time now: " , now , " current trigger: " , i_trig_time ," next trigger time: " , nxt_i_trig_time , " was its turn?  " , i_trig_state ) if not skip_trig else None#TESTING
+						print("time now: " , datetime.now() , " current trigger: " , i_trig_time ," next trigger time: " , nxt_i_trig_time , " was its turn?  " , i_trig_state ) if not skip_trig else None#TESTING
 						triggers_queue = [ [trig[0],False] if trig[0] != nxt_i_trig_time else [trig[0],True] for trig in triggers_queue]
         
-     
+					#TESTING BLOCK
+					print(f"\n\nCURRENT TRIGGER QUEUE\n")
+					print("\ntime,state:  ")
+					for trig in triggers_queue :
+						print(f"[{trig[0]} , {trig[1]}]" , end= ' ')
+      
+					print("\ntime NOW" ,datetime.now() )
+					print(f"\n\n")
+					#TESTING BLOCK
      
 					meme_or_quote  = True if random.randint(1,3) == 1 else False   #1 == quote  else = meme   (~66% to get meme)
 					if not skip_trig  and meme_or_quote != True : #meme
@@ -490,7 +499,7 @@ async def send_rand_quote_meme( target_channel : discord.TextChannel = None , is
 						prepare_quote_task =  bot.loop.create_task(prepare_quote())
 						quote = await prepare_quote_task
 						await target_channel.send(content= quote)
-					# elif (for jokes and gming news api) #TODO
+					# elif (for jokes and gaming news api) #TODO
 			
 					
 				await aio.sleep(1)
