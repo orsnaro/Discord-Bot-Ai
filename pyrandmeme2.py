@@ -10,6 +10,12 @@ async def pyrandmeme2( _title : str = "Random meme") -> discord.Embed :
     async with aiohttp.ClientSession() as cs:
         async with cs.get('https://www.reddit.com/r/memes/new.json?sort=hot') as r:
             res = await r.json()
-            pymeme.set_image(url=res['data']['children'][random2.randint(0, 24)]['data']['url'])
+            sz = len(res['data']['children'])
+            
+            #TESTING BLOCK
+            print(f"\n\###########invoked pyrandmeme2.py: reddit memes list size : {sz}#########\n")
+            #TESTING BLOCK
+            
+            pymeme.set_image(url=res['data']['children'][random2.randint(0,sz - 1)]['data']['url'])
             return pymeme
         await pyrandmeme2("Random meme")
