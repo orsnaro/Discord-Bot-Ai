@@ -1,5 +1,7 @@
+ [![Live version badge](https://img.shields.io/badge/Live%20Version-v2.5B-32c854)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release%20date&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
+ [![last commit to producion-AWS](https://img.shields.io/github/last-commit/orsnaro/discord-bot-ai/master?color=9332af)](https://github.com/orsnaro/Discord-Bot-Ai/commits/prduction-AWS) [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml/badge.svg?branch=production-AWS)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml)
 
-# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.2B-green)](https://aws.amazon.com/ec2/?did=ft_card&trk=ft_card)
+# __Discord Bot Project (Wizard GPTeous)__
 
 
 
