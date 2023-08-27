@@ -1,5 +1,5 @@
 
- [![Live version badge](https://img.shields.io/badge/Live%20Version-v2.5B-32c854)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release%20date&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
+ [![Live version badge](https://img.shields.io/badge/Live%20Version-v2.5B-32c854?logo=amazonaws)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release%20date&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml/badge.svg?branch=production-AWS)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml)
 
 # __Discord Bot Project (Wizard GPTeous)__ 
