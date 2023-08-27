@@ -40,6 +40,7 @@ async def on_message(message):
 				have_imgs = True
     
 		await sub_sections_msg_sending_ctrl( wizard_ch_msg  ,  final_links , lnk1_len , final_imgs ,  have_imgs	 , have_links)
+		await aio.sleep(5)
 		
 		
 		

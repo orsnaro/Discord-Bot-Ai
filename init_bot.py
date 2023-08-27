@@ -22,6 +22,7 @@ from random_word import RandomWords
 from datetime import datetime
 import re
 import pytz
+import asyncforismatic.asyncforismatic as foris
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
@@ -203,7 +204,7 @@ async def on_ready():
 	
 
 	from utils_bot import send_rand_quote_meme 
-	bot.loop.create_task(await send_rand_quote_meme())
+	await bot.loop.create_task(send_rand_quote_meme())
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def get_last_conv_id()  : ...  #TODO
