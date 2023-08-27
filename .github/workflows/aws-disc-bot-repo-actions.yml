@@ -42,6 +42,7 @@ jobs:
           DISCORDBOTTOKEN_GPTEOUS: ${{ secrets.DISCORDBOTTOKEN_GPTEOUS }}
           OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
           DIR : ${{ secrets.TARGET_DIR }}   
+          IS_PRODUCTION : '1'
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
@@ -49,7 +50,7 @@ jobs:
           port: ${{ secrets.EC2_SSH_PORT }}
           command_timeout: 3m
         # script_stop: true
-          envs: DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
+          envs: IS_PRODUCTION , DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
           script: | # chmod u+x bot_runner.sh : 'u' owner permission and 'x' is execute permission
             sudo apt-get -y update
             sudo apt-get -y install python3
