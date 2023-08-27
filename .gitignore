@@ -9,3 +9,5 @@ Wizard_bot_local_runner.exe
 node_modules/
 node_modules/*
 README.md
+std.log
+discord.log
