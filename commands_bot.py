@@ -18,6 +18,8 @@ bot.remove_command("help")
 async def help( ctx : commands.Context ):
 	await ctx.send(content= override_help_msgP1)
 	await ctx.send(content= override_help_msgP2)
+	await aio.sleep(5)
+ 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 @bot.command (name="boringwizard" )
@@ -39,16 +41,19 @@ async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
 		await ctx.message.delete(delay= 15.0) #delete user message it self ( then in .reply we delete bot msg also)
 		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 15.0 , 
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
+		await aio.sleep(5)
 	else :
 		meme_quote_sender_is_on_flag = not meme_quote_sender_is_on_flag
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , 
                   content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
+		await aio.sleep(5)
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wizyleave" )
 async def leave_voice_wizard( ctx : commands.Context ):
 	await ctx.guild.voice_client.disconnect()
+	await aio.sleep(5)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wizyjoin" )
 async def join_voice_wizard( ctx : commands.Context ):
@@ -60,19 +65,21 @@ async def join_voice_wizard( ctx : commands.Context ):
 		target_voice_channel = ctx.message.author.voice.channel
 		await ctx.message.delete(delay= 15.0)
 		await  target_voice_channel.connect()
-  
+		await aio.sleep(5)
 	else : 
 		user = ctx.message.author.mention
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , content= f"Ops! {user}  you must be in a voice channel!")
+		await aio.sleep(5)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
 max_quote_size = 5070
 @bot.command (name="wisewiz" )
 async def wise( ctx : commands.Context ):
-	prepare_quote_task =  bot.loop.create_task(prepare_quote())
+	prepare_quote_task =  bot.loop.create_task(prepare_quote(invoker= 0)) # invoker == 0 means command wisewiz invoked
 	quotes = await prepare_quote_task
 	await ctx.reply(content= quotes)
+	await aio.sleep(5)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="quoteSz" )#defaulted to 200
 @commands.has_any_role(*list(allowed_roles_quotesz.values()))
@@ -81,16 +88,20 @@ async def change_quote_mx_sz( ctx : commands.Context  ,  *args ):
 	if args is  None or len(args) <= 0 :
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , content=f"Ops! please specify  `Quotes max size` current is `{custom_quote_threshhold}` ")
+		await aio.sleep(5)
 	elif not args[0].isnumeric() :
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , content=f"Ops! Quote size must be a numeric value! current is `{custom_quote_threshhold}` ")
+		await aio.sleep(5)
 	elif int(args[0]) > max_quote_size :
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , content=f"Ops! max Quote size is {max_quote_size}! current size is `{custom_quote_threshhold}` ")
+		await aio.sleep(5)
 	else:  
 		custom_quote_threshhold = int(args[0])
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , content=f"Quotes max size are now set to `{custom_quote_threshhold}`")
+		await aio.sleep(5)
   
 @change_quote_mx_sz.error #TODO : fix this working in preventing but doesnot send any message!
 async def change_quote_mx_sz_error(error , ctx : commands.Context):
@@ -98,6 +109,7 @@ async def change_quote_mx_sz_error(error , ctx : commands.Context):
 		allowed_ids = list(allowed_roles_quotesz.values())
 		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 15.0 , 
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
+		await aio.sleep(5)
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="ping" )
@@ -112,11 +124,13 @@ async def ping(ctx : commands.Context):
  
 	await ctx.message.delete(delay= 15.0)
 	await ctx.reply(delete_after= 15.0 , content= f"Pong! `{tot_ping}ms`" ) #NOTE this gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
+	await aio.sleep(5)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command (name="wiz_ping" )
 async def wiz_ping(ctx : commands.Context):
 	await ctx.message.delete(delay= 15.0)
 	await ctx.reply(delete_after= 15.0 , content= f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') #NOTE : this gets bot latency between discord servers and the bot client
+	await aio.sleep(5)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.command(name=f"<@{wizard_bot_id}>" ) # command name is defaulted to method name 
 async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PROMPT. CHECK REPLY :"  ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
@@ -135,6 +149,7 @@ async def bardAIfast (ctx : commands.Context , * ,full_prompt : str = "EMPTY PRO
 	
 	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
+	await aio.sleep(5)
 	del embed
 	del valid_reply
 	del ctx
@@ -164,6 +179,7 @@ async def bardAI (ctx : commands.Context , * , full_prompt : str = "EMPTY PROMPT
 	
 	send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
 	returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()   
+	await aio.sleep(5)
 	del embed
 	del valid_reply
 	del ctx	
