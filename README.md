@@ -1,5 +1,5 @@
 
- [![Live version badge](https://img.shields.io/badge/Live%20Version-v2.5B-32c854?logo=amazonaws)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
+ [![Live version badge](https://img.shields.io/badge/Live%20Version-Maintainance-red?logo=amazonaws)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml/badge.svg?branch=production-AWS)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml)
 
 # __Discord Bot Project (Wizard GPTeous)__ 
@@ -85,7 +85,20 @@
 > ##  🛠 TODO :
 #### ⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD!*
 
+
 *   Documentation for functions / classes repo. first readme.md draft
+  
+*   converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
+  
+*   remove all async sleep in commands and replace with cooldown inside the command itself
+    
+*   make command groups
+  
+*   remove any global variables
+  
+*   use `logging` library to print debug and testing info to console instead of `print()`
+  
+* to increase bot speed and avoid non-async http api requests effects -> every  48 hour or initializing of bot  store new 24 memes and 24 quotes  locally
   
 *   implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
   
