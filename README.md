@@ -85,58 +85,57 @@
 > ##  🛠 TODO :
 #### ~⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD.py!*~ -> [discord.py](https://github.com/Rapptz/discord.py)  is maintained Again!
 
-*   Documentation for functions / classes repo. first readme.md draft
+* [ ]  Documentation for functions / classes repo. first readme.md draft
   
-*   tutorial video on all bot features and how to use and invite it to you server ( 2 videos short & long  )
+*  [ ] tutorial video on all bot features and how to use and invite it to you server ( 2 videos short & long  )
 
+*  [ ] converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
   
-*   converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
-  
-*   remove all async sleep in commands and replace with cooldown inside the command itself
+*  [ ] remove all async sleep in commands and replace with cooldown inside the command itself
     
-*   make command groups
+*  [ ] make command groups
   
-*   remove any global variables
+* [ ]  remove any global variables
   
-*   use `logging` library to print debug and testing info to console instead of `print()`
+* [ ]  use `logging` library to print debug and testing info to console instead of `print()`
   
-* to increase bot speed and avoid non-async http api requests effects -> every  48 hour or initializing of bot  store new 24 memes and 24 quotes  locally
+* [ ] to increase bot speed and avoid non-async http api requests effects -> every  48 hour or initializing of bot  store new 24 memes and 24 quotes  locally
   
-*   implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
+* [ ]  implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
   
     
-*   send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)  <sub>note: use pagination </sub>
+* [ ]  send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)  <sub>note: use pagination </sub>
 
-*   show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
+* [ ]  show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
 
-*   wizard bot sqlite-DB  design and connect the DB with bot code
+* [ ]  wizard bot sqlite-DB  design and connect the DB with bot code
   
-*   Implement `Competitive Programming` Features on Bot and [Narol's Island](https://discord.com/invite/Y23B7R3FPq) server  <sub>( more in  M O D S channels in the server)</sub>
+* [ ]  Implement `Competitive Programming` Features on Bot and [Narol's Island](https://discord.com/invite/Y23B7R3FPq) server  <sub>( more in  M O D S channels in the server)</sub>
 
-*   OOP it!  and handle errors!
+* [ ]  OOP it!  and handle errors!
 
-*   save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
+* [ ]  save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
 
-*   complete [`bard_key_refresh.py`](./bard_key_refresh.py)
+* [ ]  complete [`bard_key_refresh.py`](./bard_key_refresh.py)
 
-*   add `TTS` feature : read text in audio + ability for bot to join voice chats
+* [ ]  add `TTS` feature : read text in audio + ability for bot to join voice chats
 
-*   ADD `STT`  feature to enable full voice chat feature between bot and island server's users ( make bot make real voice chat with members)
+* [ ]  ADD `STT`  feature to enable full voice chat feature between bot and island server's users ( make bot make real voice chat with members)
 
-* use [`Rapidapi`](https://rapidapi.com)
+* [ ] use [`Rapidapi`](https://rapidapi.com)
 
-* complete your [`quote`](https://github.com/orsnaro/quote-async) lib fork and make it fully async.
+* [ ] complete your [`quote`](https://github.com/orsnaro/quote-async) lib fork and make it fully async.
 
-*   add and test poe-API (starred at my GitHub)
+* [ ]  add and test poe-API (starred at my GitHub)
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
 
-*   add command to switch between BARD mode and poe-GPT mode
+* [ ] add command to switch between BARD mode and poe-GPT mode
   
-*   ~use google translator API~
+* [ ]  ~use google translator API~
   
-       *  _(NOT necessary  NEED any more! now bard speaks arabic and bard API python wrapper also supports that  just edit your internal prompt / appendings and formating to discord messages to have arabic variation)_
+    *    _(NOT necessary  NEED any more! now bard speaks arabic and bard API python wrapper also supports that  just edit your internal prompt / appendings and formating to discord messages to have arabic variation)_
     
-*   Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
+* [ ] Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
 
 ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
