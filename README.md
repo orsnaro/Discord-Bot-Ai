@@ -41,7 +41,7 @@
 
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
 
- * now can learn for the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
+ * now can learn from the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
 
  * now long Bard AI answers is working in [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
 
