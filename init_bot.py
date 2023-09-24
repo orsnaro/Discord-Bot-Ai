@@ -23,6 +23,10 @@ from datetime import datetime
 import re
 import pytz
 import asyncforismatic.asyncforismatic as foris
+import logging 
+import contextlib
+import os
+import keys
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
@@ -185,15 +189,22 @@ __for known issues/bugs and planned updates please check wizy's GitHub repo. So 
 						"""
 bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , strip_after_prefix= True , intents=discord.Intents.all() , allowed_mentions= discord.AllowedMentions(everyone= False) , description= default_help_msg)
 #------------------------------------------------------------------------------------------------------------------------------------------#
-
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.event
 async def on_ready():
+   
+   #needed to enable slash commands (slash commands are type of interactions not ctx or message or normal command any more)
+	await bot.tree.sync()
+   
+   #when booting up bot make him join admin room
 	admin_ch = bot.get_channel(admins_room_id)
 	await admin_ch.connect()
 
+	#status that appear under bot 
 	playing = discord.Game("help")
 	await bot.change_presence(status=discord.Status.online , activity=playing)
+
+
 
 	print(f"Bot info: \n (magic and dunder attrs. excluded) ")
 	for attr in dir(bot.user):
@@ -202,10 +213,27 @@ async def on_ready():
 			print(f'{attr}: {value}')
 	print(f"\n\n Bot '{bot.user}' Sucessfully connected to Discord!\n\n")
 	
-
-	from utils_bot import send_rand_quote_meme 
-	await bot.loop.create_task(send_rand_quote_meme())
-
+	
+ 	#TODO to events.py under maybe sth like bot.is_ready() 
+	import utils_bot as util
+	auto_sender_event = aio.Event()#initially false /
+ 
+	#TESTING 
+	auto_sender_event.set() #NOTE : turn it off this only for local version until I get time to debug 'togglerandom'  bot commnad
+	#TESTING 
+ 
+	auto_memequote_sender_task = bot.loop.create_task(util.send_rand_quote_meme(event_ctrl = auto_sender_event))
+	
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def get_last_conv_id()  : ...  #TODO
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def boot_bot() :
+	log_std = open("std.log" , 'a') #logs all stderr and stdout and discord.py msgs
+	log_discord = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='a')#logs only discord.py msgs
+	if 'IS_PRODUTCION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
+		with contextlib.redirect_stdout(log_std):
+			with contextlib.redirect_stderr(log_std):
+				bot.run(keys.Token_gpteousBot , log_handler= log_discord)#default logging level is info 
+	else :
+		bot.run(keys.Token_gpteousBot , log_level= logging.DEBUG) #default handler is stdout , debug log level is more verbose!
 #------------------------------------------------------------------------------------------------------------------------------------------#
