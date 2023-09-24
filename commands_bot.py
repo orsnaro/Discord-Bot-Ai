@@ -6,9 +6,9 @@
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , prepare_quote
-from utils_bot import check_msg , get_new_reply_prompt , meme_quote_sender_is_on_flag
 from init_bot import *	
+from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , prepare_quote
+from utils_bot import check_msg , get_new_reply_prompt 
 import keys
 from typing import List
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -21,7 +21,6 @@ async def help( ctx : commands.Context ):
 	await aio.sleep(5)
  
 #------------------------------------------------------------------------------------------------------------------------------------------#
-
 @bot.command (name="boringwizard" )
 async def boring( ctx : commands.Context ):
    await ctx.send(embed= await pyrandmeme2(_title= "Some Wizardy Humor👻"))
@@ -30,8 +29,8 @@ allowed_roles_togglerandom = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 
 allowed_roles_quotesz = {"ULT! SAQF" : 889532272989053019 , "ULT! ADMIN" : 889931295365414993 , "ULT! CODER" : 1014300476814147656 , "Spirits Overlord" : 1118266805006389289} #check by id not the names cuz they're missing emojies
 @bot.command (name="togglerandom")
 async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
+   
 	global allowed_roles_togglerandom
-	global meme_quote_sender_is_on_flag 
  
 	user_comanded_roles : list[discord.Role] = ctx.message.author.roles
 	is_allowed = [role for role in user_comanded_roles if role.id in tuple(allowed_roles_togglerandom.values()) ]
@@ -43,7 +42,7 @@ async def toggle_rand_meme_quote_sender( ctx : commands.Context ):
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
 		await aio.sleep(5)
 	else :
-		meme_quote_sender_is_on_flag = not meme_quote_sender_is_on_flag
+		auto_memequote_sender_task =  bot.loop.create_task(send_rand_quote_meme(), name="auto_memequote_sender_task")
 		await ctx.message.delete(delay= 15.0)
 		await ctx.reply(delete_after= 15.0 , 
                   content=f"random memes & quotes feature is {'`Enabled`' if meme_quote_sender_is_on_flag  else '`Disabled`' }")
@@ -74,16 +73,16 @@ async def join_voice_wizard( ctx : commands.Context ):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
 max_quote_size = 5070
-@bot.command (name="wisewiz" )
+@bot.hybrid_command (name="wisewiz" )
 async def wise( ctx : commands.Context ):
 	prepare_quote_task =  bot.loop.create_task(prepare_quote(invoker= 0)) # invoker == 0 means command wisewiz invoked
 	quotes = await prepare_quote_task
 	await ctx.reply(content= quotes)
 	await aio.sleep(5)
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.command (name="quoteSz" )#defaulted to 200
+@bot.command (name="quotesz" )#defaulted to 200
 @commands.has_any_role(*list(allowed_roles_quotesz.values()))
-async def change_quote_mx_sz( ctx : commands.Context  ,  *args ):
+async def change_quote_mx_sz( ctx : commands.Context , *args ):
 	global custom_quote_threshhold
 	if args is  None or len(args) <= 0 :
 		await ctx.message.delete(delay= 15.0)
@@ -103,12 +102,13 @@ async def change_quote_mx_sz( ctx : commands.Context  ,  *args ):
 		await ctx.reply(delete_after= 15.0 , content=f"Quotes max size are now set to `{custom_quote_threshhold}`")
 		await aio.sleep(5)
   
-@change_quote_mx_sz.error #TODO : fix this working in preventing but doesnot send any message!
+@change_quote_mx_sz.error
 async def change_quote_mx_sz_error(error , ctx : commands.Context):
-	if isinstance(error , commands.BotMissingAnyRole):	
+	print (f'\n\n#################{error}')
+	if isinstance(error , commands.MissingAnyRole):	
 		allowed_ids = list(allowed_roles_quotesz.values())
 		await ctx.reply(allowed_mentions=discord.AllowedMentions(roles=False) , delete_after= 15.0 , 
-                  content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
+						content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command...") #used a join and map and lambda function just as fast fancy way to print all allowed roles
 		await aio.sleep(5)
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
