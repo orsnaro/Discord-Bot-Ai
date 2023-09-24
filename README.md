@@ -78,9 +78,13 @@
 
 
 > ##  🛠 TODO :
-#### ⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD!*
+#### ~⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD.py!*~ -> [discord.py](https://github.com/Rapptz/discord.py)  is maintained Again!
 
 *   Documentation for functions / classes repo. first readme.md draft
+  
+*   tutorial video on all bot features and how to use and invite it to you server ( 2 videos short & long  )
+
+
   
 *   implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
   
