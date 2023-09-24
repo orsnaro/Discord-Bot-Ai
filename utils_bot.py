@@ -531,7 +531,8 @@ async def send_rand_quote_meme(event_ctrl : aio.Event() , target_channel : disco
 					await aio.sleep(5)
 				elif not skip_trig and meme_or_quote == True : #quote
 					print(f"\n#####BOT CHOICE IS Quote!\n")#TESTING
-					prepare_quote_task = await bot.loop.create_task(prepare_quote(invoker= 1))
+					quote_proivder = random.randint(0,1)
+					prepare_quote_task = await bot.loop.create_task(prepare_quote(invoker= quote_proivder))
 					await aio.sleep(5)
 					quote = await await_me_maybe(prepare_quote_task)
 					await target_channel.send(embed= quote)
