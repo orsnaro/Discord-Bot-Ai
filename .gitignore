@@ -11,3 +11,4 @@ node_modules/*
 README.md
 std.log
 discord.log
+.is_autovEnv
