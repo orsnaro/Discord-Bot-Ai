@@ -423,7 +423,7 @@ def set_trigger_times() : #called once when bot is ready inside init_bot.py
 #------------------------------------------------------------------------------------------------------------------------------------------#
 triggers_queue = set_trigger_times() #12 triggers(1 each 2 hours)  Initially all set to False. After any trigger activates  switch it to True and all else to false
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def prepare_quote(invoker : int) -> str : #TODO : make it fully async
+async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : make it fully async
 	"""_summary_
 	invoker : 0 wisewiz command , 1 send_rand_quote_meme()
  
@@ -444,17 +444,23 @@ async def prepare_quote(invoker : int) -> str : #TODO : make it fully async
 		#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]c
 		discord_msg_mx_len = 1965 #actually its 2000char max but we will append 35 chars later to the quote
 	
-		print(f"\n\n\n #######TESTING current quote size in char : {cmd.custom_quote_threshhold} ###\n\n")#TESTING
-		while res is None  or len(res[0]['quote']) > int(cmd.custom_quote_threshhold):
+		print(f"\n\n\n #######TESTING current quote size in char 'custom_quote_threshhold' : {cmd.custom_quote_threshhold} ###\n\n")#TESTING
+
+		requests_limits = retrylimit #times to search proper length quote threshold
+		while requests_limits != 0 and ( res is None  or len(res[0]['quote']) > int(cmd.custom_quote_threshhold) ):
 			random_word = RandomWords()
 			category = random_word.get_random_word()
 			res = quote(category , limit=1)
+			requests_limits -= 1
 
-		for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)#TODO multiple quotes in one command 
-			quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`"
+		if  res is None  or len(res[0]['quote']) > int(cmd.custom_quote_threshhold) :
+			quotes = f"***Ops! No quote For this time***"
+		else :
+			for i in range(len(res)): # loop if there is multiple quotes e.g.(limit > 1)#TODO: multiple quotes in one command 
+				quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`" #TODO: make it list /array of strings if used multiple quotes in one command
    
 	elif invoker == 1: #invoked by send_rand_quote_meme() (use async asyncforistmatic lib)
-		async_qoute_task = await bot.loop.create_task(foris.async_quote())  #won't type author to encourage discord server to search about the quote!
+		async_qoute_task = await bot.loop.create_task(foris.async_quote())  #won't type author to encourage discord server users to search about the quote!
 		await aio.sleep(2)
 		res , _author =  async_qoute_task
 		quotes = discord.Embed(type='rich' , description= res).set_footer()
@@ -519,9 +525,10 @@ async def send_rand_quote_meme(event_ctrl : aio.Event() , target_channel : disco
 	
 				print("\ntime NOW" ,datetime.now() )
 				print(f"\n\n")
-				#TESTING BLOCK
+				#TESTING BLOCK END
 	
 				meme_or_quote  = True if random.randint(1,3) == 1 else False   #1 == quote  else = meme   (~66% to get meme)
+    
 				if not skip_trig  and meme_or_quote != True : #meme
 					print(f"\n#####BOT CHOICE IS MEME!\n")#TESTING
 					meme_get_task = await bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
@@ -530,12 +537,12 @@ async def send_rand_quote_meme(event_ctrl : aio.Event() , target_channel : disco
 					await target_channel.send(embed= meme_embed)
 					await aio.sleep(5)
 				elif not skip_trig and meme_or_quote == True : #quote
-					print(f"\n#####BOT CHOICE IS Quote!\n")#TESTING
 					quote_proivder = random.randint(0,1)
-					prepare_quote_task = await bot.loop.create_task(prepare_quote(invoker= quote_proivder))
+					print(f"\n#####BOT CHOICE IS Quote! quote privder id: {quote_proivder} \n")#TESTING
+					prepare_quote_task = await bot.loop.create_task(prepare_quote(invoker= quote_proivder , retrylimit= 10))
 					await aio.sleep(5)
 					quote = await await_me_maybe(prepare_quote_task)
-					await target_channel.send(embed= quote)
+					await target_channel.send(embed= quote ) if quote_proivder == 1 else await target_channel.send( quote )
 					await aio.sleep(5)
 				# elif (for jokes and gaming news api) #TODO
 		
