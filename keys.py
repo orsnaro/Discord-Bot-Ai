@@ -9,7 +9,13 @@
 """
 import os
 
-if(os.path.isfile("../discordBotToken_Gpteous.txt")):
+file1ok : bool = os.path.isfile("../discordBotToken_Gpteous.txt")
+file2ok : bool = os.path.isfile("../openai_apiKey.txt")
+file3ok : bool = os.path.isfile("../bard_apiKey.txt")
+file4ok : bool = os.path.isfile("../bard_gmail.txt")
+file5ok : bool = os.path.isfile("../bard_gmailPass.txt")
+
+if( file1ok and file2ok and file3ok and file4ok and file5ok ):
 	with open(r"../openai_apiKey.txt" , 'r') as openaifile :
 		openaiAPI_KEY = openaifile.read().strip()
 		
