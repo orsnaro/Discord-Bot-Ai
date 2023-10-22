@@ -6,8 +6,10 @@
                           Title : main code for Discord Bot (with generative AI)
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
+
 #TODO TODO TODO : DO THIS BEFORE any other big task -> (FINSIH THOSE & FIX BIG BUGS ) THEN => MIGRATE TO PYCORD 
 #TODO : Documentaion for functions / classes and repo readme.md
+
 #(DONE)TODO : make bot see prev messages (use session)
 #(DONE)TODO : talk to bot by mention him  
 #(DONE)TODO : talk to bot in specific channel no need to mention or trigger him by command just send the question as plain message
@@ -20,6 +22,7 @@
 #(DONE)TODO : show embedded images in bard answer (shows with the links as links :( ))
 #(DONE)TODO : make message fragmenter function for msg and links msg  and images msg in utils_bot.py
 
+#TODO : replace all your manual auto meme/quote sender queue logic with this (les bot event loop handle it auto!)(no need even for acync event control var): https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html#
 #TODO : use https://rapidapi.com/ 
 #TODO : complete your quote lib fork and make it fully async. 
 #TODO : add command : provides the ability for other SERVERS  using wizard bot to add their own '#ask-the-wizard-channel' just by  typing  `add/deleteWizardChannel` command : this command takes channel id and appends it to wizard_channels_ids tuple  ( check if you need any id for the server it self mostly not)

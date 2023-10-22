@@ -409,6 +409,7 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    return new_prompt
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def set_trigger_times() : #called once when bot is ready inside init_bot.py
+   #TODO : replace all your manual auto meme/quote sender queue logic with this (les bot event loop handle it auto!)(no need even for acync event control var): https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html#
    
    #TRIGGERS queue :
    # at first : all starts with True state so any one can be activated and be the queue starting point , after first trigger and on :  all are set to false accept the next one in queue. the  send_rand_quote_meme() ensures each trigger ran once(no infinity loop) then waits  its next turn to run again
@@ -474,6 +475,7 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 meme_quote_sender_is_on_flag : bool = True #a command in command_bot.py sets and resets it 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def send_rand_quote_meme(event_ctrl : aio.Event() , target_channel : discord.TextChannel = None) :
+   #TODO : replace all your manual auto meme/quote sender queue logic with this (les bot event loop handle it auto!)(no need even for acync event control var): https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html#
       
 	target_channel = bot.get_channel(memes_highlights_ch_id)
 	global triggers_queue
