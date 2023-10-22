@@ -187,7 +187,18 @@ __for known issues/bugs and planned updates please check wizy's GitHub repo. So 
                        
                                                                            `END OF WIZARD HELP MESSAGE`
 						"""
-bot = commands.Bot(command_prefix= ("~" , '' , ' '), case_insensitive= True , strip_after_prefix= True , intents=discord.Intents.all() , allowed_mentions= discord.AllowedMentions(everyone= False) , description= default_help_msg)
+
+
+bot = commands.Bot(
+                  command_prefix= ("~" , '' , ' '),
+                  case_insensitive= True,
+                  strip_after_prefix= True,
+                  intents=discord.Intents.all(),
+                  allowed_mentions= discord.AllowedMentions(everyone= False),
+                  description= default_help_msg,
+                  status= discord.Status.online,
+                  activity= discord.Game("help")
+                  )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.event
@@ -200,9 +211,9 @@ async def on_ready():
 	admin_ch = bot.get_channel(admins_room_id)
 	await admin_ch.connect()
 
-	#status that appear under bot 
-	playing = discord.Game("help")
-	await bot.change_presence(status=discord.Status.online , activity=playing)
+	#status that appear under bot  #NOTE: moved to costructor of bot (they advice not to do shit inside on_ready())
+	# playing = discord.Game("help")
+	# await bot.change_presence(status=discord.Status.online , activity=playing)
 
 
 
