@@ -86,19 +86,18 @@
 #### ~⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD.py!*~ -> [discord.py](https://github.com/Rapptz/discord.py)  is maintained Again!
 
 *  [ ]  Documentation for functions / classes repo. first readme.md draft
-*  [ ]  Replace all your manual auto meme/quote sender logic with this (les bot event loop handle it auto!)(no need even for acync event control var):   https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html#
-  
+
+*  [ ] complete track/songs queue class and it's two commands look(https://stackoverflow.com/questions/61276362/how-to-play-the-next-song-after-first-finished-discord-bot)
+       
 *  [ ] tutorial video on all bot features and how to use and invite it to you server ( 2 videos short & long  )
 
 *  [ ] converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
-  
-*  [ ] remove all async sleep in commands and replace with cooldown inside the command itself
     
-*  [ ] make command groups
+*  [ ] make command groups or cogs
   
 * [ ]  remove any global variables
   
-* [ ]  use `logging` library to print debug and testing info to console instead of `print()`
+* [ ]  use `logging` library to print debug and testing info to console instead of `print()` (🔵DONE PARTIALLY)
   
 * [ ] to increase bot speed and avoid non-async http api requests effects -> every  48 hour or initializing of bot  store new 24 memes and 24 quotes  locally
   
@@ -138,6 +137,19 @@
     
 * [ ] Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
+
+
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) Bot Ambient track (MMO Chill music) via `wizyplay`
+
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) Bot plays specific song from YouTube Music via `wizyplay url`
+
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) remove all async sleep in commands and replace with cooldown inside the command itself
+
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) Replace all your manual auto meme/quote sender logic with this (les bot event loop handle it auto!)(no need even for acync event control var):
 
 ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 )  ~make message fragmenter function for both msg and links msg in utils_bot.py~
