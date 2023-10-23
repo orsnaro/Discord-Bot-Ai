@@ -8,7 +8,9 @@ avatars/*
 Wizard_bot_local_runner.exe
 node_modules/
 node_modules/*
+tracks/
 README.md
 std.log
 discord.log
 .is_autovEnv
+*.webm
