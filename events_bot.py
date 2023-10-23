@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.2B
-                          version Date :  17 / 8 / 2023
+                          Version : v2.5.3B
+                          version Date :  23 / 10 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Events code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -15,7 +15,7 @@ from utils_bot import ask_bard , check_msg ,send_rand_quote_meme , supress_msg_b
 # #if buffer surpasses certain size | bot is acitve for certain time  flush all to db 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------------------------------------#
-# on_message_in_wizard_channel = discord.on_message  #TODO if alias work use instead to diffrentiate between many > on message events
+#NOTE: this controls the free chat channel of wizy (TODO:make any server assign their wizy chat channel command)
 @bot.event #if used @client.event bot could reply to him self i.e.(trigger him self ) which could cause recursion and replay loop issue
 async def on_message(message):
 	wizard_ch_msg = message 

@@ -23,6 +23,7 @@
 #(DONE)TODO : replace all your manual auto meme/quote sender queue logic with this (let bot event loop handle it auto!)(no need even for acync event control var): https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html#
 
 #TODO : use https://rapidapi.com/ 
+#TODO : complete tracks queue class and it's two commands look(https://stackoverflow.com/questions/61276362/how-to-play-the-next-song-after-first-finished-discord-bot)
 #TODO : complete your quote lib fork and make it fully async. 
 #TODO : add command : provides the ability for other SERVERS  using wizard bot to add their own '#ask-the-wizard-channel' just by  typing  `add/deleteWizardChannel` command : this command takes channel id and appends it to wizard_channels_ids tuple  ( check if you need any id for the server it self mostly not)
 #TODO : implement new bard feature i.e.( upload image and ask about it ) in your bot since it's now available and Bard API wrapper v0.1.27 now also supports it
