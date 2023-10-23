@@ -17,7 +17,7 @@
 [aws-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
 
 <details>
-<summary><em>  ✨Patch (2.5.2B) notes </em> </summary>
+<summary><em>  ✨Patch (2.5.3B) notes </em> </summary>
     
 * fixed quote length  in-accuracy 
 * added new command `quotesz` to control quote length only for admins (btw `togglerandom` is now only for admins and some special roles)
@@ -47,7 +47,15 @@
 
  * now Bot sends random quotes and memes multiple times a day
 
- * now bot has basic voice commands e.g.(`wizyjoin`/`wizyleave`) commands
+ * now bot has basic voice commands e.g.(`wizyjoin`/`wizyleave`/`wizyplay`/`wizypause`/`wizyresume`/`wizystop`) commands
+
+ * now if wizy is free in a voice channel he plays an abmient chilling music track!
+
+ * _soon_ music/tracks queue feature!
+
+
+
+ 
 
 
  * ~~fixed some bugs~~
