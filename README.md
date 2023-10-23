@@ -19,16 +19,16 @@
 <details>
 <summary><em>  ✨Patch (2.5.3B) notes </em> </summary>
     
-* fixed quote length  in-accuracy 
-* added new command `quotesz` to control quote length only for admins (btw `togglerandom` is now only for admins and some special roles)
-* wizard tells you if you cant use specific command and who can!
-* now some command messages will be deleted after being read to keep server channels clean
-* fixed quote feature blocks bot event loop (tempror solution)
-* fixed auto random meme/quote sender feature!
-* bot ping now is separated from users commands latency (still not 100% accurate)
-* now bot can join and leave voice channels! (if not moved he stays most of time in  `admins room`)
-* updated bard cookie
-* now we can log all `stdout , stderr` of bot in AWS for better debugging
+* remake auto meme-quote sender logic completly now more relaiable and controlled by bot event loop inside CustomBot class
+* make a CustomBot class : better to use setup_hook() inside it instead of on_ready() event
+* add more voice commands: play/pause/resume/stop
+* fix togglerandom cmd
+* add ambient chilling music all the time if bot is connected and not playing any song/track
+* enhance commands cooldown logic ( all commands have 5 secs cooldown )
+* delete all bot sys messages after 5 seconds
+* started the songs/tracks queue (not completed)
+* fixed minor bugs in old/new features
+* update todo list
  </details> 
       
       
