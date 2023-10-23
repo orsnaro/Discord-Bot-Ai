@@ -1,14 +1,15 @@
 """
                           Coder : Omar
                           Version : v2.5.2B
-                          version Date :  17 / 8 / 2023
+                          version Date :  23 / 10 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
-from init_bot import *
+import init_bot as ini
 import discord.message
-
+import youtube_dl
+import asyncio as aio
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def await_me_maybe(value):
@@ -17,6 +18,10 @@ async def await_me_maybe(value):
     if aio.iscoroutine(value):
         value = await value
     return value
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def play_chill_track(server: discord.Guild):
+   track_path = r"./tracks/mmo_chill_skyrim&wticher3.mp3"
+   await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=track_path)))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links_msg : str , lnk1_len : int , final_imgs_msg : str , lnks_flag = False , imgs_flag = True) :
 	if  lnks_flag and imgs_flag : # meaning I will supress first link also cuz there is imgs already
@@ -40,7 +45,7 @@ async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def supress_msg_body_url_embeds ( text : str ) -> str :
   url_regex = r"(https?://\S+)(\s|\n|$)"
-  matches = re.finditer(url_regex, text)
+  matches = ini.re.finditer(url_regex, text)
   for match in matches:
     text = text.replace(match.group(0), f"<{match.group(0).strip()}> \n")
   return text
@@ -224,7 +229,7 @@ def get_rand_greeting (user_name : str = "Master Narol"):
     f"Behold 	_{user_name}_ , for I am the great and noble Mighty Gpteous, the island wizard, wielder of the most powerful magic in all the land. What dost thou need from me, mere mortal? 🧙‍♂️💪"
 	]
 	last_elmnt_index = len(greetings) -1 
-	return greetings[random.randint(0 , last_elmnt_index)]
+	return greetings[ini.random.randint(0 , last_elmnt_index)]
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 def skip_line(full_ans):
@@ -237,13 +242,13 @@ async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tup
    series = "Harry Potter"
    classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}"
    new_prompt = f"I want you to act like {character} from {series}. I want you to respond and answer like {character} using the tone, manner and vocabulary {character} would use. Do not write any explanations. Only answer like {character}. You must know all of the knowledge of {character}. My first sentence is \"Hi {character} I'm {user_name}. {user_query} .\""
-   bard_ans = await bard.get_answer(classic_prmpt)
+   bard_ans = await ini.bard.get_answer(classic_prmpt)
    # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt 
    return bard_ans['content'] , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id']
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class
 	if chk_type == 1 and _message != None : #NOTE : checks for on_message() in wizard channel 
-		return True if  _message != None and _message.channel.id in targetChannelId and _message.author.id != bot.user.id else False 
+		return True if  _message != None and _message.channel.id in targetChannelId and _message.author.id != ini.bot.user.id else False 
 
 	elif chk_type == 2 and _message != None:#NOTE : checks for  messages of type: reply
 		msg_channel = _message.channel
@@ -253,10 +258,10 @@ async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , 
 				return False , None
 		else:
 			first_msg_id = _message.reference.message_id
-			first_msg_cntnt_task = bot.loop.create_task(msg_channel.fetch_message(first_msg_id))
+			first_msg_cntnt_task = ini.bot.loop.create_task(msg_channel.fetch_message(first_msg_id))
 			first_msg_cntnt = await first_msg_cntnt_task
 			first_msg_cntnt = first_msg_cntnt.content
-			first_msg_cntnt_filtered = first_msg_cntnt.replace(f"<@{wizard_bot_id}" , '').strip().replace(" ", '') 
+			first_msg_cntnt_filtered = first_msg_cntnt.replace(f"<@{ini.wizard_bot_id}" , '').strip().replace(" ", '') 
    
 			if len(first_msg_cntnt_filtered) == 0 :
 				return False , -1
@@ -272,10 +277,10 @@ async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , 
 	else: return False
 #------------------------------------------------------------------------------------------------------------------------------------------#
 bard_conversation_ids_buffer = set()
-def save_last_conv_id() : ...  #TODO
+def save_gpt_last_conversation_id() : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_discord_embed( bard_ans_data : tuple  , is_reply : bool = False) -> discord.Embed :
-   #TODO : handle if embed exceeds max size of max size of fields ( bot will continue work anyway but tell user that OF happend of paganating)
+   #TODO : handle if embed exceeds max size of max size of fields ( ini.bot will continue work anyway but tell user that OF happend of paganating)
 	'''
 EMBED TOTAL MAX SIZE is 6000 chars ( # NOTE : use reactions and pagination if exceeded )
 class EmbedLimits(object):
@@ -312,7 +317,7 @@ class EmbedLimits(object):
 	wizardChannelLink ="https://discord.com/channels/797143628215877672/1118953370510696498"
 	note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
 	embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
-	timeNow = datetime.now()
+	timeNow = ini.datetime.now()
 	author = "Bard AI"
 	bardIcon = "https://i.imgur.com/u0J6wRz.png"
 	redTint = 10038562
@@ -398,31 +403,15 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    first_msg_id = _message.reference.message_id
    
    
-   msg_fetch_task = bot.loop.create_task(_message.channel.fetch_message(first_msg_id))
+   msg_fetch_task = ini.bot.loop.create_task(_message.channel.fetch_message(first_msg_id))
    first_msg_content = await msg_fetch_task
    first_msg_content : discord.Message.content = first_msg_content.content
    
-   first_msg_content : str =  first_msg_content.replace(f"<@{wizard_bot_id}" , ' ')#if other commands like 'bard' or 'wizard' its mostly ok # NOTE : (still testing)
+   first_msg_content : str =  first_msg_content.replace(f"<@{ini.wizard_bot_id}" , ' ')#if other commands like 'bard' or 'wizard' its mostly ok # NOTE : (still testing)
    new_prompt : str = old_prompt + ' ' + f"\"{first_msg_content}\""
    
    
    return new_prompt
-#------------------------------------------------------------------------------------------------------------------------------------------#
-def set_trigger_times() : #called once when bot is ready inside init_bot.py
-   #TODO : replace all your manual auto meme/quote sender queue logic with this (les bot event loop handle it auto!)(no need even for acync event control var): https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html#
-   
-   #TRIGGERS queue :
-   # at first : all starts with True state so any one can be activated and be the queue starting point , after first trigger and on :  all are set to false accept the next one in queue. the  send_rand_quote_meme() ensures each trigger ran once(no infinity loop) then waits  its next turn to run again
-	triggers_queue : list[datetime,bool] = [ [datetime.strptime( ( '0'+ str(time) if time < 10 else  str(time) ) , "%H"), True]  for time in range(0,24,2)] # queue : a list of lists. each inner list has datetime obj and state in bool
- 
-	#NOTE : TESTING CODE ( shortend intervals  dramatically )
-	# triggers_queue : list[datetime,bool] = [ [datetime.strptime(('0'+ str(time) if time < 10 else  str(time) ) , "%S"), True]  for time in range(0,60,10)] 
-	#NOTE : TESTING CODE ( shortend intervals  dramatically )
- 
-	return triggers_queue
-   
-#------------------------------------------------------------------------------------------------------------------------------------------#
-triggers_queue = set_trigger_times() #12 triggers(1 each 2 hours)  Initially all set to False. After any trigger activates  switch it to True and all else to false
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : make it fully async
 	"""_summary_
@@ -449,9 +438,9 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 
 		requests_limits = retrylimit #times to search proper length quote threshold
 		while requests_limits != 0 and ( res is None  or len(res[0]['quote']) > int(cmd.custom_quote_threshhold) ):
-			random_word = RandomWords()
+			random_word = ini.RandomWords()
 			category = random_word.get_random_word()
-			res = quote(category , limit=1)
+			res = ini.quote(category , limit=1)
 			requests_limits -= 1
 
 		if  res is None  or len(res[0]['quote']) > int(cmd.custom_quote_threshhold) :
@@ -461,7 +450,7 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 				quotes : str = f"> {res[i]['quote']} `-GPTeous A. Wise Spirit;`" #TODO: make it list /array of strings if used multiple quotes in one command
    
 	elif invoker == 1: #invoked by send_rand_quote_meme() (use async asyncforistmatic lib)
-		async_qoute_task = await bot.loop.create_task(foris.async_quote())  #won't type author to encourage discord server users to search about the quote!
+		async_qoute_task = await ini.bot.loop.create_task(ini.foris.async_quote())  #won't type author to encourage discord server users to search about the quote!
 		await aio.sleep(2)
 		res , _author =  async_qoute_task
 		quotes = discord.Embed(type='rich' , description= res).set_footer()
@@ -472,158 +461,86 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 
 	return quotes
 #------------------------------------------------------------------------------------------------------------------------------------------#
-meme_quote_sender_is_on_flag : bool = True #a command in command_bot.py sets and resets it 
-#------------------------------------------------------------------------------------------------------------------------------------------#
-async def send_rand_quote_meme(event_ctrl : aio.Event() , target_channel : discord.TextChannel = None) :
-   #TODO : replace all your manual auto meme/quote sender queue logic with this (les bot event loop handle it auto!)(no need even for acync event control var): https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html#
+async def send_rand_quote_meme(target_channel : discord.TextChannel = None) :
+   from init_bot import memes_highlights_ch_id
+   target_channel = ini.bot.get_channel(memes_highlights_ch_id)
+
+   print("\ntime NOW" ,ini.datetime.now() )
+   print(f"\n\n")
       
-	target_channel = bot.get_channel(memes_highlights_ch_id)
-	global triggers_queue
- 
-	#TESTING BLOCK
-	print(f"\n\nTIMES for meme/quote SENDER trigger\n")
-	print(f"\nis auto quote meme sender activated? {event_ctrl.is_set()}\n")
-	for trig in triggers_queue :
-		print(f"[{trig[0]}]" , end= ' ')
-  
-	print("\ntime NOW" ,datetime.now() )
-	print(f"\n\n")
-	#END TESTING BLOCK
- 
-	while( await event_ctrl.wait() == True ):
-
-		now = datetime.now().strftime('%H')
-		now = datetime.strptime(now , "%H")
-		trigg_sz = len(triggers_queue)
-		lst_trig_time = triggers_queue[-1][0]
-
-		for i in range( trigg_sz - 1 ) : 
-			i_trig_time = triggers_queue[i][0]
-			i_trig_state = triggers_queue[i][1]
-			nxt_i_trig_time = triggers_queue[i + 1][0]
-			lst_trig_state = triggers_queue[-1][1]
-
-			is_triggered = (now >= i_trig_time and now < nxt_i_trig_time and i_trig_state == True)
-			is_triggered_c2 = (now >= lst_trig_time and lst_trig_state == True)#case2 trigger flag: to aviod two branches of else statements with almost same code
-	
-			if is_triggered or is_triggered_c2 :
-		
-				print(f"#########################################")#testing
-				skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
-				print("TRIGGERED! and NOT skipped!") if not skip_trig else print("TRIGGERED! but skipped")#TESTING
-				
-				if is_triggered_c2 : #handles case2 trigger (make hour 00:00:00 the next trigger by setting iTS state to true which is element with index [0][0])
-					print("time now: " , datetime.now() , " current trigger: " , lst_trig_time ," next trigger time: " , triggers_queue[0][0] , " was its turn? " , lst_trig_state ) if not skip_trig else None#TESTING
-					triggers_queue = [ [trig[0],False] if trig[0] != triggers_queue[0][0] else [trig[0],True] for trig in triggers_queue]
-				elif is_triggered  :
-					print("time now: " , datetime.now() , " current trigger: " , i_trig_time ," next trigger time: " , nxt_i_trig_time , " was its turn?  " , i_trig_state ) if not skip_trig else None#TESTING
-					triggers_queue = [ [trig[0],False] if trig[0] != nxt_i_trig_time else [trig[0],True] for trig in triggers_queue]
-		
-				#TESTING BLOCK
-				print(f"\n\nCURRENT TRIGGER QUEUE\n")
-				print("\ntime,state:  ")
-				for trig in triggers_queue :
-					print(f"[{trig[0]} , {trig[1]}]" , end= ' ')
-	
-				print("\ntime NOW" ,datetime.now() )
-				print(f"\n\n")
-				#TESTING BLOCK END
-	
-				meme_or_quote  = True if random.randint(1,3) == 1 else False   #1 == quote  else = meme   (~66% to get meme)
-    
-				if not skip_trig  and meme_or_quote != True : #meme
-					print(f"\n#####BOT CHOICE IS MEME!\n")#TESTING
-					meme_get_task = await bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
-					await aio.sleep(5)
-					meme_embed : discord.Embed = await await_me_maybe(meme_get_task)
-					await target_channel.send(embed= meme_embed)
-					await aio.sleep(5)
-				elif not skip_trig and meme_or_quote == True : #quote
-					quote_proivder = random.randint(0,1)
-					print(f"\n#####BOT CHOICE IS Quote! quote privder id: {quote_proivder} \n")#TESTING
-					prepare_quote_task = await bot.loop.create_task(prepare_quote(invoker= quote_proivder , retrylimit= 10))
-					await aio.sleep(5)
-					quote = await await_me_maybe(prepare_quote_task)
-					await target_channel.send(embed= quote ) if quote_proivder == 1 else await target_channel.send( quote )
-					await aio.sleep(5)
-				# elif (for jokes and gaming news api) #TODO
-		
-				print(f"is_active? {event_ctrl.is_set()}")#TESTING
-				print(f"#########################################")#testing
-				
-			await aio.sleep(1)
-			now = datetime.now().strftime('%H')
-			now = datetime.strptime(now , "%H")
+   print(f"#########################################")#testing
+   skip_trig = True if ini.random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
+   print("TRIGGERED! and NOT skipped!") if not skip_trig else print("TRIGGERED! but skipped")#TESTING
    
-		await aio.sleep(60)#check once every 1 minutes
-  
-   #NOTE : TESTING CODE ( shortend triggers intervals dramatically to find the bugs )
-	# dum = 0 #TESTING
-	# while(await event_ctrl.wait() == True):
+   print("\ntime NOW", ini.datetime.now() )
+   print(f"\n\n")
 
-		# now = datetime.now().strftime('%S')
-		# now = datetime.strptime(now , "%S")
-		# trigg_sz = len(triggers_queue)
-		# lst_trig_time = triggers_queue[-1][0]
+   meme_or_quote  = True if ini.random.randint(1,3) == 1 else False   #1 == quote  else = meme   (~66% to get meme)
 
+   if not skip_trig  and meme_or_quote != True : #meme
+      print(f"\n#####bot CHOICE IS MEME!\n")#TESTING
+      meme_get_task = await ini.bot.loop.create_task(ini.pyrandmeme2(_title= "Some Wizardy Humor👻"))
+      await aio.sleep(3)
+      meme_embed : discord.Embed = await await_me_maybe(meme_get_task)
+      await target_channel.send(embed= meme_embed)
+      await aio.sleep(3)
+   elif not skip_trig and meme_or_quote == True : #quote
+      quote_proivder = ini.random.randint(0,1)
+      print(f"\n#####BOT CHOICE IS Quote! quote privder id: {quote_proivder} \n")#TESTING
+      prepare_quote_task = await ini.bot.loop.create_task(prepare_quote(invoker= quote_proivder , retrylimit= 10))
+      await aio.sleep(3)
+      quote = await await_me_maybe(prepare_quote_task)
+      await target_channel.send(embed= quote) if quote_proivder == 1 else await target_channel.send( quote )
+      await aio.sleep(3)
+   # elif (for jokes and gaming news api) #TODO
 
-		# for i in range( trigg_sz - 1 ) : 
-		# 	dum += 1 #TESTING
-		# 	i_trig_time = triggers_queue[i][0]
-		# 	i_trig_state = triggers_queue[i][1]
-		# 	nxt_i_trig_time = triggers_queue[i + 1][0]
-		# 	lst_trig_state = triggers_queue[-1][1]
-
-		# 	is_triggered = (now >= i_trig_time and now < nxt_i_trig_time and i_trig_state == True)
-		# 	is_triggered_c2 = (now >= lst_trig_time and lst_trig_state == True)#case2 trigger flag: to aviod two branches of else statements with almost same code
-	
-		# 	if is_triggered or is_triggered_c2 :
-				
-		# 		print(f"############################ AUTO MEME QUOTE+  [fucntions is invoked and triggered]####################")#TESTING
-		# 		skip_trig = True if random.randint(1, 3) == 1 else False # 2/3 probability to send and not skip
-		# 		print("TRIGGERED! and NOT skipped!") if not skip_trig else print("TRIGGERED! but skipped")#TESTING
-				
-		# 		if is_triggered_c2 : #handles case2 trigger (make hour 00:00:00 the next trigger by setting iTS state to true which is element with index [0][0])
-		# 			print("time now: " , datetime.now() , " current trigger: " , lst_trig_time ," next trigger time: " , triggers_queue[0][0] , " was its turn? " , lst_trig_state ) if not skip_trig else None#TESTING
-		# 			triggers_queue = [ [trig[0],False] if trig[0] != triggers_queue[0][0] else [trig[0],True] for trig in triggers_queue]
-		# 		elif is_triggered  :
-		# 			print("time now: " , datetime.now() , " current trigger: " , i_trig_time ," next trigger time: " , nxt_i_trig_time , " was its turn?  " , i_trig_state ) if not skip_trig else None#TESTING
-		# 			triggers_queue = [ [trig[0],False] if trig[0] != nxt_i_trig_time else [trig[0],True] for trig in triggers_queue]
-		
-		# 		#TESTING BLOCK
-		# 		print(f"\n\nCURRENT TRIGGER QUEUE")
-		# 		print("\ntime,state:  ")
-		# 		for trig in triggers_queue :
-		# 			print(f"[{trig[0]} , {trig[1]}]" , end= ' ')
-	
-		# 		print("\ntime NOW" ,datetime.now() )
-		# 		print(f"")
-		# 		#TESTING BLOCK
-	
-		# 		meme_or_quote  = True if random.randint(1,3) == 1 else False   
-		# 		if not skip_trig  and meme_or_quote != True : #meme
-		# 			print(f"\n#####BOT CHOICE IS MEME! dum= {dum}\n")#TESTING
-		# 			meme_get_task = await bot.loop.create_task(pyrandmeme2(_title= "Some Wizardy Humor👻"))
-		# 			await aio.sleep(10)
-		# 			meme_embed : discord.Embed = await await_me_maybe(meme_get_task)
-		# 			await target_channel.send(embed= meme_embed)
-		# 			await aio.sleep(5)
-	
-		# 		elif not skip_trig and meme_or_quote == True : #quote
-		# 			print(f"\n#####BOT CHOICE IS QUOTE! dum= {dum}\n\n")#TESTING
-		# 			prepare_quote_task = await bot.loop.create_task(prepare_quote(invoker= 1))
-		# 			await aio.sleep(10)
-		# 			quote = await await_me_maybe(prepare_quote_task)
-		# 			await target_channel.send(content= quote)
-		# 			await aio.sleep(5)
-				
-		# 		print(f"is_active? {event_ctrl.is_set()}")#TESTING
-		# 		print(f"#########################################")#testing
-				
-		# 	# await aio.sleep(1)
-		# 	now = datetime.now().strftime('%S')
-		# 	now = datetime.strptime(now , "%S")
-	
-		# await aio.sleep(1)
+#------------------------------------------------------------------------------------------------------------------------------------------#
+class tracks_queue: #TODO
+   guilds_connected_queues: dict[ discord.Guild.id, list[str] ] = {}
+   #TODO
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
+#NOTE: this is voice player/downloder implementation taken from discord.py examples : https://github.com/Rapptz/discord.py/blob/master/examples/basic_voice.py
+# Suppress noise about console usage from errors
+# youtube_dl.utils.bug_reports_message = lambda: ''
+
+ytdl_format_options = {
+    'format': 'bestaudio/best',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'restrictfilenames': True,
+    'noplaylist': True,
+    'nocheckcertificate': True,
+    'ignoreerrors': False,
+    'logtostderr': False,
+    'quiet': True,
+    'no_warnings': True,
+    'default_search': 'auto',
+    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
+}
+
+ffmpeg_options = {
+    'options': '-vn',
+}
+
+ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+class YTDLSource(discord.PCMVolumeTransformer):
+    def __init__(self, source, *, data, volume=0.5):
+        super().__init__(source, volume)
+
+        self.data = data
+
+        self.title = data.get('title')
+        self.url = data.get('url')
+
+    @classmethod
+    async def from_url(cls, url, *, loop=None, stream=False):
+        loop = loop or aio.get_event_loop()
+        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
+
+        if 'entries' in data:
+            # take first item from a playlist
+            data = data['entries'][0]
+
+        song = data['url'] if stream else ytdl.prepare_filename(data)
+        filename = data['title']
+        return cls(discord.FFmpegPCMAudio(song, **ffmpeg_options), data=data) , filename
