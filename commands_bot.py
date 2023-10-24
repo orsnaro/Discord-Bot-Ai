@@ -13,26 +13,30 @@ import keys
 from typing import List
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #disabled default global help message  from bot constructor then override default by this command
+slash_cmd_ok_msg = "OK ✅"
 @bot.hybrid_command(name="help")
 @commands.cooldown(1, 5)
 async def help( ctx: commands.Context ):
    bot_help_msg_p1: discord.Message = await ctx.reply(content= override_help_msgP1)
-   await ctx.send(reference= bot_help_msg_p1, content= override_help_msgP2)
-   await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+   await ctx.send(content= override_help_msgP2)
+   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="boringwizard", help= "wizy sends a random meme from Reddit")
 @commands.cooldown(1, 5)
 async def boring( ctx: commands.Context ):
    await ctx.send(embed= await pyrandmeme2(_title= "Some Wizardy Humor👻"))
-   await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+
+   #if used via slash command will not add reaction cuz it raises discord error msg not found
+   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
 max_quote_size = 5070
-@bot.hybrid_command(name="wisewiz", help= 'wizy sends a random Quote ')
-async def wise( ctx: commands.Context ):
-   prepare_quote_task =  bot.loop.create_task(prepare_quote(invoker= 0)) # invoker == 0 means command wisewiz invoked
+@bot.hybrid_command(name="wisewiz", help= 'wizy sends a random Quote (quote of type 1 for now glitches slash cmd)')
+async def wise( ctx: commands.Context):
+   quote_api = 1 if ctx.interaction else 0 #type 1 quote api is not async and timesout with slash commands
+   prepare_quote_task =  bot.loop.create_task(prepare_quote(invoker= quote_api, retrylimit= 10)) #invoker == 0 cuases error if used by a slash command (probably cuz its not async)
    quotes = await prepare_quote_task
-   await ctx.reply(content= quotes)
+   await ctx.reply( embed= quotes ) if quote_api == 1 else await ctx.reply( quotes )
 #------------------------------------------------------------------------------------------------------------------------------------------#
 allowed_roles_togglerandom = {
                               "ULT! SAQF": 889532272989053019,
@@ -57,7 +61,7 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context ):
    if  is_allowed == None or  len(is_allowed) <= 0 :
       allowed_ids = list(allowed_roles_togglerandom.values())
       await ctx.message.delete(delay= 15.0) #delete user message it self ( then in .reply we delete bot msg also)
-      await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.reply(
                   allowed_mentions=discord.AllowedMentions(roles=False) ,
                   delete_after= 15.0 ,
@@ -70,7 +74,7 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context ):
                   content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_on  else '`Disabled`' }"
                   )
       await ctx.message.delete(delay= 15.0)
-      await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="quotesz" , help= 'modifies quote MAX number of Characters (default is 200)' )#defaulted to 200
@@ -84,14 +88,14 @@ async def change_quote_mx_sz( ctx: commands.Context, new_quote_sz: str):
                                                        )
       await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
-      await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
    elif not new_quote_sz.isnumeric() :
       bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
                                                        content=f"Ops! Quote size must be a numeric value! current is `{custom_quote_threshhold}` "
                                                        )
       await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
-      await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
    elif int(new_quote_sz) > max_quote_size :
       bot_reply_msg: discord.Message = await ctx.reply(
                   delete_after= 15.0,
@@ -99,15 +103,15 @@ async def change_quote_mx_sz( ctx: commands.Context, new_quote_sz: str):
                   )
       await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
-      await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
    else:
       custom_quote_threshhold = int(new_quote_sz)
       bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
-                     content=f"Quotes max size are now set to `{custom_quote_threshhold}`"
+                     content=f"Quotes max size is now set to `{custom_quote_threshhold}`"
                      )
       await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
       await ctx.message.delete(delay= 15.0)
-      await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 
 @change_quote_mx_sz.error
 async def change_quote_mx_sz_error(error , ctx: commands.Context):
@@ -125,34 +129,34 @@ async def change_quote_mx_sz_error(error , ctx: commands.Context):
 async def ping(ctx: commands.Context):
    bot_latency  = bot.latency
    send_time    = ctx.message.created_at
-   
+
    # next line is naieve datetime obj (all datime obj must be in same type naieve/aware  in order to do arithmatics on them)
-   recieve_time = datetime.now() 
+   recieve_time = datetime.now()
    recieve_time = recieve_time.astimezone(pytz.utc) # converte aware time zone  to naieve time zone and set tz to utc
 
    msg_latency  = (abs(recieve_time - send_time)).total_seconds() * 1000 #mul by 1000 to get in ms #TODO : why  recieve time happends before create time !?
    tot_ping = round(msg_latency , 2)
-   
+
    #NOTE:next line gets the  time needed to recieve user msg and send the respond (usually what users wnat to know)
-   bot_reply_msg = await ctx.reply(delete_after= 15.0 , content= f"Pong! `{tot_ping}ms`" ) 
+   bot_reply_msg = await ctx.reply(delete_after= 15.0 , content= f"Pong! `{tot_ping}ms`" )
    await bot_reply_msg.add_reaction('\U0001F4F6') #📶 emoji unicide == '\U0001F4F6'
    await ctx.message.delete(delay= 15.0)
-   await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="wiz_ping", help= "gets time of bot heartbeat and discrod ack in _ms_ ||__(needs testing)__||" )
 @commands.cooldown(1, 5)
 async def wiz_ping(ctx: commands.Context):
    #NOTE : this gets bot latency between discord servers and the bot client
-   bot_reply_msg = await ctx.reply(delete_after= 15.0 , content= f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`') 
+   bot_reply_msg = await ctx.reply(delete_after= 15.0 , content= f'Pong!  Bot Latency is `{round (bot.latency * 1000 , 2)}ms`')
    await bot_reply_msg.add_reaction('\U0001F4F6') #📶 emoji unicide == '\U0001F4F6'
    await ctx.message.delete(delay= 15.0)
-   await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
 @bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using GPT/BARD ... etc') # command name is defaulted to method name
 @commands.cooldown(1, 5)
 #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
-async def bardAIfast (ctx: commands.Context , * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ): 
+async def bardAIfast (ctx: commands.Context , * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
 #using BARD API
 
    valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
@@ -186,7 +190,7 @@ async def bardAIfast (ctx: commands.Context , * ,full_prompt: str = "EMPTY PROMP
 # command name is defaulted to method name 'bardAI'
 @commands.cooldown(1, 5)
 #NOTE: (search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
-async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "): 
+async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "):
 #using BARD API
    valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
 
@@ -216,8 +220,12 @@ async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. 
 @bot.hybrid_command(name="wizyleave", help= 'wizy leaves voice channel _if_ connected to one')
 @commands.cooldown(1, 5)
 async def leave_voice_wizard( ctx: commands.Context ):
+   if ctx.interaction: #if invoked using slash commmand
+      bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+      await bot_reply_msg.delete(delay= 5)
+
    await ctx.message.delete(delay= 15.0)
-   await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
    await ctx.guild.voice_client.disconnect()
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="wizyjoin", help= 'wizy joins voice channel you are in' )
@@ -229,8 +237,14 @@ async def join_voice_wizard( ctx: commands.Context ):
          await ctx.guild.voice_client.disconnect()
 
       target_voice_channel = ctx.message.author.voice.channel
+
+      if ctx.interaction: #if invoked using slash commmand
+         bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+         await bot_reply_msg.delete(delay= 5)
+
       await ctx.message.delete(delay= 15.0)
-      await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+
       await  target_voice_channel.connect()
    else :
       user = ctx.message.author.mention
@@ -238,9 +252,9 @@ async def join_voice_wizard( ctx: commands.Context ):
                   delete_after= 15.0,
                   content= f"Ops! {user}  you must be in a voice channel!"
                   )
-      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
-      await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name='wizyplay', help='To play song')
 @commands.cooldown(1, 5)
@@ -253,26 +267,26 @@ async def play(ctx: commands.Context, url: str= None):
       if url != None:
          async with ctx.typing():
             #NOTE: if stream arg causes error set to false (download file then play from local pc)
-            song_obj , filename = await YTDLSource.from_url(url, loop=bot.loop, stream= True) 
+            song_obj , filename = await YTDLSource.from_url(url, loop=bot.loop, stream= True)
 
             if voice_channel.is_playing():
                voice_channel.stop()
 
             voice_channel.play(song_obj)
 
-         bot_reply_msg: discord.Message = await ctx.reply(f'**Now playing:** {filename} **-** _By_ {ctx.message.author.mention}')
-         await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-         await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+         bot_reply_msg: discord.Message = await ctx.reply(f'**Now playing:** {filename} **-** _islander_ {ctx.message.author.mention}')
+         ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
          await ctx.message.delete(delay= 15.0)
       else: #play default chill tracks locally on your pc (infinity loop)
          async with ctx.typing():
             if voice_channel.is_playing():
                voice_channel.stop()
-               
+
             await util.play_chill_track(guild_obj)
-            bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} played Wizy's Default MMO Chill Tracks** enjoy! :blue_heart::notes:")
-            await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-            await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+            bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} started Wizy's Default MMO Chill Tracks** enjoy! :blue_heart::notes:")
+            ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+            ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
             await ctx.message.delete(delay= 15.0)
 
    except Exception as e:
@@ -280,8 +294,8 @@ async def play(ctx: commands.Context, url: str= None):
       bot_reply_msg: discord.Message =await ctx.reply("Ops:kissing: ! either The bot is not connected to a voice channel __OR__ provided link is not a YouTube Music",
                                                       delete_after= 15
                                                       )
-      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-      await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name='wizypause', help='This command pauses the song')
@@ -290,11 +304,17 @@ async def pause(ctx: commands.Context):
    voice_client = ctx.message.guild.voice_client
    if voice_client.is_playing():
       await await_me_maybe( voice_client.pause() )
-      await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+
+      if ctx.interaction: #if invoked using slash commmand
+               bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+               await bot_reply_msg.delete(delay= 5)
+
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
       await ctx.message.delete(delay= 15.0)
-   else: 
-      await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
-      await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+   else:
+      bot_reply_msg: discord.Message = await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
+      ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
 
 # #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -304,24 +324,36 @@ async def resume(ctx: commands.Context):
     voice_client = ctx.message.guild.voice_client
     if voice_client.is_paused():
          await await_me_maybe(voice_client.resume())
-         await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+
+         if ctx.interaction: #if invoked using slash commmand
+               bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+               await bot_reply_msg.delete(delay= 5)
+
+         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
          await ctx.message.delete(delay= 15.0)
     else:
-         await ctx.reply(content="wizy wasn't pausing any track. maybe try  **wizyplay** command", delete_after= 15)
-         await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         bot_reply_msg: discord.Message = await ctx.reply(content="wizy wasn't pausing any track. maybe try  **wizyplay** command", delete_after= 15)
+         ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
          await ctx.message.delete(delay= 15.0)
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name='wizystop', help='Stops the song')
 @commands.cooldown(1, 5)
 async def stop(ctx: commands.Context):
     voice_client= ctx.message.guild.voice_client
-    if voice_client.is_playing():
+    if voice_client.is_playing() or voice_client.is_paused(): 
          await await_me_maybe(voice_client.stop())
-         await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+
+         if ctx.interaction: #if invoked using slash commmand
+               bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+               await bot_reply_msg.delete(delay= 5)
+
+         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
          await ctx.message.delete(delay= 15.0)
     else:
-         await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
-         await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         bot_reply_msg: discord.Message = await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
+         ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
          await ctx.message.delete(delay= 15.0)
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name='wizyque', help='Shows the current queue or clears it **(TODO)**') #TODO
@@ -330,9 +362,9 @@ async def queue(ctx: commands.Context, do_clear: str= None):
    if do_clear != None and do_clear.strip().capitalize() == 'CLEAR':
       util.tracks_queue.guilds_connected_queues[ctx.guild.id].clear()
       ctx.reply(content="Track Queue is Cleared!", delete_after= 15)
-      await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
       await ctx.message.delete(delay= 15.0)
-      
+
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name='wizyadd', help='Appends track to end of tracks queue **(TODO)**') #TODO
 @commands.cooldown(1, 5)

@@ -427,8 +427,8 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 	res = None
 	quotes = " "
  
-	if invoker == 0 : #wisewiz invoked it use old pyrandmeme2 (not async)
-		# from commands_bot import custom_quote_threshhold # bad way if importing global non-const values 
+	if invoker == 0 : #wisewiz invoked uses old pyrandmeme2 (not async)
+		# from commands_bot import custom_quote_threshhold #NOTE: bad way if importing global non-const values 
 		import commands_bot  as cmd
   
 		#res : dict =  [{'author': 'J.R.R. Tolkien', 'book': 'The Fellowship of the Ring', 'quote': "I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve."}]c
