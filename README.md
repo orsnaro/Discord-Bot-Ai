@@ -19,13 +19,13 @@
 <details>
 <summary><em>  ✨Patch (2.5.3B) notes </em> </summary>
     
-* remake auto meme-quote sender logic completly now more relaiable and controlled by bot event loop inside CustomBot class
-* make a CustomBot class : better to use setup_hook() inside it instead of on_ready() event
-* add more voice commands: play/pause/resume/stop
-* fix togglerandom cmd
+* remake auto meme-quote sender logic completely. now more reliable and controlled by bot event loop inside CustomBot class
+* make a CustomBot class: turned out to be better to use setup_hook() inside it instead of on_ready() event
+* added more voice commands: play/pause/resume/stop
+* fix togglerandom command
 * add ambient chilling music all the time if bot is connected and not playing any song/track
-* enhance commands cooldown logic ( all commands have 5 secs cooldown )
-* delete all bot sys messages after 5 seconds
+* enhance commands cooldown system ( all commands have 5 secs cooldown )
+* delete all bot sys messages after 15 seconds
 * started the songs/tracks queue (not completed)
 * fixed minor bugs in old/new features
 * update todo list
