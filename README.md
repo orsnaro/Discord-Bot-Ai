@@ -105,8 +105,6 @@
 *  [ ] complete track/songs queue class and it's two commands look(https://stackoverflow.com/questions/61276362/how-to-play-the-next-song-after-first-finished-discord-bot)
        
 *  [ ] tutorial video on all bot features and how to use and invite it to you server ( 2 videos short & long  )
-
-*  [ ] converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
     
 *  [ ] make command groups or cogs
   
@@ -152,7 +150,10 @@
     
 * [ ] Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
+--- 
 
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
 
 ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 ) Bot Ambient track (MMO Chill music) via `wizyplay`
