@@ -28,7 +28,12 @@
 * delete all bot sys messages after 15 seconds
 * started the songs/tracks queue (not completed)
 * fixed minor bugs in old/new features
+* all commands now are turned to `hypred commands` except one mentioning the bot it self as command name
+* all command now has help text that appears in slash commands menu
+* all commands now have reaction feedback if needed
+* all commands now auto deletes bot/user messages after 15sec if needed 
 * update todo list
+
  </details> 
       
       
@@ -40,6 +45,8 @@
  * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
 
  * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
+ 
+ * now all bot commands work in slash commands menu! as well as classic commands style
 
  * now can learn from the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
 
