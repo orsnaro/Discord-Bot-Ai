@@ -198,16 +198,19 @@ async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. 
       full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
    #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
    send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-   ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
-   await send_initMsg_task
-   task_response : tuple = await ask_bard_task
-   embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
+   try:
+      ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
+      await send_initMsg_task
+      task_response : tuple = await ask_bard_task
+      embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
 
-   send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
-   returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
-   del embed
-   del valid_reply
-   del ctx
+      send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
+      returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+      del embed
+      del valid_reply
+   except: 
+      async with ctx.typing():
+         bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 
    # img_embds = list()
    # if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
@@ -341,7 +344,7 @@ async def resume(ctx: commands.Context):
 @commands.cooldown(1, 5)
 async def stop(ctx: commands.Context):
     voice_client= ctx.message.guild.voice_client
-    if voice_client.is_playing() or voice_client.is_paused(): 
+    if voice_client.is_playing() or voice_client.is_paused():
          await await_me_maybe(voice_client.stop())
 
          if ctx.interaction: #if invoked using slash commmand

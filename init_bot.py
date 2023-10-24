@@ -11,7 +11,7 @@ from discord.ext import commands , tasks
 import utils_bot as util
 import asyncio as aio
 import random
-from bardapi import BardAsync , Bard
+from bardapi import BardAsync , Bard , BardCookies , SESSION_HEADERS
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
@@ -35,28 +35,31 @@ from keys import bardAPI_KEY
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 def init_bard_session () :
-	# session = requests.Session()
-	# session.headers = {
-	#          "Host": "bard.google.com",
-	#          "X-Same-Domain": "1",
-	#          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
-	#          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-	#          "Origin": "https://bard.google.com",
-	#          "Referer": "https://bard.google.com/",
-	#      }
-	# session.cookies.set("__Secure-1PSID", bardAPI_KEY)
-	# bard = Bard(token=bardAPI_KEY , session=session, timeout=30)
-	bard = BardAsync(token= bardAPI_KEY ) #add -> language= 'ar' to respond in arabic only (experimental)
-	# while True:
-	# 	try :
-	# 		bard = BardAsync(token= bardAPI_KEY ) #add -> language= 'ar' to respond in arabic only (experimental)
-	# 		break;
+   # session = requests.Session()
+   # session.headers = {
+   #          "Host": "bard.google.com",
+   #          "X-Same-Domain": "1",
+   #          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+   #          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+   #          "Origin": "https://bard.google.com",
+   #          "Referer": "https://bard.google.com/",
+   #      }
+   # session.cookies.set("__Secure-1PSID", bardAPI_KEY)
+   # bard = Bard(token=bardAPI_KEY , session=session, timeout=30)
 
-	# 	except Exception as e :
-	# 		regenerate_cookie()
-	# 		print ( e.__str__() + " TESTING NOTE : this is manual error message from init_bard_session() function")
+   
+   bard = BardAsync(token=keys.bardAPI_KEY) #add -> language= 'ar' to respond in arabic only (experimental)
+   
+   # while True:
+   # 	try :
+   # 		bard = BardAsync(token= bardAPI_KEY ) #add -> language= 'ar' to respond in arabic only (experimental)
+   # 		break;
 
-	return bard
+   # 	except Exception as e :
+   # 		regenerate_cookie()
+   # 		print ( e.__str__() + " TESTING NOTE : this is manual error message from init_bard_session() function")
+
+   return bard
 
 bard = init_bard_session()
 
@@ -74,22 +77,22 @@ default_help_msg = f"""
                    GPTEOUS HELP MESSAGE```
                    **I'M MIGHTY GPTEOUS !** the first GPT-Spirit in Narol's island Volcan guardian , Island's Master right hand  and the begining of Island's new ERA etcetera etcetera... I mean you get it am very special here  :man_mage:
 
-						** :sparkles: __COMMAND GROUP 1: ASK , I shall Answer! __:sparkles:  **
+                  ** :sparkles: __COMMAND GROUP 1: ASK , I shall Answer! __:sparkles:  **
 
- 						:label:    Ask me any where in the Island and  I shall INDEED answer you
+                   :label:    Ask me any where in the Island and  I shall INDEED answer you
 
-						:label:    The question must start start with mentioning me e.g.( <@{wizard_bot_id}> )
+                  :label:    The question must start start with mentioning me e.g.( <@{wizard_bot_id}> )
 
-						:label:    if you want to speak with me more freely with no mentions/commands
-      							   just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond !
+                  :label:    if you want to speak with me more freely with no mentions/commands
+                              just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond !
 
 
-                 				  ** :sparkles: __COMMAND GROUP 2: Wise Quotes & Deep memes __:sparkles:  **
+                               ** :sparkles: __COMMAND GROUP 2: Wise Quotes & Deep memes __:sparkles:  **
 
-						:label:    to get random meme at any time use 'BoringWizard'
-						:label:    to get random quote at any time use 'wisewiz'
+                  :label:    to get random meme at any time use 'BoringWizard'
+                  :label:    to get random quote at any time use 'wisewiz'
 
-						      		:inbox_tray: _Aditional Functionalities and SPELLS coming soon ..._:inbox_tray:
+                              :inbox_tray: _Aditional Functionalities and SPELLS coming soon ..._:inbox_tray:
 
                    __COMANDS LIST__
                    ```fix
@@ -104,17 +107,17 @@ default_help_msg = f"""
                    _(all of them is case INsensitive)_
                    ```
 
-      				```fix
-						**WARNING**: sometimes I won't respond this is mainly due to exceeding max embed char limit
-      				i.e.(6000chars)
-						```
+                  ```fix
+                  **WARNING**: sometimes I won't respond this is mainly due to exceeding max embed char limit
+                  i.e.(6000chars)
+                  ```
                   ```fix
 
 
                    """
 override_help_msgP1 = f"""
 
-> ***MIGHTY GPTEOUS I AM:man_mage:! *** `The first GPT-Spirit in Narol's island.  Volcan guardian. Island Master's right hand. The begining of Island's new ERA etcetera etcetera... I mean you get it am very special here` :fire_hashira: 
+> ***MIGHTY GPTEOUS I AM:man_mage:! *** `The first GPT-Spirit in Narol's island.  Volcan guardian. Island Master's right hand. The begining of Island's new ERA etcetera etcetera... I mean you get it am very special here` :fire_hashira:
 
  :inbox_tray: __Invite ME:__ https://discord.com/api/oauth2/authorize?client_id=1117540489365827594&permissions=8&scope=bot%20applications.commands
 
@@ -123,7 +126,7 @@ override_help_msgP1 = f"""
 :label:    The question must start start with mentioning me e.g.( <@{wizard_bot_id}> ) or just `wizy` <:shyomen:1014210603969171526>
 
 :label:    if you want to speak with me more freely with `chat-mode` instead of `single-prompt` mode
-				just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond! _(if my creds :key:  and :cookie:  still valid and fresh!)_
+            just type anything in my channel <#{narols_island_wizard_channel_id}> and I shall respond! _(if my creds :key:  and :cookie:  still valid and fresh!)_
 
 :label:    to get a random meme at any time use `BoringWizard` :ghost:
 
@@ -134,7 +137,7 @@ override_help_msgP1 = f"""
 :label:    to make me leave a voice channel use `wizyleave` :o:
 
 
-						          			:inbox_tray: ***PLUS Additional Functionalities and SPELLS coming soon ...*** :inbox_tray: \n\n\n
+                                     :inbox_tray: ***PLUS Additional Functionalities and SPELLS coming soon ...*** :inbox_tray: \n\n\n
               \n
 
                    """
@@ -153,37 +156,37 @@ override_help_msgP2 = f"""
                    • `~ <any_of_prev_CMDs>` "your_question"
                    ```
 
-			2. Get a Wizardy Quote
-			```fix
-			• wisewiz
-			```
+         2. Get a Wizardy Quote
+         ```fix
+         • wisewiz
+         ```
 
-			3. Get a Wizardy Meme
-			```fix
-			• boringwizard
-			```
+         3. Get a Wizardy Meme
+         ```fix
+         • boringwizard
+         ```
 
-			4. Check Status & Latency
-			```fix
-			• ping (gets your message latency)
-			• wiz_ping (gets bots latency)
-			```
+         4. Check Status & Latency
+         ```fix
+         • ping (gets your message latency)
+         • wiz_ping (gets bots latency)
+         ```
 
-			5. Control Commands _(only specific roles are eligible to use)_
-			```fix
-			• quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
-			• togglerandom (control activity of #memes-highlights channel)
-			```
+         5. Control Commands _(only specific roles are eligible to use)_
+         ```fix
+         • quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
+         • togglerandom (control activity of #memes-highlights channel)
+         ```
 
-			6. Voice Activity
-			```fix
+         6. Voice Activity
+         ```fix
          • wizyjoin
-			• wizyleave
+         • wizyleave
          • wizyplay <url> (with no url he plays default wizy mmo chill track)
          • wizypause
          • wizyresume
          • wizystop
-			```
+         ```
 
 
                                                                     (ALL COMMANDS ARE CASE INsensitive :man_mage:!)\n\n
@@ -191,7 +194,7 @@ __for known issues/bugs and planned updates please check wizy's GitHub repo. So 
                      * <https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS> \n\n
 
                                                                            `END OF WIZARD HELP MESSAGE`
-						"""
+                  """
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: in order to go  away from on_ready() issues override Bot class and move all on ready to it's setup_hook()
@@ -223,11 +226,11 @@ class CustomBot(commands.Bot):
             self.guilds_not_playing_timer[guild.id] += 5
          else:
             self.guilds_not_playing_timer[guild.id] = 5
-            
+
          if guild.voice_client != None and guild.voice_client.is_connected() :
             if not guild.voice_client.is_playing():
                if self.guilds_not_playing_timer[guild.id] >= 180:
-                  
+
                   await guild.voice_client.channel.send("_3+ minutes of Silence:pleading_face: resuming_ **MMO Chill Track** ...", delete_after= 15)
                   await util.play_chill_track(guild)
                   self.guilds_not_playing_timer[guild.id] = 0
@@ -235,12 +238,12 @@ class CustomBot(commands.Bot):
                self.guilds_not_playing_timer[guild.id] = 0
          else:
             self.guilds_not_playing_timer[guild.id] = 0
-            
+
    @resume_chill_if_free.before_loop
    async def wait_bot_ready(self):
       await self.wait_until_ready()
-   
-      
+
+
    @tasks.loop(hours=2)
    async def auto_memequote_sender_task(self):
       await util.send_rand_quote_meme()
@@ -263,20 +266,20 @@ class CustomBot(commands.Bot):
       #when booting up bot make him join admin room (only for my server wizy home!)
       targetVchannel = self.get_channel(self.default_voice_channel) if target_ch == None else target_ch
       server = targetVchannel.guild
-      
+
       if server.voice_client is not None :
          server.voice_client.disconnect()
-         
+
       await targetVchannel.connect()
-      
+
       if not server.voice_client.is_playing() :
          await util.play_chill_track(server)
-        
-      
+
+
    @play_chill_loop.before_loop
    async def before_play_chill(self):
       await self.wait_until_ready()
-      
+
    async def stop_play_chill_loop(self):
       self.play_chill_loop.cancel()
    async def start_play_chill_loop(self):
@@ -297,12 +300,12 @@ bot = CustomBot(
 def get_last_conv_id()  : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def boot_bot() :
-	log_std = open("std.log" , 'a') #logs all stderr and stdout and discord.py msgs
-	log_discord = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='a')#logs only discord.py msgs
-	if 'IS_PRODUTCION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
-		with contextlib.redirect_stdout(log_std):
-			with contextlib.redirect_stderr(log_std):
-				bot.run(keys.Token_gpteousBot , log_handler= log_discord)#default logging level is info
-	else :
-		bot.run(keys.Token_gpteousBot , log_level= logging.DEBUG) #default handler is stdout , debug log level is more verbose!
+   log_std = open("std.log" , 'a') #logs all stderr and stdout and discord.py msgs
+   log_discord = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='a')#logs only discord.py msgs
+   if 'IS_PRODUTCION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
+      with contextlib.redirect_stdout(log_std):
+         with contextlib.redirect_stderr(log_std):
+            bot.run(keys.Token_gpteousBot , log_handler= log_discord)#default logging level is info
+   else :
+      bot.run(keys.Token_gpteousBot , log_level= logging.DEBUG) #default handler is stdout , debug log level is more verbose!
 #------------------------------------------------------------------------------------------------------------------------------------------#
