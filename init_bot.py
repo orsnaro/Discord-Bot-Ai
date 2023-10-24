@@ -228,7 +228,7 @@ class CustomBot(commands.Bot):
             if not guild.voice_client.is_playing():
                if self.guilds_not_playing_timer[guild.id] >= 180:
                   
-                  await guild.voice_client.channel.send("_ 3 minutes+ of Silence:pleading_face:  resuming **MMO Chill Track** ..._", delete_after= 15)
+                  await guild.voice_client.channel.send("_3+ minutes of Silence:pleading_face: resuming_ **MMO Chill Track** ...", delete_after= 15)
                   await util.play_chill_track(guild)
                   self.guilds_not_playing_timer[guild.id] = 0
             else :
