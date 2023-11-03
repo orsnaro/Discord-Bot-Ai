@@ -223,16 +223,26 @@ class CustomBot(commands.Bot):
    async def  resume_chill_if_free(self):
       for guild in self.guilds:
          if guild.id in self.guilds_not_playing_timer:
-            self.guilds_not_playing_timer[guild.id] += 5
+            # check happens once every 5 secs so increment every time by 5 secs
+            increment_val_sec = 5 
+            self.guilds_not_playing_timer[guild.id] += increment_val_sec
          else:
-            self.guilds_not_playing_timer[guild.id] = 5
+            self.guilds_not_playing_timer[guild.id] = increment_val_sec
 
-         if guild.voice_client != None and guild.voice_client.is_connected() :
+         if guild.voice_client != None and guild.voice_client.is_connected():
             if not guild.voice_client.is_playing():
-               if self.guilds_not_playing_timer[guild.id] >= 180:
-
-                  await guild.voice_client.channel.send("_3+ minutes of Silence:pleading_face: resuming_ **MMO Chill Track** ...")
-                  await util.play_chill_track(guild)
+               threshold_sec = 180 #3 minutes
+               if self.guilds_not_playing_timer[guild.id] >= threshold_sec:
+                  #if there is any user in channel besides wizy the bot play chill music else stay silent
+                  connected_users_cnt = len( guild.voice_client.channel.members ) - 1
+                  if connected_users_cnt >= 1 :
+                     await guild.voice_client.channel.send("*3+ minutes of Silence:pleading_face: resuming* **MMO Chill Track** ...")
+                     await util.play_chill_track(guild)
+                  else:
+                     #TESTING
+                     print("\n\n\n\n\n\n ########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\ ############\n\n\n\n")
+                     #TESTING
+                     
                   self.guilds_not_playing_timer[guild.id] = 0
             else :
                self.guilds_not_playing_timer[guild.id] = 0
@@ -285,6 +295,7 @@ class CustomBot(commands.Bot):
    async def start_play_chill_loop(self):
       self.play_chill_loop.start()
 #------------------------------------------------------------------------------------------------------------------------------------------#
+   
 bot = CustomBot(
                   command_prefix= ("~", '', ' '),
                   case_insensitive= True,
