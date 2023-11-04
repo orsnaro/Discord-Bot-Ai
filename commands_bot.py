@@ -31,14 +31,11 @@ async def boring( ctx: commands.Context ):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="wizyawakened", help= "wizy wakes you up to the truth")
 @commands.cooldown(1, 5)
-async def boring( ctx: commands.Context ):
+async def awake( ctx: commands.Context ):
    ps_post_get_task = await bot.loop.create_task(palestina_free(_title= ":flag_ps: *r/Palestine* :flag_ps:"))
    ps_post_embed_is_video, ps_post_data, ps_post_url = await await_me_maybe(ps_post_get_task)
-      
-   if ps_post_embed_is_video == False:
-      await ctx.send(embed= ps_post_data)
-   else:
-      await ctx.send(content= ps_post_data + '\n' + ps_post_url)
+   
+   await util.final_send_special_ps(ctx, ps_post_embed_is_video, ps_post_data, ps_post_url)
       
    #if used via slash command will not add reaction cuz it raises discord error msg not found
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'

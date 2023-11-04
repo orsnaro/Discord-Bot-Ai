@@ -10,6 +10,7 @@ import init_bot as ini
 import discord.message
 import youtube_dl
 import asyncio as aio
+import aiohttp
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def await_me_maybe(value):
@@ -462,6 +463,106 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 
    return quotes
 #------------------------------------------------------------------------------------------------------------------------------------------#
+def extract_post_info(res: aiohttp.JsonPayload, sz: int):
+   rand_post_no = ini.random2.randint(0,sz - 1)
+   
+   #TESTING BLOCK
+   tst_has_crosspost_parent_list: bool = True if "crosspost_parent_list" in res['data']['children'][rand_post_no]['data']  else False
+   print(f"\n\n\n\n\n TESTING########### \n\n\n invoked palestina_free(): reddit palestine list size : {sz} \n\n\n #########\n")
+   print(res['data']['children'][rand_post_no]['data'])
+   print(f"has_crosspost_parent_list?: {tst_has_crosspost_parent_list}")
+   #TESTING BLOCK
+   
+   
+   
+   # chosen_post_url: this url var might be later changed to maybe video url not post. and might add discrod markdown foramtting to it 
+   chosen_post_url: str = res['data']['children'][rand_post_no]['data']['url']
+   # org_post: this will always stay raw reddit post url with maybe only disable embed discord markdown added to it at very end 
+   # (json itself might return an image url but it's ok for me)
+   org_post: str = res['data']['children'][rand_post_no]['data']['url']
+   chosen_post_text: str = res['data']['children'][rand_post_no]['data']['title']
+   
+   #this key in the json appears when it's a video but marked spoiler (to my knowledge) and outer 'is_video' key will show false which is wrong! there is a video!
+   has_crosspost_parent_list: bool = True if "crosspost_parent_list" in res['data']['children'][rand_post_no]['data'] else False
+   is_video: bool = res['data']['children'][rand_post_no]['data']['is_video'] 
+   
+   post_extracted_info: list = [rand_post_no,
+                          chosen_post_url,
+                          org_post,
+                          chosen_post_text,
+                          has_crosspost_parent_list,
+                          is_video]
+   return (*post_extracted_info,) #without the tuple brackets can't unpack in return statement
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: str, **kwargs):
+   image_extensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp", ".psd", ".raw", ".cr2", ".nef", ".dng", ".arw", ".orf", ".sr2"]
+   org_post = kwargs['org_post']
+   
+   if not kwargs['is_video'] and not kwargs['has_crosspost_parent_list']:
+      if res['data']['children'][rand_post_no]['data']['media'] is None:
+         if kwargs['chosen_post_url'].endswith(tuple(image_extensions)) :#not video
+            kwargs['free_palestina_data'] = discord.Embed(title= kwargs['title'] , description= kwargs['chosen_post_text'] + '\npost: ' + kwargs['chosen_post_url'], color=0xff2a2a)
+            kwargs['free_palestina_data'].set_image(url= kwargs['chosen_post_url'] )
+         else: #not video
+            kwargs['chosen_post_url'] = res['data']['children'][rand_post_no]['data']['url']
+            kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+      else: #not video
+         kwargs['chosen_post_url'] = res['data']['children'][rand_post_no]['data']['url']
+         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+         
+   elif not kwargs['is_video'] and kwargs['has_crosspost_parent_list']:
+      is_crossparent_video = res['data']['children'][rand_post_no]['data']['crosspost_parent_list'][0]['is_video']
+      if is_crossparent_video:
+         kwargs['is_video'] = is_crossparent_video
+         chosen_post_video = None if res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"] is None else res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"]
+         kwargs['chosen_post_url'] = '||' + kwargs['chosen_post_url'] + '||' if chosen_post_video is None else '||'+ chosen_post_video + '||'
+         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+      else: # not video
+         kwargs['free_palestina_data'] = discord.Embed(title= kwargs['title'], description= kwargs['chosen_post_text']+ '\npost: ' + kwargs['chosen_post_url'], color=0xff2a2a)
+         kwargs['free_palestina_data'].set_image(url= kwargs['chosen_post_url'])
+   elif kwargs['is_video']: 
+      chosen_post_video = None if res['data']['children'][rand_post_no]['data']['media']['reddit_video']['fallback_url'] is None else res['data']['children'][rand_post_no]['data']['media']["reddit_video"]["fallback_url"]
+      kwargs['chosen_post_url'] = kwargs['chosen_post_url'] if chosen_post_video is None else chosen_post_video
+      kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+      
+      
+   return [kwargs['is_video'], kwargs['free_palestina_data'], kwargs['chosen_post_url']]
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def prepare_special( res: aiohttp.JsonPayload, rand_post_no:int, special_type: str, **kwargs ):
+   
+   special_type = special_type.lower()
+   prepared_special: list = []
+   
+   if special_type == 'ps':
+      prepared_special = list(
+                              prepare_ps_event(res,
+                                 rand_post_no,
+                                 special_type= 'ps',
+                                 chosen_post_url= kwargs['chosen_post_url'],
+                                 org_post= kwargs['org_post'],
+                                 chosen_post_text= kwargs['chosen_post_text'],
+                                 has_crosspost_parent_list= kwargs['has_crosspost_parent_list'],
+                                 is_video= kwargs['is_video'],
+                                 title= kwargs['title'])
+                             )
+      
+      
+   elif special_type == ...:
+      ... #TODO: to add extra events later
+      
+   return (*prepared_special,) #without the tuple brackets can't unpack in return statement
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def  final_send_special_ps(target_channel: discord.TextChannel, ps_post_embed_is_video: bool, ps_post_data: str|discord.Embed, ps_post_url: str ) -> discord.Message | None : 
+   is_ok_embed_data: bool = type(ps_post_data) == discord.Embed
+   
+   if not ps_post_embed_is_video and is_ok_embed_data:
+      sent_msg = await target_channel.send(embed= ps_post_data)
+   else: #is video and/or data variable is str not discord.Embed
+      sent_msg = await target_channel.send(content= ps_post_data + '\n' + ps_post_url )
+   
+   return sent_msg
+#------------------------------------------------------------------------------------------------------------------------------------------#
 async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_special: bool = False) :
    from init_bot import memes_highlights_ch_id
    target_channel = ini.bot.get_channel(memes_highlights_ch_id)
@@ -480,14 +581,11 @@ async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_s
       print(f"\n#####bot CHOICE IS FREE PALESTINE!\n")#TESTING
       ps_post_get_task = await ini.bot.loop.create_task(ini.palestina_free())
       await aio.sleep(3)
-      ps_post_embed_is_video, ps_post_data , ps_post_url = await await_me_maybe(ps_post_get_task)
       
-      if ps_post_embed_is_video == False:
-         await target_channel.send(embed= ps_post_data)
-      else:
-         await target_channel.send(content= ps_post_data + '\n' + ps_post_url )
-         
+      ps_post_embed_is_video, ps_post_data , ps_post_url = await await_me_maybe(ps_post_get_task)
+      await final_send_special_ps(target_channel, ps_post_embed_is_video, ps_post_data, ps_post_url)
       await aio.sleep(3)
+      
       return 2 #special event type: free Palestine!
       
 

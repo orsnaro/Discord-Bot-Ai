@@ -11,6 +11,7 @@ from discord.ext import commands , tasks
 import utils_bot as util
 import asyncio as aio
 import random
+import random2
 from bardapi import BardAsync , Bard , BardCookies , SESSION_HEADERS
 from inspect import getmembers , isfunction
 import aiohttp
