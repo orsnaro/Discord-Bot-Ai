@@ -31,7 +31,7 @@ async def boring( ctx: commands.Context ):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="wizyawakened", help= "wizy wakes you up to the truth")
 @commands.cooldown(1, 5)
-async def boring( ctx: commands.Context ):
+async def awake( ctx: commands.Context ):
    ps_post_get_task = await bot.loop.create_task(palestina_free(_title= ":flag_ps: *r/Palestine* :flag_ps:"))
    ps_post_embed_is_video, ps_post_data, ps_post_url = await await_me_maybe(ps_post_get_task)
       
