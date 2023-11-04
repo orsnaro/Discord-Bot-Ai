@@ -21,7 +21,7 @@
     
 * add Special events feature to auto meme/quote sender
 * activate one of current special events `FREE PALESTINE 🇵🇸🍉`
-* add command for this event `/wizyawakened` will usually be the command to wellingly call the current event at any time instead of waiting the channel to send post by it self
+* add command for this event `/wizyawakened` (will mostly be the command to wellingly call the current event at any time instead of waiting the channel to send post by it self)
 * fix some bugs regarding reddit post types
 * fix some bugs in `/togglerandom` command also now can toggle special events using it with arg state=2
 
@@ -50,16 +50,9 @@
 
  * now if wizy is free in a voice channel he plays an abmient chilling music track!
    
- * no wizy have special events in command and channel ! current special event `FREE PALESTINE 🇵🇸🍉`
+ * now wizy have special events in command and channel ! current special event `FREE PALESTINE 🇵🇸🍉`
 
  * _soon_ music/tracks queue feature!
-
-
-
- 
-
-
- * ~~fixed some bugs~~
 
  </details>
 
