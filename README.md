@@ -17,22 +17,14 @@
 [aws-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
 
 <details>
-<summary><em>  ✨Patch (2.5.3B) notes </em> </summary>
+<summary><em>  ✨Patch (2.5.4B) notes </em> </summary>
     
-* remake auto meme-quote sender logic completely. now more reliable and controlled by bot event loop inside CustomBot class
-* make a CustomBot class: turned out to be better to use setup_hook() inside it instead of on_ready() event
-* added more voice commands: play/pause/resume/stop
-* fix togglerandom command
-* add ambient chilling music all the time if bot is connected and not playing any song/track
-* enhance commands cooldown system ( all commands have _5 seconds_ cooldown )
-* delete all bot sys messages after _15 seconds_
-* started the songs/tracks queue (not completed)
-* fixed minor bugs in old/new features
-* all commands now are can now be used via slash `/` command menu except one  (asking gpt/bard  by mentioning the bot it self) mainly due to slash commands name restrictions
-* all command now has help text that appears in slash commands menu
-* all commands now have reaction feedback if needed
-* all commands now auto deletes bot/user messages after _15 seconds_ if needed 
-* update todo list
+* add Special events feature to auto meme/quote sender
+* activate one of current special events `FREE PALESTINE 🇵🇸🍉`
+* add command for this event `/wizyawakened` will usually be the command to wellingly call the current event at any time instead of waiting the channel to send post by it self
+* fix some bugs regarding reddit post types
+* fix some bugs in `/togglerandom` command also now can toggle special events using it with arg state=2
+
 
  </details> 
       
@@ -57,6 +49,8 @@
  * now bot has basic voice commands e.g.(`wizyjoin`/`wizyleave`/`wizyplay`/`wizypause`/`wizyresume`/`wizystop`) commands
 
  * now if wizy is free in a voice channel he plays an abmient chilling music track!
+   
+ * no wizy have special events in command and channel ! current special event `FREE PALESTINE 🇵🇸🍉`
 
  * _soon_ music/tracks queue feature!
 
