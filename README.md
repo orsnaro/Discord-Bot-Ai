@@ -24,14 +24,14 @@
 * added more voice commands: play/pause/resume/stop
 * fix togglerandom command
 * add ambient chilling music all the time if bot is connected and not playing any song/track
-* enhance commands cooldown system ( all commands have 5 secs cooldown )
-* delete all bot sys messages after 15 seconds
+* enhance commands cooldown system ( all commands have _5 seconds_ cooldown )
+* delete all bot sys messages after _15 seconds_
 * started the songs/tracks queue (not completed)
 * fixed minor bugs in old/new features
-* all commands now are turned to `hypred commands` except one mentioning the bot it self as command name
+* all commands now are can now be used via slash `/` command menu except one  (asking gpt/bard  by mentioning the bot it self) mainly due to slash commands name restrictions
 * all command now has help text that appears in slash commands menu
 * all commands now have reaction feedback if needed
-* all commands now auto deletes bot/user messages after 15sec if needed 
+* all commands now auto deletes bot/user messages after _15 seconds_ if needed 
 * update todo list
 
  </details> 
