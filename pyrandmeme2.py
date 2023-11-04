@@ -47,7 +47,7 @@ async def palestina_free( _title : str = ":flag_ps: OPEN YOUR EYES & WATCH! :fla
             if not is_video and not has_crosspost_parent_list:
 
                free_palestina = discord.Embed(title= _title , description= chosen_post_text, color=0xff2a2a)
-               free_palestina.set_image(url= '||' + chosen_post_url + '||')
+               free_palestina.set_image(url= chosen_post_url )
                
             elif has_crosspost_parent_list:
                is_crossparent_video = res['data']['children'][rand_post_no]['data']['crosspost_parent_list'][0]['is_video']
