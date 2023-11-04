@@ -29,6 +29,20 @@ async def boring( ctx: commands.Context ):
    #if used via slash command will not add reaction cuz it raises discord error msg not found
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.hybrid_command(name="wizyawakened", help= "wizy wakes you up to the truth")
+@commands.cooldown(1, 5)
+async def boring( ctx: commands.Context ):
+   ps_post_get_task = await bot.loop.create_task(palestina_free(_title= ":flag_ps: *r/Palestine* :flag_ps:"))
+   ps_post_embed_is_video, ps_post_data, ps_post_url = await await_me_maybe(ps_post_get_task)
+      
+   if ps_post_embed_is_video == False:
+      await ctx.send(embed= ps_post_data)
+   else:
+      await ctx.send(content= ps_post_data + '\n' + ps_post_url)
+      
+   #if used via slash command will not add reaction cuz it raises discord error msg not found
+   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+#------------------------------------------------------------------------------------------------------------------------------------------#
 custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
 max_quote_size = 5070
 @bot.hybrid_command(name="wisewiz", help= 'wizy sends a random Quote (quote of type 1 for now glitches slash cmd)')
@@ -51,7 +65,7 @@ allowed_roles_quotesz = {"ULT! SAQF": 889532272989053019,
                          } #check by id not the names cuz they're missing emojies
 @bot.hybrid_command(name="togglerandom", help= 'toggles the auto meme-quote sender feature of the bot wizy')
 @commands.cooldown(1, 5)
-async def toggle_rand_meme_quote_sender( ctx: commands.Context ):
+async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = None ):
 
    global allowed_roles_togglerandom
 
@@ -68,11 +82,37 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context ):
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command..."
                   ) #used a join and map and lambda function just as fast fancy way to print all allowed roles
    else :
-      await bot.stop_auto_memequote_sender() if bot.is_auto_memequote_on else await bot.start_auto_memequote_sender()
-      await ctx.reply(
-                  delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_on  else '`Disabled`' }"
-                  )
+      
+      state = None if state is None else int(state)
+      special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
+      start, stop = 1, 0
+      if state is None:
+         await bot.toggle_auto_memequote_sender_state(state = start) if bot.is_auto_memequote_state == 0 else await bot.toggle_auto_memequote_sender_state(state= stop)
+         await ctx.reply(
+                     delete_after= 15.0,
+                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                     )
+      elif state == 0:
+         await bot.toggle_auto_memequote_sender_state(state = stop) 
+         await ctx.reply(
+                     delete_after= 15.0,
+                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                     )
+         
+      elif state == 1:
+         await bot.toggle_auto_memequote_sender_state(state = start)
+         await ctx.reply(
+                     delete_after= 15.0,
+                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0 else '`Disabled`' }"
+                     )
+         
+      elif state >= special_event: #special events has value >= 2
+         await bot.toggle_auto_memequote_sender_state(state = special_event) 
+         await ctx.reply(
+                     delete_after= 15.0,
+                     content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}`"
+                     )
+         
       await ctx.message.delete(delay= 15.0)
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 
@@ -198,16 +238,19 @@ async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. 
       full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
    #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
    send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-   ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
-   await send_initMsg_task
-   task_response : tuple = await ask_bard_task
-   embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
+   try:
+      ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
+      await send_initMsg_task
+      task_response : tuple = await ask_bard_task
+      embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
 
-   send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
-   returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
-   del embed
-   del valid_reply
-   del ctx
+      send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
+      returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+      del embed
+      del valid_reply
+   except: 
+      async with ctx.typing():
+         bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 
    # img_embds = list()
    # if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
@@ -341,7 +384,7 @@ async def resume(ctx: commands.Context):
 @commands.cooldown(1, 5)
 async def stop(ctx: commands.Context):
     voice_client= ctx.message.guild.voice_client
-    if voice_client.is_playing() or voice_client.is_paused(): 
+    if voice_client.is_playing() or voice_client.is_paused():
          await await_me_maybe(voice_client.stop())
 
          if ctx.interaction: #if invoked using slash commmand

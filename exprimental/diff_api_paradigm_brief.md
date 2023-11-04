@@ -1,0 +1,6 @@
+Here is a brief overview of the different API types and how they use endpoints:
+
+SOAP APIs: SOAP APIs typically use a single endpoint for all operations. The client sends a SOAP message to the endpoint with the desired operation and the necessary data. The server then responds with a SOAP message containing the results of the operation.
+RPC APIs: RPC APIs typically have a separate endpoint for each procedure that they expose. The client sends a request to the appropriate endpoint with the name of the procedure and the necessary parameters. The server then responds with the results of the procedure call.
+GraphQL APIs: GraphQL APIs typically have a single endpoint for all queries. The client sends a GraphQL query to the endpoint with the data they want to retrieve. The server then responds with a GraphQL response containing the requested data.
+Webhook APIs: Webhook APIs typically have a single endpoint that clients can subscribe to. When an event occurs, the server sends an HTTP POST request to the endpoint with information about the event.
