@@ -36,11 +36,11 @@
     
  * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
 
- * now can enjoy Mighty GPTeuos memes using `BoringWizard` command
+ * now can enjoy Mighty GPTeuos memes using `/BoringWizard` command
  
  * now all bot commands work in slash commands menu! as well as classic commands style
 
- * now can learn from the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `WiseWiz` command
+ * now can learn from the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `/WiseWiz` command
 
  * now long Bard AI answers is working in [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
 
@@ -71,7 +71,7 @@
 
 &ensp;***FIRST***: &ensp;&nbsp;✔️Invite me to a server  [`invite link`](https://discord.com/api/oauth2/authorize?client_id=1117540489365827594&permissions=8&scope=bot%20applications.commands)
 
-***SECOND***: ✔️type `help` in any Chat channel to learn my commands then use them!
+***SECOND***: ✔️type `/help` in any Chat channel to learn my commands then use them!
    
 ***FINALLY***: &nbsp;✔️report me any issues!
    
