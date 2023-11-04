@@ -85,22 +85,22 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = Non
       
       state = None if state is None else int(state)
       special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
+      start, stop = 1, 0
       if state is None:
-         start, stop = 1, 0
          await bot.toggle_auto_memequote_sender_state(state = start) if bot.is_auto_memequote_state == 0 else await bot.toggle_auto_memequote_sender_state(state= stop)
          await ctx.reply(
                      delete_after= 15.0,
                      content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
                      )
       elif state == 0:
-         await bot.toggle_auto_memequote_sender_state(state = 0) if bot.is_auto_memequote_state == 0 else await bot.toggle_auto_memequote_sender_state(state= 0)
+         await bot.toggle_auto_memequote_sender_state(state = stop) 
          await ctx.reply(
                      delete_after= 15.0,
                      content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
                      )
          
       elif state == 1:
-         await bot.toggle_auto_memequote_sender_state(state = 1)
+         await bot.toggle_auto_memequote_sender_state(state = start)
          await ctx.reply(
                      delete_after= 15.0,
                      content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0 else '`Disabled`' }"
