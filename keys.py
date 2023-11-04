@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.2B
-                          version Date :  23 / 10 / 2023
+                          Version : v2.5.4B
+                          version Date :  4 / 11 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : #
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
