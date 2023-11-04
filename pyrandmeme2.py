@@ -40,6 +40,7 @@ async def palestina_free( _title : str = ":flag_ps: OPEN YOUR EYES & WATCH! :fla
             #TESTING BLOCK
             
             chosen_post_url: str = res['data']['children'][rand_post_no]['data']['url']
+            org_post: str = res['data']['children'][rand_post_no]['data']['url']
             chosen_post_text: str = res['data']['children'][rand_post_no]['data']['title']
             
             #this key in the json appears when it's a video but marked spoiler (to my knowledge) and outer 'is_video' key will show false which is wrong! there is a video!
@@ -49,14 +50,14 @@ async def palestina_free( _title : str = ":flag_ps: OPEN YOUR EYES & WATCH! :fla
             if not is_video and not has_crosspost_parent_list:
                if res['data']['children'][rand_post_no]['data']['media'] is None:
                   if chosen_post_url.endswith(tuple(image_extensions)) :
-                     free_palestina = discord.Embed(title= _title , description= chosen_post_text, color=0xff2a2a)
+                     free_palestina = discord.Embed(title= _title , description= chosen_post_text + '\npost: ' + chosen_post_url, color=0xff2a2a)
                      free_palestina.set_image(url= chosen_post_url )
                   else:
                      chosen_post_url = res['data']['children'][rand_post_no]['data']['url']
-                     free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text
+                     free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text + f'\npost: {org_post}'
                else:
                   chosen_post_url = res['data']['children'][rand_post_no]['data']['url']
-                  free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text
+                  free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text + f'\npost: {org_post}'
                   
             elif has_crosspost_parent_list:
                is_crossparent_video = res['data']['children'][rand_post_no]['data']['crosspost_parent_list'][0]['is_video']
@@ -64,13 +65,13 @@ async def palestina_free( _title : str = ":flag_ps: OPEN YOUR EYES & WATCH! :fla
                   is_video = is_crossparent_video
                   chosen_post_video = None if res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"] is None else res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"]
                   chosen_post_url = '||' + chosen_post_url + '||' if chosen_post_video is None else '||'+ chosen_post_video + '||'
-                  free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text
+                  free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text + f'\npost: {org_post}'
                else:
-                  free_palestina = discord.Embed(title= _title , description= chosen_post_text, color=0xff2a2a)
+                  free_palestina = discord.Embed(title= _title , description= chosen_post_text+ '\npost: ' + chosen_post_url, color=0xff2a2a)
                   free_palestina.set_image(url= chosen_post_url)
             else: 
                chosen_post_video = None if res['data']['children'][rand_post_no]['data']['media']['reddit_video']['fallback_url'] is None else res['data']['children'][rand_post_no]['data']['media']["reddit_video"]["fallback_url"]
                chosen_post_url = chosen_post_url if chosen_post_video is None else chosen_post_video
-               free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text
+               free_palestina = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + chosen_post_text + f'\npost: {org_post}'
             
             return is_video , free_palestina, chosen_post_url
