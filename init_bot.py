@@ -177,7 +177,7 @@ override_help_msgP2 = f"""
          5. Control Commands _(only specific roles are eligible to use)_
          ```fix
          • quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
-         • togglerandom (control activity of #memes-highlights channel)
+         • togglerandom (control activity of #memes-highlights channel: `pass nothin` toggles, `0` disable, `1` enable normal mode, `2+` enable special events mode )
          ```
 
          6. Voice Activity
@@ -188,6 +188,11 @@ override_help_msgP2 = f"""
          • wizypause
          • wizyresume
          • wizystop
+         ```
+         
+         7. Special
+         ```fix
+         • wizyawakened
          ```
 
 
@@ -267,15 +272,25 @@ class CustomBot(commands.Bot):
       #TESTING
       await self.wait_until_ready()
 
-   async def toggle_auto_memequote_sender_state(self, state:int = 0) -> bool :
-      self.is_auto_memequote_state = state
+   async def toggle_auto_memequote_sender_state(self, state:int = None ) -> bool :
       
-      if state == 0:
-         self.auto_memequote_sender_task.cancel()
+      if state is None: 
+         if self.is_auto_memequote_state > 0 :
+            self.auto_memequote_sender_task.cancel()
+            self.is_auto_memequote_state = 0
+         else:
+            self.auto_memequote_sender_task.start()
+            self.is_auto_memequote_state = 1
+      elif state == 0:
+         if self.auto_memequote_sender_task.is_running():
+            self.auto_memequote_sender_task.cancel()
+            self.is_auto_memequote_state = 0
       elif state == 1:
-         self.auto_memequote_sender_task.start()
+         if not self.auto_memequote_sender_task.is_running():
+            self.auto_memequote_sender_task.start()
+            self.is_auto_memequote_state = 1
       elif state == 2: #special eventof type: FREE Palestine!
-         pass
+            self.is_auto_memequote_state = 2
          
          
       return self.is_auto_memequote_state

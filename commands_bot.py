@@ -65,7 +65,7 @@ allowed_roles_quotesz = {"ULT! SAQF": 889532272989053019,
                          } #check by id not the names cuz they're missing emojies
 @bot.hybrid_command(name="togglerandom", help= 'toggles the auto meme-quote sender feature of the bot wizy')
 @commands.cooldown(1, 5)
-async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = 1 ):
+async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = None ):
 
    global allowed_roles_togglerandom
 
@@ -82,14 +82,31 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = 1 )
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command..."
                   ) #used a join and map and lambda function just as fast fancy way to print all allowed roles
    else :
-      special_event = state #specially made to switch memes and quotes to post on palestine only (and for any special events later on)
-      if state is None  or not state >= 2:
-         await bot.toggle_auto_memequote_sender_state(state = 1) if bot.is_auto_memequote_state == 0 else await bot.toggle_auto_memequote_sender_state(state= 0)
+      
+      state = None if state is None else int(state)
+      special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
+      if state is None:
+         start, stop = 1, 0
+         await bot.toggle_auto_memequote_sender_state(state = start) if bot.is_auto_memequote_state == 0 else await bot.toggle_auto_memequote_sender_state(state= stop)
          await ctx.reply(
                      delete_after= 15.0,
-                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state  else '`Disabled`' }"
+                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
                      )
-      elif state == special_event:
+      elif state == 0:
+         await bot.toggle_auto_memequote_sender_state(state = 0) if bot.is_auto_memequote_state == 0 else await bot.toggle_auto_memequote_sender_state(state= 0)
+         await ctx.reply(
+                     delete_after= 15.0,
+                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                     )
+         
+      elif state == 1:
+         await bot.toggle_auto_memequote_sender_state(state = 1)
+         await ctx.reply(
+                     delete_after= 15.0,
+                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0 else '`Disabled`' }"
+                     )
+         
+      elif state >= special_event: #special events has value >= 2
          await bot.toggle_auto_memequote_sender_state(state = special_event) 
          await ctx.reply(
                      delete_after= 15.0,
