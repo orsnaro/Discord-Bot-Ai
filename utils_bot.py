@@ -462,7 +462,7 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 
    return quotes
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def send_rand_quote_meme(target_channel : discord.TextChannel = None) :
+async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_special: bool = False) :
    from init_bot import memes_highlights_ch_id
    target_channel = ini.bot.get_channel(memes_highlights_ch_id)
 
@@ -475,6 +475,21 @@ async def send_rand_quote_meme(target_channel : discord.TextChannel = None) :
 
    print("\ntime NOW", ini.datetime.now() )
    print(f"\n\n")
+
+   if is_special : #special event (experimental) 
+      print(f"\n#####bot CHOICE IS FREE PALESTINE!\n")#TESTING
+      ps_post_get_task = await ini.bot.loop.create_task(ini.palestina_free())
+      await aio.sleep(3)
+      ps_post_embed_is_video, ps_post_data , ps_post_url = await await_me_maybe(ps_post_get_task)
+      
+      if ps_post_embed_is_video == False:
+         await target_channel.send(embed= ps_post_data)
+      else:
+         await target_channel.send(content= ps_post_data + '\n' + ps_post_url )
+         
+      await aio.sleep(3)
+      return 2 #special event type: free Palestine!
+      
 
    meme_or_quote  = True if ini.random.randint(1,3) == 1 else False   #1 == quote  else = meme   (~66% to get meme)
 

@@ -16,6 +16,7 @@ from inspect import getmembers , isfunction
 import aiohttp
 import requests
 from pyrandmeme2 import pyrandmeme2
+from pyrandmeme2 import palestina_free
 # from quote_async.quote import quote #TODO ( complete your quote lib fork and make it fully async )
 from quote import quote
 from random_word import RandomWords
@@ -27,6 +28,7 @@ import logging
 import contextlib
 import os
 import keys
+import sys
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
@@ -201,7 +203,7 @@ __for known issues/bugs and planned updates please check wizy's GitHub repo. So 
 class CustomBot(commands.Bot):
 
    async def setup_hook(self):
-      self.is_auto_memequote_on = True
+      self.is_auto_memequote_state = 1 if len(sys.argv) <= 1 else int(sys.argv[1]) #0 off | 1 on normal mode | 2 on special mode
       self.default_voice_channel: int = wizy_voice_channel
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
       self.resume_chill_if_free.start()
@@ -222,9 +224,9 @@ class CustomBot(commands.Bot):
    @tasks.loop(seconds= 5)
    async def  resume_chill_if_free(self):
       for guild in self.guilds:
+         increment_val_sec = 5 
          if guild.id in self.guilds_not_playing_timer:
             # check happens once every 5 secs so increment every time by 5 secs
-            increment_val_sec = 5 
             self.guilds_not_playing_timer[guild.id] += increment_val_sec
          else:
             self.guilds_not_playing_timer[guild.id] = increment_val_sec
@@ -240,7 +242,7 @@ class CustomBot(commands.Bot):
                      await util.play_chill_track(guild)
                   else:
                      #TESTING
-                     print("\n\n\n\n\n\n ########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\ ############\n\n\n\n")
+                     print("\n\n\n\n\n\n TESTING########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\n######################\n\n\n\n")
                      #TESTING
                      
                   self.guilds_not_playing_timer[guild.id] = 0
@@ -256,20 +258,27 @@ class CustomBot(commands.Bot):
 
    @tasks.loop(hours=2)
    async def auto_memequote_sender_task(self):
-      await util.send_rand_quote_meme()
+      await util.send_rand_quote_meme(is_special= True if self.is_auto_memequote_state >= 2 else False)
 
    @auto_memequote_sender_task.before_loop
    async def before_start_auto_memequote_sender(self):
+      #TESTING
+      print(f"\n\n\n\n\n TESTING#####################   \n\n\n you auto_memequote_sender state is : {self.is_auto_memequote_state} \n\n\n\n ######################")
+      #TESTING
       await self.wait_until_ready()
 
-   async def stop_auto_memequote_sender(self) -> bool :
-      self.is_auto_memequote_on = False
-      self.auto_memequote_sender_task.cancel()
-      return self.is_auto_memequote_on
-   async def start_auto_memequote_sender(self) -> bool :
-      self.is_auto_memequote_on = True
-      self.auto_memequote_sender_task.start()
-      return self.is_auto_memequote_on
+   async def toggle_auto_memequote_sender_state(self, state:int = 0) -> bool :
+      self.is_auto_memequote_state = state
+      
+      if state == 0:
+         self.auto_memequote_sender_task.cancel()
+      elif state == 1:
+         self.auto_memequote_sender_task.start()
+      elif state == 2: #special eventof type: FREE Palestine!
+         pass
+         
+         
+      return self.is_auto_memequote_state
 
    @tasks.loop(hours= 3)
    async def play_chill_loop(self, target_ch: discord.VoiceChannel= None):
