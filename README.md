@@ -87,6 +87,9 @@
 > ##  🛠 TODO :
 #### ~⚠️ Do This BEFORE any New Features  &rarr;  *MIGRATE TO PYCORD.py!*~ -> [discord.py](https://github.com/Rapptz/discord.py)  is maintained Again!
 
+<details>
+<summary><em>  ⌛  in-progress </em> </summary>
+    
 *  [ ]  Documentation for functions / classes repo. first readme.md draft
 
 *  [ ] complete track/songs queue class and it's two commands look(https://stackoverflow.com/questions/61276362/how-to-play-the-next-song-after-first-finished-discord-bot)
@@ -137,8 +140,13 @@
     
 * [ ] Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
 
---- 
 
+ </details> 
+
+
+<details>
+<summary><em>  🟢 Done </em> </summary>
+    
 ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 ) converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
 
@@ -192,6 +200,11 @@
 )  ~send msg in parts is it exceeds max size in bot special channel~
 
 <sub>  _more todoes and tasks in discrod `testing` channel and in [`main_wizard_bot.py`](./main_wizard_bot.py)_ </sub>
+
+
+ </details> 
+ 
+
 
 
 
