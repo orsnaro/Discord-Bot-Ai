@@ -13,6 +13,8 @@ import asyncio as aio
 import random
 import random2
 from bardapi import BardAsync , Bard , BardCookies , SESSION_HEADERS
+from openai import AsyncOpenAI
+import openai
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
@@ -33,10 +35,14 @@ import sys
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
-from keys import bardAPI_KEY
-
 #------------------------------------------------------------------------------------------------------------------------------------------#
+def init_gpt_session():
+   #by default checks keys in sys. env variables check func docstring
+   gpt = AsyncOpenAI(api_key= keys.openaiAPI_KEY, organization= keys.openaiAPI_ORG_ID) 
+   return gpt   
 
+gpt = init_gpt_session()
+#------------------------------------------------------------------------------------------------------------------------------------------#
 def init_bard_session () :
    # session = requests.Session()
    # session.headers = {
@@ -149,39 +155,46 @@ override_help_msgP2 = f"""
 
 
 * __FULL COMANDS LIST & ALIASES__
-                   1. Ask The wizard
+                   1. Ask The wizard (Bard)
                    ```fix
-                   • `wizy` "your_question"
+                   • `WizyBard` "your_question"
                    • `bard` "your_question"
-                   • `wizard` "your_question"
-                   • `wizardspirit` "your_question"
-                   • @WizardSpirit "your_question"
+                   • `wizyb` "your_question"
                    • `~ <any_of_prev_CMDs>` "your_question"
                    ```
+                   
+         2. Ask The wizard (GPT)
+         ```fix
+         • `wizyGPT` "your_question"
+         • `gpt` "your_question"
+         • `wizy` "your_question"
+         • `wizardspirit` "your_question"
+         • `~ <any_of_prev_CMDs>` "your_question"
+         ```
 
-         2. Get a Wizardy Quote
+         3. Get a Wizardy Quote
          ```fix
          • wisewiz
          ```
 
-         3. Get a Wizardy Meme
+         4. Get a Wizardy Meme
          ```fix
          • boringwizard
          ```
 
-         4. Check Status & Latency
+         5. Check Status & Latency
          ```fix
          • ping (gets your message latency)
          • wiz_ping (gets bots latency)
          ```
 
-         5. Control Commands _(only specific roles are eligible to use)_
+         6. Control Commands _(only specific roles are eligible to use)_
          ```fix
          • quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
          • togglerandom (control activity of #memes-highlights channel: `pass nothin` toggles, `0` disable, `1` enable normal mode, `2+` enable special events mode )
          ```
 
-         6. Voice Activity
+         7. Voice Activity
          ```fix
          • wizyjoin
          • wizyleave
@@ -191,7 +204,7 @@ override_help_msgP2 = f"""
          • wizystop
          ```
          
-         7. Special
+         8. Special
          ```fix
          • wizyawakened
          ```

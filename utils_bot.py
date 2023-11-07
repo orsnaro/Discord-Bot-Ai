@@ -111,11 +111,11 @@ async def prepare_send_wizard_channel_ans_msg( _bard_response : tuple  , message
       full_response = supress_msg_body_url_embeds(full_response)
       await message.reply(content= full_response  , mention_author= True)
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000) -> tuple :
+def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000, is_bard:bool = True) -> tuple :
 
 
    links_msg_header = f"\n```ini\n [Sources & links]```" #len = 29 [0 -> 28]
-   links_list = list( set(_bard_response[1]) ) #remove duplicate links
+   links_list = list( set( _bard_response[1]) if is_bard else set(_bard_response[1]))#TODO: add gpt + #remove duplicate links
 
    #CHECK if there is images between the links and move them to bard_images_list(at_end):
 
@@ -163,20 +163,21 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
    return (final_links , _bard_response , lnk1_len)
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_msg_limit = 2000) -> str :
+def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_msg_limit = 2000, is_bard:bool = True) -> str :
 
    imgs_msg_header = f"\n```ini\n [Images]``` \n"
-   bard_imgs_list = list( set(_bard_response[2]) ) #remove duplicate imgs
+   
+   imgs_list = list( set( _bard_response[2]) if is_bard else set(_bard_response[2]) )#TODO: add gpt + #remove duplicate imgs
 
    #IMAGES MSG FRAGMENTER SECTION (currently discord only allow 5 messages per message and ignores the later ones and we'll stick with 5 images also at max)
    tot_img_len = 0
-   imgs_list_sz = len(bard_imgs_list)
+   imgs_list_sz = len(imgs_list)
    imgs_discord_lmt = 5
    imgs_crnt_lmt = _imgs_limit # while loop iterator + used later to find last allowed img indx
 
    i = 0
-   while  tot_img_len < discord_msg_limit - 1  and i < imgs_crnt_lmt  and i < imgs_list_sz : # make sure i dont send more than 5 images + make sure that  links of images doesnt exceed 2000char + also make sure  dont go passs bard_imgs_list size
-         tot_img_len += len(bard_imgs_list[i])
+   while  tot_img_len < discord_msg_limit - 1  and i < imgs_crnt_lmt  and i < imgs_list_sz : # make sure i dont send more than 5 images + make sure that  links of images doesnt exceed 2000char + also make sure  dont go passs imgs_list size
+         tot_img_len += len(imgs_list[i])
          i += 1
 
    allowed_imgs : int = i
@@ -186,7 +187,7 @@ def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_m
 
 
    #FINAL FORMAT FOR imgs MESSAGE
-   final_imgs = imgs_msg_header + '\n'.join(bard_imgs_list[ : imgs_crnt_lmt])  #list is zero based and end at limit - 1
+   final_imgs = imgs_msg_header + '\n'.join(imgs_list[ : imgs_crnt_lmt])  #list is zero based and end at limit - 1
    return final_imgs
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -239,7 +240,119 @@ def skip_line(full_ans):
   return '\n'.join(lines[1:])
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
-async def ask_bard(user_query : str , user_name = "Narol island master" ) -> tuple:
+#TODO: users chat histroy (a user history reses  when gpt restarts or if reaches total 20 messages from one user)
+class UserAiChat:
+   
+   queries_limit = 20
+   chats_ai_dict: dict = {} #key:value => {'userid': UserAiChat_obj}
+   
+   def __init__(self, userId:str):
+      self.userId = userId
+      
+      if self.userId not in self.chats_ai_dict:
+         self.chats_ai_dict[userId] = self
+         #each history element(gpt): {'role': system,user,asistant ,'content': str}
+         self.history_gpt: list[dict] = []
+         self.history_bard: list[dict] = []
+         
+      else: 
+         #dont make new/reset history there is already one! (mostly this won't happen we handle this before making new obj. But! just in case...)
+         self.history_gpt: list[dict] = self.chats_ai_dict[userId].history_gpt
+         self.history_bard: list[dict] = self.chats_ai_dict[userId].history_bard
+         self.chats_ai_dict[userId].__del__()
+         if userId in self.chats_ai_dict: del self.chats_ai_dict[userId]
+         self.chats_ai_dict[userId] = self
+      
+
+      
+   def append_chat_msg(self, msg, ai_type:str = 'gpt') -> int :
+      
+      '''
+      if return == 0 (fail)
+      if return == 1 (done)
+      if return == 2 (done + cleared history due to 'queries_limit' exceeding)
+      '''
+      
+      if ai_type == 'gpt':
+         #so we want only to clear if user msgs exceeds limit not all chat msgs
+         user_msgs_cnt = (len(self.history_gpt) - 1) // 2
+         if user_msgs_cnt >= self.queries_limit:
+            self.history_gpt.clear()
+            self.history_gpt += msg
+            return 2#done + done + cleared history due to 'queries_limit' exceeding
+         else: #still can append to history
+            self.history_gpt += msg
+            return 1
+            
+      elif ai_type == 'bard': 
+         #so we want only to clear if user msgs exceeds limit not all chat msgs
+         user_msgs_cnt = (len(self.history_bard) - 1) // 2
+         if user_msgs_cnt >= self.queries_limit:
+            self.history_bard.clear()
+            self.history_bard += msg
+            return 2 #done + done + cleared history due to 'queries_limit' exceeding
+         else: #still can append to history
+            self.history_bard += msg
+            return 1 #done
+         
+      else: 
+         return 0 #fail
+#------------------------------------------------------------------------------------------------------------------------------------------#
+#TODO GPT
+async def ask_gpt(user_query, user: discord.User) -> tuple:
+   character= "GPTeous Wizard whose now living in discord server called Narol's Island"
+   series = "Harry Potter"
+   sys_prompt = f"""I want you to act like {character} from {series}.
+   I want you to respond and answer like {character} using the tone, manner and vocabulary {character} would use.
+   Do not write any explanations. Only answer like {character}.
+   You must know all of the knowledge of {character}.
+   My first sentence is \"Hi {character} I'm {user.display_name}.\""
+   """
+   gpt_user_msg = [{'role': 'user', 'content': user_query}]
+   
+   userId: str = str(user.id)
+   
+   if userId in UserAiChat.chats_ai_dict:
+      UserAiChat.chats_ai_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
+      user_gpt_history = UserAiChat.chats_ai_dict[userId].history_gpt
+      
+   else: #first chat with gpt
+      new_chat = UserAiChat(userId)
+      gpt_starter_prompt =[
+          {"role": "system", "content": sys_prompt},
+          {"role": "user", "content": user_query}
+          ]
+  
+      new_chat.append_chat_msg(msg= gpt_starter_prompt, ai_type= 'gpt')
+      UserAiChat.chats_ai_dict[str(userId)] = new_chat
+      user_gpt_history = UserAiChat.chats_ai_dict[userId].history_gpt
+
+   #TESTING
+   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n {user_gpt_history}  ############# \n\n\n")
+   #TESTING
+    
+   
+   gpt_payload= await ini.gpt.chat.completions.create(
+         model="gpt-3.5-turbo",
+         max_tokens= 250,
+         messages= user_gpt_history
+         # stream= True
+      )
+ 
+   #TESTING
+   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
+   #TESTING
+   
+   gpt_resp = await await_me_maybe( gpt_payload.choices[0].message.content)
+   gpt_user_msg = [{"role": "assistant", "content": gpt_resp}]
+   UserAiChat.chats_ai_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
+   
+   resp_id_gpt = await await_me_maybe( gpt_payload.id ) 
+   
+   return (gpt_resp, resp_id_gpt)
+#------------------------------------------------------------------------------------------------------------------------------------------#
+
+async def ask_bard(user_query: str, user_name = "Narol island's master" ) -> tuple:
    character= "GPTeous Wizard whose now living in discord server called Narol's Island "
    series = "Harry Potter"
    classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}"
@@ -281,7 +394,7 @@ async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , 
 bard_conversation_ids_buffer = set()
 def save_gpt_last_conversation_id() : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_discord_embed( bard_ans_data : tuple  , is_reply : bool = False) -> discord.Embed :
+def prepare_discord_embed( _ans_data: tuple, is_reply: bool = False, is_bard= True) -> discord.Embed :
    #TODO : handle if embed exceeds max size of max size of fields ( ini.bot will continue work anyway but tell user that OF happend of paganating)
    '''
 EMBED TOTAL MAX SIZE is 6000 chars ( # NOTE : use reactions and pagination if exceeded )
@@ -299,102 +412,142 @@ class EmbedLimits(object):
         Name = 256
    '''
 
- #TESTING BLOCK
-   print ("\n\n\n TESTING : EMBED conetns lengths :")
-   print ("ans text" , bard_ans_data[0] )
-   print ("#######ans text len" , len(bard_ans_data[0]) )
 
-   print ("links" , bard_ans_data[1] )
-   print ("images" , bard_ans_data[2] )
-   imgs_sz =0
-   for img in bard_ans_data[2]:
-      imgs_sz += len(img)
-   print ("#######imgs len" , imgs_sz)
-   print ("############# len images" , imgs_sz)
-   tot_len = len(bard_ans_data[0]) + len(bard_ans_data[1]) + len(bard_ans_data[2]) + 200
- #TESTING BLOCK
+   #TODO : this is a mess refactor it later you could do it in half codes!  
+   if is_bard :
+      bard_ans_data = _ans_data
+      ansText = bard_ans_data[0]
+      footerIcon="https://em-content.zobj.net/thumbs/120/whatsapp/352/scroll_1f4dc.png"
+      wizardChannelLink ="https://discord.com/channels/797143628215877672/1118953370510696498"
+      note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
+      embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
+      timeNow = ini.datetime.now()
+      author = "Bard AI"
+      bardIcon = "https://i.imgur.com/u0J6wRz.png"
+      redTint = 10038562
+      darkGreen = discord.Colour.dark_green()
+      
+      
+      #TESTING BLOCK
+      print ("\n\n\n TESTING : EMBED conetns lengths :")
+      print ("ans text" , bard_ans_data[0] )
+      print ("#######ans text len" , len(bard_ans_data[0]) )
 
-   ansText = bard_ans_data[0]
-   footerIcon="https://em-content.zobj.net/thumbs/120/whatsapp/352/scroll_1f4dc.png"
-   wizardChannelLink ="https://discord.com/channels/797143628215877672/1118953370510696498"
-   note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
-   embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
-   timeNow = ini.datetime.now()
-   author = "Bard AI"
-   bardIcon = "https://i.imgur.com/u0J6wRz.png"
-   redTint = 10038562
-   darkGreen = discord.Colour.dark_green()
+      print ("links" , bard_ans_data[1] )
+      print ("images" , bard_ans_data[2] )
+      imgs_sz =0
+      for img in bard_ans_data[2]:
+         imgs_sz += len(img)
+      print ("#######imgs len" , imgs_sz)
+      print ("############# len images" , imgs_sz)
+      tot_len = len(bard_ans_data[0]) + len(bard_ans_data[1]) + len(bard_ans_data[2]) + 200
+      #TESTING BLOCK
 
-   embed = discord.Embed(type='rich' , timestamp= timeNow , color= darkGreen , title= embedTitle ,url= wizardChannelLink , description= ansText + " \n `*END OF ANSWER*` ") #url will be  hyperlink in title
-   embed.set_author(name= author, url="https://bard.google.com" , icon_url= bardIcon )
+      embed = discord.Embed(type='rich',
+                            timestamp= timeNow,
+                            color= darkGreen,
+                            title= embedTitle,
+                            url= wizardChannelLink,
+                            description= ansText + " \n `*END OF ANSWER*` "
+                            ) #url will be  hyperlink in title
+      
+      embed.set_author(name= author, url="https://bard.google.com" , icon_url= bardIcon )
 
-   if bard_ans_data[1] is not None and len(bard_ans_data[1]) != 0 :
+      if bard_ans_data[1] is not None and len(bard_ans_data[1]) != 0 :
 
-      bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so I removed duplicates
+         bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so I removed duplicates
 
-  #TESTING BLOCk
-      link_sz =0
-      for i in range(len(bard_ans_data[1])):
-         link_sz += len(bard_ans_data[1][i])
-      print ("#######links len" , link_sz)
-  #TESTING BLOCk
-
-
-      tot_len_of_links_sections = 0
-      for i in range(len(bard_ans_links)):
-         tot_len_of_links_sections += len(bard_ans_links[i])
-
-      if tot_len_of_links_sections >= 1022:
-
-         one_field_mx = 1022 #less than discord_limit  (for safety)
-         super_list = [] #each element is an list of links / content that is tot char counts is <= 1023
-         super_list.append([])
-         links_list = bard_ans_links
-         max_i =  len(bard_ans_links)
-         char_cnt , field_indx , i  = 0 , 0 , 0 # vars controlling while loop
-         bullet_point_format_len = 6
-         while i < max_i:
-            char_cnt += len(links_list[i]) + bullet_point_format_len #
-
-            if char_cnt >= one_field_mx :
-               super_list[field_indx][0] = '\n * ' + super_list[field_indx][0] #fix join dont format 1st element
-               embed.add_field(name= f"_ __sources p({field_indx + 1})__  _"  , inline= False , value= '\n* '.join(super_list[field_indx]) )
-               char_cnt = 0
-               field_indx += 1
-               super_list.append([])
-               super_list[field_indx].append(links_list[i])
-            else :
-               super_list[field_indx].append(links_list[i])
-
-            i += 1 #TODO : solve loss of some links
-
-         del super_list
-         del links_list
+   #TESTING BLOCk
+         link_sz =0
+         for i in range(len(bard_ans_data[1])):
+            link_sz += len(bard_ans_data[1][i])
+         print ("#######links len" , link_sz)
+   #TESTING BLOCk
 
 
-      else:
-         bard_ans_links[0] = '\n * ' + bard_ans_links[0] #fix join dont format 1st element
-         tmp = '\n * '.join(bard_ans_links) #TESTING
-         print ("TESTING final sources format " , tmp)
-         embed.add_field(name= f"_ __sources & links__  _"  , inline= False , value= '\n * '.join(bard_ans_links))
+         tot_len_of_links_sections = 0
+         for i in range(len(bard_ans_links)):
+            tot_len_of_links_sections += len(bard_ans_links[i])
 
-   if is_reply :
-      embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
+         if tot_len_of_links_sections >= 1022:
 
-   embed.set_footer(text= f"Scroll ID({bard_ans_data[3]})" , icon_url= footerIcon )
+            one_field_mx = 1022 #less than discord_limit  (for safety)
+            super_list = [] #each element is an list of links / content that is tot char counts is <= 1023
+            super_list.append([])
+            links_list = bard_ans_links
+            max_i =  len(bard_ans_links)
+            char_cnt , field_indx , i  = 0 , 0 , 0 # vars controlling while loop
+            bullet_point_format_len = 6
+            while i < max_i:
+               char_cnt += len(links_list[i]) + bullet_point_format_len #
 
- #TESTING BLOCK
-   field_sz =0
-   for i in range(len(embed.fields)):
+               if char_cnt >= one_field_mx :
+                  super_list[field_indx][0] = '\n * ' + super_list[field_indx][0] #fix join dont format 1st element
+                  embed.add_field(name= f"_ __sources p({field_indx + 1})__  _",
+                                  inline= False,
+                                  value= '\n* '.join(super_list[field_indx]) 
+                                  )
+                  char_cnt = 0
+                  field_indx += 1
+                  super_list.append([])
+                  super_list[field_indx].append(links_list[i])
+               else :
+                  super_list[field_indx].append(links_list[i])
+
+               i += 1 #TODO : solve loss of some links
+
+            del super_list
+            del links_list
+
+
+         else:
+            bard_ans_links[0] = '\n * ' + bard_ans_links[0] #fix join dont format 1st element
+            tmp = '\n * '.join(bard_ans_links) #TESTING
+            print ("TESTING final sources format " , tmp)
+            embed.add_field(name= f"_ __sources & links__  _",
+                            inline= False,
+                            value= '\n * '.join(bard_ans_links))
+
+      if is_reply :
+         embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
+
+      embed.set_footer(text= f"Scroll ID({bard_ans_data[3]})" , icon_url= footerIcon )
+
+      #TESTING BLOCK
       field_sz += len((embed.fields)[i])
+      print ("\n\n###### embed field sz" ,field_sz)
+      print ("###### embed author sz "  ,len(embed.author))
+      print ("###### embed desc sz "  ,len(embed.description))
+      print ("###### embed foot sz " ,len(embed.footer))
+      print ("###### embed title " ,len(embed.title))
+      print ("###### embed tot " ,len(embed))
+      #TESTING BLOCK
+   
+   elif not is_bard:
+      gpt_ans_data = _ans_data
+      ansText = gpt_ans_data[0]
+      ansID = gpt_ans_data[1]
+      footerIcon="https://em-content.zobj.net/thumbs/120/whatsapp/352/scroll_1f4dc.png"
+      wizardChannelLink ="https://discord.com/channels/797143628215877672/1118953370510696498"
+      note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
+      embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
+      timeNow = ini.datetime.now()
+      author = "Chat GPT"
+      gptIcon = "https://i.imgur.com/UTbxXpc.jpg"
+      redTint = 10038562 #a color
+      darkGreen = discord.Colour.dark_green()
 
-   print ("\n\n###### embed field sz" ,field_sz)
-   print ("###### embed author sz "  ,len(embed.author))
-   print ("###### embed desc sz "  ,len(embed.description))
-   print ("###### embed foot sz " ,len(embed.footer))
-   print ("###### embed title " ,len(embed.title))
-   print ("###### embed tot " ,len(embed))
- #TESTING BLOCK
+      embed = discord.Embed(type='rich',
+                            timestamp= timeNow,
+                            color= darkGreen,
+                            title= embedTitle,
+                            url= wizardChannelLink,
+                            description= ansText + " \n `*END OF ANSWER*` "
+                            ) #url will be  hyperlink in title
+      
+      embed.set_author(name= author, url="https://chat.openai.com", icon_url= gptIcon )
+      embed.set_footer(text= f"Scroll ID({ansID})", icon_url= footerIcon )
+      
 
    return embed
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -658,3 +811,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         song = data['url'] if stream else ytdl.prepare_filename(data)
         filename = data['title']
         return cls(discord.FFmpegPCMAudio(song, **ffmpeg_options), data=data) , filename
+
+#------------------------------------------------------------------------------------------------------------------------------------------#
+
+      
+      

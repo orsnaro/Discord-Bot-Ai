@@ -7,8 +7,8 @@
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 from init_bot import *
-from utils_bot import ask_bard , get_rand_greeting , prepare_discord_embed , prepare_quote
-from utils_bot import check_msg , get_new_reply_prompt, YTDLSource , await_me_maybe
+from utils_bot import ask_bard, ask_gpt, get_rand_greeting, prepare_discord_embed, prepare_quote
+from utils_bot import check_msg, get_new_reply_prompt, YTDLSource, await_me_maybe
 import keys
 from typing import List
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -189,24 +189,58 @@ async def wiz_ping(ctx: commands.Context):
    await ctx.message.delete(delay= 15.0)
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
-#NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
-@bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using GPT/BARD ... etc') # command name is defaulted to method name
+#TODO
+@bot.hybrid_command( name="wizygpt", aliases=["wizy", "wizardspirit", "gpt"], help="Wizard finds your answer scroll from the depth of OpenAi GPT dungeons!") # command name is defaulted to method name 'gpt'
 @commands.cooldown(1, 5)
-#(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
-async def bardAIfast (ctx: commands.Context , * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
-#using BARD API
+async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 
-   valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
+   valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
 
    if valid_reply[0] and valid_reply[1] is not  None :
       full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
 
    #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
-   send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-   ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
-   await send_initMsg_task
-   task_response : tuple = await ask_bard_task
-   embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
+   if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+      await send_initMsg_task
+   else:
+      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for your Answer!...**" ))
+      await send_initMsg_task
+      
+   ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author ))
+   task_response: tuple(str, str) = await ask_gpt_task
+   embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+
+   send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
+   returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+   
+   del embed
+   del valid_reply
+   del ctx
+# #------------------------------------------------------------------------------------------------------------------------------------------#
+#NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
+@bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using BARD ... etc') # command name is defaulted to method name
+@commands.cooldown(1, 5)
+#(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
+async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
+#using BARD API
+
+   valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message, chk_type= 2)
+
+   if valid_reply[0] and valid_reply[1] is not  None :
+      full_prompt = await get_new_reply_prompt(valid_reply[1], full_prompt)
+
+   #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
+   if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+      await send_initMsg_task
+   else:
+      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for your Answer!...**" ))
+      await send_initMsg_task
+      
+   ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author ))
+   task_response : tuple = await ask_gpt_task
+   embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
 
    send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
    returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
@@ -222,8 +256,41 @@ async def bardAIfast (ctx: commands.Context , * ,full_prompt: str = "EMPTY PROMP
    # 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
    # 	await send_img_msg_task
 #------------------------------------------------------------------------------------------------------------------------------------------#
+# #NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
+# @bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using BARD ... etc') # command name is defaulted to method name
+# @commands.cooldown(1, 5)
+# #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
+# async def bardAIfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
+# #using BARD API
 
-@bot.hybrid_command(name="wizard", aliases=["wizy", "wizardspirit", "bard"], help= 'wizy answers you questions using GPT/BARD ... etc')
+#    valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message, chk_type= 2)
+
+#    if valid_reply[0] and valid_reply[1] is not  None :
+#       full_prompt = await get_new_reply_prompt(valid_reply[1], full_prompt)
+
+#    #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
+#    send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+#    ask_bard_task = bot.loop.create_task(ask_bard(full_prompt, user_name= ctx.author.display_name ))
+#    await send_initMsg_task
+#    task_response : tuple = await ask_bard_task
+#    embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
+
+#    send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
+#    returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+#    del embed
+#    del valid_reply
+#    del ctx
+
+#    # img_embds = list()
+#    # if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
+#    # 	for img in task_response[2]:
+#    # 		img_embds.append(discord.Embed(type='image').set_image(img))
+
+#    # 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
+#    # 	await send_img_msg_task
+# #------------------------------------------------------------------------------------------------------------------------------------------#
+
+@bot.hybrid_command(name="wizybard", aliases=["wizyb", "bard"], help= 'wizy answers you questions using BARD ... etc')
 # command name is defaulted to method name 'bardAI'
 @commands.cooldown(1, 5)
 #NOTE: (search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
@@ -239,7 +306,7 @@ async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. 
       ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
       await send_initMsg_task
       task_response : tuple = await ask_bard_task
-      embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
+      embed = prepare_discord_embed(task_response , is_reply= valid_reply[0], is_bard= True)
 
       send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
       returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
@@ -410,25 +477,6 @@ async def queue(ctx: commands.Context, do_clear: str= None):
 @commands.cooldown(1, 5)
 async def addTOqueue(ctx: commands.Context):
    pass  #TODO
-# #------------------------------------------------------------------------------------------------------------------------------------------#
-#TODO
-# @bot.command(name="wizardgpt" , aliases =["wizardgpt " , "gpt"]) # command name is defaulted to method name 'gpt'
-# async def gpt (ctx : commands.Context , * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
-#    async with aiohttp.ClientSession() as session: #with just is for handling errors and session ending
-#       payload = {
-#          "model": "text-davinci-003", # this is a GPT text model meaning you cant have series of prompts => only one question one answer at a time . later I may try chat/image.. models with discord
-#          "prompt": full_prompt,
-#          "temperature": 0.5, #max = 1 very creative ,min = 0 restrict deterministic, each ans to same question varry if high creativity
-#          "max_tokens" : 40, #GPT answer max length (let us start with short length not to increase response time and exhoust token balance)
-#          "presence_penalty": 0, #higher will discourge gpt to repeat tokens in generated text
-#          "frequency_penalty": 0, #lower value incourage gpt to use the more frequent tokens in training data DB more in generated text
-#          "best_of": 1,#remove if cause an error (no much docs for it but seems to take only first ans among list of answers)
-#       }
-#       headers = {"Authorization": f"Bearer {keys.openaiAPI_KEY}"}
-#       async with session.post("https://api.openai.com/v1/chat/completions" , json=payload , headers=headers) as respond: #if sucess returns awaitable coroutine value = ClientResponse obj
-#          response = await respond.json()
-#          embed = discord.Embed(type='rich' , title="MIGHTY GPTEOUS Wizard!! info-gathering Spell casted! \n" , description=response['choice'][0]['text'])
-#          await ctx.reply(embed=embed)       # short cut for ctx.send()
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 
 

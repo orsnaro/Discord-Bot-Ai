@@ -23,7 +23,9 @@ async def on_message(message: discord.Message):
    try: #if bard or gpt not available handle that
       if await check_msg(wizard_ch_msg , targetChannelId= wizard_channels):
       #NOTE : if want to disable talk to all bots in also check if author.bot != True in check_msg() func
-         ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content , user_name= wizard_ch_msg.author.display_name) ) #if error replace display_name with name
+         ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content,
+                                                         user_name= wizard_ch_msg.author.display_name) 
+                                               ) #if error replace display_name with name
             
          task_response : tuple = await ask_bard_task
 
@@ -42,10 +44,18 @@ async def on_message(message: discord.Message):
             if len(final_imgs) > 0:
                have_imgs = True
                
-         await sub_sections_msg_sending_ctrl( wizard_ch_msg  ,  final_links , lnk1_len , final_imgs ,  have_imgs	 , have_links)
+         await sub_sections_msg_sending_ctrl( wizard_ch_msg,
+                                             final_links,
+                                             lnk1_len,
+                                             final_imgs,
+                                             have_imgs,
+                                             have_links
+                                             )
          await aio.sleep(5)
    except:
-      await message.reply(content= "Wizy says He is not Here comeback later :face_with_peeking_eye: ", delete_after= 15)
+      await message.reply(content= "Wizy says He is not Here comeback later :face_with_peeking_eye: ",
+                          delete_after= 15
+                          )
 
 
 
