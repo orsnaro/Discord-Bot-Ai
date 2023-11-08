@@ -14,18 +14,21 @@
 ---
 
 
-> ## 📣 Now Bot is hosted on AWS EC2 servers!
-[aws-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
+> ## 📣 Now Bot is hosted on AWS EC2 servers(🔴)!
+[AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
+
+> ## 📣 NEW release is out ( for patch V2.5.5B  )!
+[Release v2.5.5B Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.5B)
 
 <details>
-<summary><em>  ✨Patch (2.5.4B) notes </em> </summary>
+<summary><em>  ✨Patch (2.5.5B) notes </em> </summary>
     
-* add Special events feature to auto meme/quote sender
+* add `/wizyaimode` choose between two generative AI models `GPT`/ `Bard`
+* add `/wizygpt` and make gpt default and main wizy chatting option 
+* refactoring some commands 
+* edit `on_message()` to accomodate new GPT features
+* support to `Bard` still there but the API is down most of time
 * activate one of current special events `FREE PALESTINE 🇵🇸🍉`
-* add command for this event `/wizyawakened` (will mostly be the command to wellingly call the current event at any time instead of waiting the channel to send post by it self)
-* fix some bugs regarding reddit post types
-* fix some bugs in `/togglerandom` command also now can toggle special events using it with arg state=2
-
 
  </details> 
       
@@ -34,8 +37,10 @@
 
 <details>
 <summary><em>  ✨ Current version (v2.5B) main features! </em> </summary>
-    
- * now understands your arabic messages! ( but still responds in English will respond in arabic __soon...__)
+
+ * now Finally you can use Chat GPT for free via our wizy bot -_[video](https://youtu.be/8Je6Pb5EYmI)_- in discord (you are also free to choose between `gpt` or `bard` though bard's API isn't stable at all!)
+ *     
+ * now understands your arabic messages! 
 
  * now can enjoy Mighty GPTeuos memes using `/BoringWizard` command
  
