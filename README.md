@@ -18,7 +18,7 @@
 [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
 
 > ## 📣 NEW release is out ( for patch V2.5.5B  )!
-[Release v2.5.5B Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.5B)
+[Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
 
 <details>
 <summary><em>  ✨Patch (2.5.5B) notes </em> </summary>
