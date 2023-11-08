@@ -23,12 +23,12 @@
 <details>
 <summary><em>  ✨Patch (2.5.5B) notes </em> </summary>
     
-* add Special events feature to auto meme/quote sender
+* add `/wizyaimode` choose between to generative AI models `GPT`/ `Bard`
+* add `/wizygpt` and make gpt default and main wizy chatting option 
+* refactoring some commands 
+* edit `on_message()` to accomodate new GPT features
+* support to `Bard` still there but the API is down most of time
 * activate one of current special events `FREE PALESTINE 🇵🇸🍉`
-* add command for this event `/wizyawakened` (will mostly be the command to wellingly call the current event at any time instead of waiting the channel to send post by it self)
-* fix some bugs regarding reddit post types
-* fix some bugs in `/togglerandom` command also now can toggle special events using it with arg state=2
-
 
  </details> 
       
