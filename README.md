@@ -14,11 +14,11 @@
 ---
 
 
-> ## 📣 Now Bot is hosted on AWS EC2 servers(🔴)!
-[AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
+> ## 📣 Now Bot is hosted on AWS EC2 servers(🔴)! [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
 
-> ## 📣 NEW release is out ( for patch V2.5.5B  )!
-[Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
+
+> ## 📣 NEW release is out ( for patch V2.5.5B  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
+---
 
 <details>
 <summary><em>  ✨Patch (2.5.5B) notes </em> </summary>
@@ -123,7 +123,7 @@
 
 * [ ]  OOP it!  and handle errors!
 
-* [ ]  save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
+* [ ]  (bard)save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
 
 * [ ]  complete [`bard_key_refresh.py`](./bard_key_refresh.py)
 
@@ -137,8 +137,6 @@
 
 * [ ]  add and test poe-API (starred at my GitHub)
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
-
-* [ ] add command to switch between BARD mode and poe-GPT mode
   
 * [ ]  ~use google translator API~
   
@@ -152,6 +150,9 @@
 
 <details>
 <summary><em>  🟢 Done </em> </summary>
+ 
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) add command to switch between BARD mode and poe-GPT mode
     
 ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 ) converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
