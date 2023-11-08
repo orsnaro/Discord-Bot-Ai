@@ -23,7 +23,7 @@
 <details>
 <summary><em>  ✨Patch (2.5.5B) notes </em> </summary>
     
-* add `/wizyaimode` choose between to generative AI models `GPT`/ `Bard`
+* add `/wizyaimode` choose between two generative AI models `GPT`/ `Bard`
 * add `/wizygpt` and make gpt default and main wizy chatting option 
 * refactoring some commands 
 * edit `on_message()` to accomodate new GPT features
