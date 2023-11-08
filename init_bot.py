@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.4B
-                          version Date :  4 / 11 / 2023
+                          Version : v2.5.5B
+                          version Date :  8 / 11 / 2023
                           Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -13,6 +13,8 @@ import asyncio as aio
 import random
 import random2
 from bardapi import BardAsync , Bard , BardCookies , SESSION_HEADERS
+from openai import AsyncOpenAI
+import openai
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
@@ -33,10 +35,14 @@ import sys
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
-from keys import bardAPI_KEY
-
 #------------------------------------------------------------------------------------------------------------------------------------------#
+def init_gpt_session():
+   #by default checks keys in sys. env variables check func docstring
+   gpt = AsyncOpenAI(api_key= keys.openaiAPI_KEY, organization= keys.openaiAPI_ORG_ID) 
+   return gpt   
 
+gpt = init_gpt_session()
+#------------------------------------------------------------------------------------------------------------------------------------------#
 def init_bard_session () :
    # session = requests.Session()
    # session.headers = {
@@ -149,15 +155,14 @@ override_help_msgP2 = f"""
 
 
 * __FULL COMANDS LIST & ALIASES__
-                   1. Ask The wizard
-                   ```fix
-                   • `wizy` "your_question"
-                   • `bard` "your_question"
-                   • `wizard` "your_question"
-                   • `wizardspirit` "your_question"
-                   • @WizardSpirit "your_question"
-                   • `~ <any_of_prev_CMDs>` "your_question"
-                   ```
+                           
+         1. Ask The wizard (GPT)
+         ```fix
+         • `wizyGPT` "your_question"
+         • `wizy` "your_question"
+         • `wizardspirit` "your_question"
+         • `~ <any_of_prev_CMDs>` "your_question"
+         ```
 
          2. Get a Wizardy Quote
          ```fix
@@ -179,6 +184,7 @@ override_help_msgP2 = f"""
          ```fix
          • quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
          • togglerandom (control activity of #memes-highlights channel: `pass nothin` toggles, `0` disable, `1` enable normal mode, `2+` enable special events mode )
+         • wizyaimode (controls the AI model used in wizard chat channel. `ai_name` values : `gpt` or `bard`)
          ```
 
          6. Voice Activity
@@ -211,6 +217,7 @@ class CustomBot(commands.Bot):
    async def setup_hook(self):
       self.is_auto_memequote_state = 1 if len(sys.argv) <= 1 else int(sys.argv[1]) #0 off | 1 on normal mode | 2 on special mode
       self.default_voice_channel: int = wizy_voice_channel
+      self.wizy_chat_ch_ai_type: str = 'gpt'
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
       self.resume_chill_if_free.start()
       self.auto_memequote_sender_task.start()
