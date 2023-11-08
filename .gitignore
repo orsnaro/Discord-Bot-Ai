@@ -14,3 +14,4 @@ std.log
 discord.log
 .is_autovEnv
 *.webm
+tst.py
