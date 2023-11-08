@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.4B
-                          version Date :  4 / 11 / 2023
+                          Version : v2.5.5B
+                          version Date :  8 / 11 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -40,8 +40,6 @@ async def awake( ctx: commands.Context ):
    #if used via slash command will not add reaction cuz it raises discord error msg not found
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
-custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
-max_quote_size = 5070
 @bot.hybrid_command(name="wisewiz", help= 'wizy sends a random Quote (quote of type 1 for now glitches slash cmd)')
 async def wise( ctx: commands.Context):
    quote_api = 1 if ctx.interaction else 0 #type 1 quote api is not async and timesout with slash commands
@@ -58,6 +56,13 @@ allowed_roles_togglerandom = {
 allowed_roles_quotesz = {"ULT! SAQF": 889532272989053019,
                          "ULT! ADMIN": 889931295365414993,
                          "ULT! CODER": 1014300476814147656,
+                         "Spirits Overlord": 1118266805006389289
+                         } #check by id not the names cuz they're missing emojies
+allowed_roles_change_ai = {"ULT! SAQF": 889532272989053019,
+                         "ULT! ADMIN": 889931295365414993,
+                         "ULT! CODER": 1014300476814147656,
+                         "Land MASTERS": 890586687623798834,
+                         "ISLE! Booster": 1013995284470169761,
                          "Spirits Overlord": 1118266805006389289
                          } #check by id not the names cuz they're missing emojies
 @bot.hybrid_command(name="togglerandom", help= 'toggles the auto meme-quote sender feature of the bot wizy')
@@ -78,81 +83,40 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = Non
                   delete_after= 15.0 ,
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command..."
                   ) #used a join and map and lambda function just as fast fancy way to print all allowed roles
-   else :
-      
-      state = None if state is None else int(state)
-      special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
-      start, stop = 1, 0
-      if state is None:
-         await bot.toggle_auto_memequote_sender_state(state = start) if bot.is_auto_memequote_state == 0 else await bot.toggle_auto_memequote_sender_state(state= stop)
-         await ctx.reply(
-                     delete_after= 15.0,
-                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
-                     )
-      elif state == 0:
-         await bot.toggle_auto_memequote_sender_state(state = stop) 
-         await ctx.reply(
-                     delete_after= 15.0,
-                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0  else '`Disabled`' }"
-                     )
-         
-      elif state == 1:
-         await bot.toggle_auto_memequote_sender_state(state = start)
-         await ctx.reply(
-                     delete_after= 15.0,
-                     content=f"random memes & quotes feature is {'`Enabled`' if bot.is_auto_memequote_state != 0 else '`Disabled`' }"
-                     )
-         
-      elif state >= special_event: #special events has value >= 2
-         await bot.toggle_auto_memequote_sender_state(state = special_event) 
-         await ctx.reply(
-                     delete_after= 15.0,
-                     content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}`"
-                     )
-         
-      await ctx.message.delete(delay= 15.0)
-      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-
+   else:
+      await util.process_send_togglerandom_cmd(ctx= ctx, _state= state)
 #------------------------------------------------------------------------------------------------------------------------------------------#
+@bot.hybrid_command(name="wizyaimode", help= "choose between generative AI models used in wizy's chat channel: gpt / bard")
+@commands.cooldown(1, 5)
+@commands.has_any_role(*list(allowed_roles_change_ai.values()))
+async def change_wizy_ai_type( ctx: commands.Context, ai_name:str = None ):
+   await util.process_send_change_wizy_ai_cmd(ctx= ctx, _ai_name= None if ai_name is None else ai_name.strip().lower())
+   
+      
+@change_wizy_ai_type.error
+async def change_wizy_ai_type_error(ctx: commands.Context , error):
+   print (f'\n\nTESTING#################E R R O R: {error}\n\n')
+   if isinstance(error , commands.MissingAnyRole):
+      allowed_ids = list(allowed_roles_change_ai.values())
+      await ctx.reply(
+                  allowed_mentions=discord.AllowedMentions(roles=False),
+                  delete_after= 15.0,
+                  content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command..."
+                  ) #used a join and map and lambda function just as fast fancy way to print all allowed roles
+#------------------------------------------------------------------------------------------------------------------------------------------#
+custom_quote_threshhold = 200 #defaulted to 200 but you can change it via quotesz at runtime easily
+max_quote_size = 5070
 @bot.hybrid_command(name="quotesz" , help= 'modifies quote MAX number of Characters (default is 200)' )#defaulted to 200
 @commands.cooldown(1, 5)
 @commands.has_any_role(*list(allowed_roles_quotesz.values()))
 async def change_quote_mx_sz( ctx: commands.Context, new_quote_sz: str):
    global custom_quote_threshhold
-   if new_quote_sz is None or len(new_quote_sz) <= 0 :
-      bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
-                                                       content=f"Ops! please specify  `Quotes max size` current is `{custom_quote_threshhold}` "
-                                                       )
-      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-      await ctx.message.delete(delay= 15.0)
-      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-   elif not new_quote_sz.isnumeric() :
-      bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
-                                                       content=f"Ops! Quote size must be a numeric value! current is `{custom_quote_threshhold}` "
-                                                       )
-      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-      await ctx.message.delete(delay= 15.0)
-      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-   elif int(new_quote_sz) > max_quote_size :
-      bot_reply_msg: discord.Message = await ctx.reply(
-                  delete_after= 15.0,
-                  content=f"Ops! max Quote size is {max_quote_size}! current size is `{custom_quote_threshhold}` "
-                  )
-      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-      await ctx.message.delete(delay= 15.0)
-      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-   else:
-      custom_quote_threshhold = int(new_quote_sz)
-      bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
-                     content=f"Quotes max size is now set to `{custom_quote_threshhold}`"
-                     )
-      await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-      await ctx.message.delete(delay= 15.0)
-      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+   await util.process_send_quotesz_cmd(ctx= ctx, _quote_sz = new_quote_sz, _quote_threshhold= custom_quote_threshhold, _max_sz= max_quote_size)
+   
 
 @change_quote_mx_sz.error
-async def change_quote_mx_sz_error(error , ctx: commands.Context):
-   print (f'\n\n#################{error}')
+async def change_quote_mx_sz_error(ctx: commands.Context , error):
+   print (f'\n\nTESTING#################E R R O R: {error}')
    if isinstance(error , commands.MissingAnyRole):
       allowed_ids = list(allowed_roles_quotesz.values())
       await ctx.reply(
@@ -190,7 +154,7 @@ async def wiz_ping(ctx: commands.Context):
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO
-@bot.hybrid_command( name="wizygpt", aliases=["wizy", "wizardspirit", "gpt"], help="Wizard finds your answer scroll from the depth of OpenAi GPT dungeons!") # command name is defaulted to method name 'gpt'
+@bot.hybrid_command( name="wizygpt", aliases=["wizy", "wizardspirit"], help="Wizard finds your answer scroll from the depth of OpenAi GPT dungeons!") # command name is defaulted to method name 'gpt'
 @commands.cooldown(1, 5)
 async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 
@@ -200,23 +164,28 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
       full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
 
    #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
-   if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
-      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-      await send_initMsg_task
-   else:
-      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for your Answer!...**" ))
-      await send_initMsg_task
+   try:
+      user_msg = ctx.message
+         
+      ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author, is_wizy_ch= False ))
       
-   ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author ))
-   task_response: tuple(str, str) = await ask_gpt_task
-   embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+      if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+         await send_initMsg_task
+      else:
+         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**" , delete_after= 15))
+         await send_initMsg_task
+         
+      task_response: tuple(str, str) = await ask_gpt_task
+      embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
 
-   send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
-   returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+      send_func_return = bot.loop.create_task(user_msg.reply(embed=embed) if not ctx.interaction else ctx.reply(embed=embed))
+      returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+   except: 
+      async with ctx.typing():
+         ctx.message.delete(delay= 15)
+         bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
    
-   del embed
-   del valid_reply
-   del ctx
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
 @bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using BARD ... etc') # command name is defaulted to method name
@@ -230,23 +199,29 @@ async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMP
    if valid_reply[0] and valid_reply[1] is not  None :
       full_prompt = await get_new_reply_prompt(valid_reply[1], full_prompt)
 
-   #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
-   if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
-      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-      await send_initMsg_task
-   else:
-      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for your Answer!...**" ))
-      await send_initMsg_task
+   try:
+      #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
+         
+      user_msg = ctx.message
+      ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author, is_wizy_ch= False ))
       
-   ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author ))
-   task_response : tuple = await ask_gpt_task
-   embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+      if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+         await send_initMsg_task
+      else:
+         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**", delete_after= 15 ))
+         await send_initMsg_task
+         
+      task_response : tuple = await ask_gpt_task
+      embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
 
-   send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
-   returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
-   del embed
-   del valid_reply
-   del ctx
+      send_func_return = bot.loop.create_task(user_msg.reply(embed=embed))
+      returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+   except: 
+      async with ctx.typing():
+         ctx.message.delete(delay= 15)
+         bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
+         
 
    # img_embds = list()
    # if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
@@ -301,11 +276,11 @@ async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. 
    if valid_reply[0] and valid_reply[1] is not  None :
       full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
    #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
-   send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
    try:
       ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
       await send_initMsg_task
       task_response : tuple = await ask_bard_task
+      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
       embed = prepare_discord_embed(task_response , is_reply= valid_reply[0], is_bard= True)
 
       send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
@@ -314,6 +289,7 @@ async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. 
       del valid_reply
    except: 
       async with ctx.typing():
+         ctx.message.delete(delay= 15)
          bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 
    # img_embds = list()

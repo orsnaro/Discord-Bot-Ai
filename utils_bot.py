@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.4B
-                          version Date :  4 / 11 / 2023
+                          Version : v2.5.5B
+                          version Date :  8 / 11 / 2023
                           Code Type : python | Discrod | BARD | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -53,63 +53,124 @@ def supress_msg_body_url_embeds ( text : str ) -> str :
   return text
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # TODO : join all prepare funcs in one class or control function
-async def prepare_send_wizard_channel_ans_msg( _bard_response : tuple  , message : discord.Message , discord_msg_limit = 2000) :
+async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : discord.Message , discord_msg_limit = 2000, is_bard:bool = True) :
 
    #Supress i.e.(no embed) any URL inside the msg body and not in links msg section
-   bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
-   full_response = bot_msg_header + _bard_response[0]
-
-   print ("TESTING: " , full_response) #TESTING
-
-#MSG FRAGMENTER SECTION ( TODO : make message fragmenter function for both msg and links msg in utils_bot.py )
-   full_resp_len = len(full_response)
-   if full_resp_len >= discord_msg_limit : #break bard response   to smaller messages to fit in discord msg
-
-      bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** `[this msg will be fragmented: exceeds 2000chars]`\n"
+   if is_bard :
+      _bard_response = _response
+      bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
       full_response = bot_msg_header + _bard_response[0]
-      full_response = supress_msg_body_url_embeds(full_response)
 
-      full_resp_len = len(full_response) #re-calc
+      print ("TESTING: " , full_response) #TESTING
 
-      needed_msgs = full_resp_len // discord_msg_limit
-      remain = full_resp_len % discord_msg_limit
-      if remain != 0 :
-         needed_msgs += 1
+   #MSG FRAGMENTER SECTION ( TODO : make message fragmenter function for both msg and links msg in utils_bot.py )
+      full_resp_len = len(full_response)
+      if full_resp_len >= discord_msg_limit : #break bard response   to smaller messages to fit in discord msg
 
-      msg_frag : str
-      end_flag = "\n```ini\n [END OF MSG]```"
-      while needed_msgs != 0 :
+         bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** `[this msg will be fragmented: exceeds 2000chars]`\n"
+         full_response = bot_msg_header + _bard_response[0]
+         full_response = supress_msg_body_url_embeds(full_response)
+
+         full_resp_len = len(full_response) #re-calc
+
+         needed_msgs = full_resp_len // discord_msg_limit
+         remain = full_resp_len % discord_msg_limit
+         if remain != 0 :
+            needed_msgs += 1
+
+         msg_frag : str
+         end_flag = "\n```ini\n [END OF MSG]```"
+         while needed_msgs != 0 :
 
 
-         if needed_msgs == 1 and remain != 0 :
-            if remain > len(end_flag) : #there is place to add in flag in same last msg frag
-               msg_frag = full_response[ : ] + "\n```ini\n [END OF MSG]```"
-               await message.reply(content= msg_frag  , mention_author= True)
-               break
-            else :#no place to add end flag send it seperatly in new discord msg
+            if needed_msgs == 1 and remain != 0 :
+               if remain > len(end_flag) : #there is place to add in flag in same last msg frag
+                  msg_frag = full_response[ : ] + "\n```ini\n [END OF MSG]```"
+                  await message.reply(content= msg_frag  , mention_author= True)
+                  break
+               else :#no place to add end flag send it seperatly in new discord msg
+                  msg_frag = full_response[ : ]
+                  await message.reply(content= msg_frag  , mention_author= True)
+                  await message.reply(content= end_flag  , mention_author= True)
+                  break
+
+
+            elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full bard response
                msg_frag = full_response[ : ]
                await message.reply(content= msg_frag  , mention_author= True)
                await message.reply(content= end_flag  , mention_author= True)
                break
 
+            else :
+               msg_frag = full_response[ : discord_msg_limit] # from 0 to limit i.e.( 0 -> 1998 = 2000char)  end is not taken ( exclusisve )
+               await message.reply(content= msg_frag  , mention_author= True)
 
-         elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full bard response
-            msg_frag = full_response[ : ]
-            await message.reply(content= msg_frag  , mention_author= True)
-            await message.reply(content= end_flag  , mention_author= True)
-            break
-
-         else :
-            msg_frag = full_response[ : discord_msg_limit] # from 0 to limit i.e.( 0 -> 1998 = 2000char)  end is not taken ( exclusisve )
-            await message.reply(content= msg_frag  , mention_author= True)
-
-         full_response = full_response[discord_msg_limit : ] # skip the sent fragment of message start after it for rest fragments
-         needed_msgs -= 1
+            full_response = full_response[discord_msg_limit : ] # skip the sent fragment of message start after it for rest fragments
+            needed_msgs -= 1
 
 
-   else: #all bard response can fit in one discord msg
-      full_response = supress_msg_body_url_embeds(full_response)
-      await message.reply(content= full_response  , mention_author= True)
+      else: #all bard response can fit in one discord msg
+         full_response = supress_msg_body_url_embeds(full_response)
+         await message.reply(content= full_response  , mention_author= True)
+         
+         
+   elif not is_bard: #GPT
+      _gpt_response = _response
+      bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
+      full_response = bot_msg_header + _gpt_response[0]
+
+      print ("TESTING: " , full_response) #TESTING
+
+   #MSG FRAGMENTER SECTION ( TODO : make message fragmenter function for both msg and links msg in utils_bot.py )
+      full_resp_len = len(full_response)
+      if full_resp_len >= discord_msg_limit : #break bard response   to smaller messages to fit in discord msg
+
+         bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** `[this msg will be fragmented: exceeds 2000chars]`\n"
+         full_response = bot_msg_header + _gpt_response[0]
+         full_response = supress_msg_body_url_embeds(full_response)
+
+         full_resp_len = len(full_response) #re-calc
+
+         needed_msgs = full_resp_len // discord_msg_limit
+         remain = full_resp_len % discord_msg_limit
+         if remain != 0 :
+            needed_msgs += 1
+
+         msg_frag : str
+         end_flag = "\n```ini\n [END OF MSG]```"
+         while needed_msgs != 0 :
+
+
+            if needed_msgs == 1 and remain != 0 :
+               if remain > len(end_flag) : #there is place to add in flag in same last msg frag
+                  msg_frag = full_response[ : ] + "\n```ini\n [END OF MSG]```"
+                  await message.reply(content= msg_frag  , mention_author= True)
+                  break
+               else :#no place to add end flag send it seperatly in new discord msg
+                  msg_frag = full_response[ : ]
+                  await message.reply(content= msg_frag  , mention_author= True)
+                  await message.reply(content= end_flag  , mention_author= True)
+                  break
+
+
+            elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full bard response
+               msg_frag = full_response[ : ]
+               await message.reply(content= msg_frag  , mention_author= True)
+               await message.reply(content= end_flag  , mention_author= True)
+               break
+
+            else :
+               msg_frag = full_response[ : discord_msg_limit] # from 0 to limit i.e.( 0 -> 1998 = 2000char)  end is not taken ( exclusisve )
+               await message.reply(content= msg_frag  , mention_author= True)
+
+            full_response = full_response[discord_msg_limit : ] # skip the sent fragment of message start after it for rest fragments
+            needed_msgs -= 1
+
+
+      else: #all bard response can fit in one discord msg
+         full_response = supress_msg_body_url_embeds(full_response)
+         await message.reply(content= full_response  , mention_author= True)
+      
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000, is_bard:bool = True) -> tuple :
 
@@ -239,8 +300,6 @@ def skip_line(full_ans):
   lines = full_ans.split('\n')
   return '\n'.join(lines[1:])
 #------------------------------------------------------------------------------------------------------------------------------------------#
-
-#TODO: users chat histroy (a user history reses  when gpt restarts or if reaches total 20 messages from one user)
 class UserAiChat:
    
    queries_limit = 20
@@ -297,47 +356,73 @@ class UserAiChat:
          
       else: 
          return 0 #fail
+      
+   def change_chat_mode(self, user_id, mode:str, ai_type:str = 'gpt'):
+      ... #TODO: also add command that invokes it ('mode' is the system role content of GPT)
+#------------------------------------------------------------------------------------------------------------------------------------------#
+class UserAiSpecialChat(UserAiChat):
+   #NOTE: must reassign it here. otherwise the parent class 'chats_ai_dict' will be shared here ! ( wnna separate special channel chat history from normal command to talk with wizy in any other channel)
+   chats_ai_dict: dict = {} 
+   
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO GPT
-async def ask_gpt(user_query, user: discord.User) -> tuple:
+async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
+   
+   user_name = user.display_name
    character= "GPTeous Wizard whose now living in discord server called Narol's Island"
    series = "Harry Potter"
    sys_prompt = f"""I want you to act like {character} from {series}.
-   I want you to respond and answer like {character} using the tone, manner and vocabulary {character} would use.
-   Do not write any explanations. Only answer like {character}.
-   You must know all of the knowledge of {character}.
-   My first sentence is \"Hi {character} I'm {user.display_name}.\""
+   I want you to respond and answer like {character} using the tone,
+   manner and vocabulary {character} would use.
+   Do not write any explanations.
+   Only answer like {character}.
+   You must know all of the knowledge of {character}. 
+   My first sentence is \"Hi {character} I'm {user_name}.\""
    """
    gpt_user_msg = [{'role': 'user', 'content': user_query}]
    
    userId: str = str(user.id)
    
-   if userId in UserAiChat.chats_ai_dict:
-      UserAiChat.chats_ai_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
-      user_gpt_history = UserAiChat.chats_ai_dict[userId].history_gpt
+   chat_dict = UserAiSpecialChat.chats_ai_dict if is_wizy_ch else UserAiChat.chats_ai_dict
+   
+   #TESTING
+   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n is special channel {is_wizy_ch}  ############# \n\n\n")
+   #TESTING
+   
+   if userId in chat_dict:
+      chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
+      user_gpt_history = chat_dict[userId].history_gpt
       
    else: #first chat with gpt
-      new_chat = UserAiChat(userId)
+      new_chat = UserAiSpecialChat(userId) if is_wizy_ch else UserAiChat(userId) 
       gpt_starter_prompt =[
-          {"role": "system", "content": sys_prompt},
-          {"role": "user", "content": user_query}
-          ]
-  
+         {"role": "system", "content": sys_prompt},
+         {"role": "user", "content": user_query}
+         ]
+
       new_chat.append_chat_msg(msg= gpt_starter_prompt, ai_type= 'gpt')
-      UserAiChat.chats_ai_dict[str(userId)] = new_chat
-      user_gpt_history = UserAiChat.chats_ai_dict[userId].history_gpt
+      chat_dict[str(userId)] = new_chat
+      user_gpt_history = chat_dict[userId].history_gpt
 
    #TESTING
    print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n {user_gpt_history}  ############# \n\n\n")
    #TESTING
     
    
-   gpt_payload= await ini.gpt.chat.completions.create(
-         model="gpt-3.5-turbo",
-         max_tokens= 250,
-         messages= user_gpt_history
-         # stream= True
-      )
+   if not is_wizy_ch: # set max token to 250 if using gpt outside wizy special chat channel
+      gpt_payload= await ini.gpt.chat.completions.create(
+            model="gpt-3.5-turbo",
+            max_tokens= 250,
+            messages= user_gpt_history
+            # stream= True
+         )
+   elif is_wizy_ch: # remove max token arg if in wizy special chat channel
+      gpt_payload= await ini.gpt.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages= user_gpt_history
+            # stream= True
+         )
+   
  
    #TESTING
    print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
@@ -345,23 +430,35 @@ async def ask_gpt(user_query, user: discord.User) -> tuple:
    
    gpt_resp = await await_me_maybe( gpt_payload.choices[0].message.content)
    gpt_user_msg = [{"role": "assistant", "content": gpt_resp}]
-   UserAiChat.chats_ai_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
+   
+   chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
    
    resp_id_gpt = await await_me_maybe( gpt_payload.id ) 
    
    return (gpt_resp, resp_id_gpt)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
-async def ask_bard(user_query: str, user_name = "Narol island's master" ) -> tuple:
+async def ask_bard(user_query: str, user= discord.user ) -> tuple:
+   
+   user_name = user.display_name
    character= "GPTeous Wizard whose now living in discord server called Narol's Island "
    series = "Harry Potter"
    classic_prmpt = f"act as a wizard named Gpteous living in master Narol's island. start and end of  answer  must be  in wizardish sentences and  the  rest must be using normal english. include emojis. prompter name: {user_name}. prompter's question: {user_query}"
-   new_prompt = f"I want you to act like {character} from {series}. I want you to respond and answer like {character} using the tone, manner and vocabulary {character} would use. Do not write any explanations. Only answer like {character}. You must know all of the knowledge of {character}. My first sentence is \"Hi {character} I'm {user_name}. {user_query} .\""
+   new_prompt = f"""I want you to act like {character} from {series}.
+   I want you to respond and answer like {character} using the tone,
+   manner and vocabulary {character} would use.
+   Do not write any explanations.
+   Only answer like {character}.
+   You must know all of the knowledge of {character}.
+   My first sentence is \"Hi {character} I'm {user_name}. {user_query} .\"
+   """
+   
    bard_ans = await await_me_maybe(ini.bard.get_answer(classic_prmpt))
    # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt
    return bard_ans['content'] , bard_ans['links'] if 'links' in bard_ans else None , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id']
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : #TODO : later check type must be in dictionary contains all types and check it self becomes a class
+async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : 
+   #TODO : later check type must be in dictionary contains all types and check it self becomes a class
    if chk_type == 1 and _message != None : #NOTE : checks for on_message() in wizard channel
       return True if  _message != None and _message.channel.id in targetChannelId and _message.author.id != ini.bot.user.id else False
 
@@ -457,12 +554,12 @@ class EmbedLimits(object):
 
          bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so I removed duplicates
 
-   #TESTING BLOCk
+       #TESTING BLOCk
          link_sz =0
          for i in range(len(bard_ans_data[1])):
             link_sz += len(bard_ans_data[1][i])
          print ("#######links len" , link_sz)
-   #TESTING BLOCk
+      #TESTING BLOCk
 
 
          tot_len_of_links_sections = 0
@@ -532,22 +629,24 @@ class EmbedLimits(object):
       note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
       embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
       timeNow = ini.datetime.now()
-      author = "Chat GPT"
+      author = "Found Ancient Scroll!"
       gptIcon = "https://i.imgur.com/UTbxXpc.jpg"
       redTint = 10038562 #a color
       darkGreen = discord.Colour.dark_green()
 
       embed = discord.Embed(type='rich',
                             timestamp= timeNow,
-                            color= darkGreen,
-                            title= embedTitle,
-                            url= wizardChannelLink,
-                            description= ansText + " \n `*END OF ANSWER*` "
+                            color= redTint,
+                           #  title= embedTitle,
+                            url= wizardChannelLink, 
+                            description= ansText + " \n `E N D` "
                             ) #url will be  hyperlink in title
       
-      embed.set_author(name= author, url="https://chat.openai.com", icon_url= gptIcon )
-      embed.set_footer(text= f"Scroll ID({ansID})", icon_url= footerIcon )
-      
+      embed.set_author(name= author, url=wizardChannelLink, icon_url= gptIcon )
+      embed.set_footer(text= f"Scroll ID({ansID}) • powered by OpenAI", icon_url= footerIcon )
+      if is_reply :
+         embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
+
 
    return embed
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -813,6 +912,94 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(song, **ffmpeg_options), data=data) , filename
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
+async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int):
+   state = None if _state is None else int(_state)
+   special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
+   start, stop = 1, 0
+   if state is None:
+      await ini.bot.toggle_auto_memequote_sender_state(state = start) if ini.bot.is_auto_memequote_state == 0 else await ini.bot.toggle_auto_memequote_sender_state(state= stop)
+      await ctx.reply(
+                  delete_after= 15.0,
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                  )
+   elif state == 0:
+      await ini.bot.toggle_auto_memequote_sender_state(state = stop) 
+      await ctx.reply(
+                  delete_after= 15.0,
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                  )
+      
+   elif state == 1:
+      await ini.bot.toggle_auto_memequote_sender_state(state = start)
+      await ctx.reply(
+                  delete_after= 15.0,
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0 else '`Disabled`' }"
+                  )
+      
+   elif state >= special_event: #special events has value >= 2
+      await ini.bot.toggle_auto_memequote_sender_state(state = special_event) 
+      await ctx.reply(
+                  delete_after= 15.0,
+                  content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}`"
+                  )
+      
+   await ctx.message.delete(delay= 15.0)
+   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def process_send_quotesz_cmd(ctx: ini.commands.context, _quote_sz: str, _quote_threshhold:int, _max_sz:int):
+   max_quote_size = _max_sz
+   
+   if _quote_sz is None or len(_quote_sz) <= 0 :
+      bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
+                                                       content=f"Ops! please specify  `Quotes max size` current is `{_quote_threshhold}` "
+                                                       )
+      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      await ctx.message.delete(delay= 15.0)
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+   elif not _quote_sz.isnumeric() :
+      bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
+                                                       content=f"Ops! Quote size must be a numeric value! current is `{_quote_threshhold}` "
+                                                       )
+      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      await ctx.message.delete(delay= 15.0)
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+   elif int(_quote_sz) > max_quote_size :
+      bot_reply_msg: discord.Message = await ctx.reply(
+                  delete_after= 15.0,
+                  content=f"Ops! max Quote size is {max_quote_size}! current size is `{_quote_threshhold}` "
+                  )
+      await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      await ctx.message.delete(delay= 15.0)
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+   else:
+      _quote_threshhold = int(_quote_sz)
+      bot_reply_msg: discord.Message = await ctx.reply(delete_after= 15.0,
+                     content=f"Quotes max size is now set to `{_quote_threshhold}`"
+                     )
+      await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+      await ctx.message.delete(delay= 15.0)
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def process_send_change_wizy_ai_cmd(ctx: ini.commands.context, _ai_name:str):
+   ai_models = ['gpt','bard']
+   if _ai_name == None or _ai_name not in ai_models :
+      await ctx.message.delete(delay= 15)
+      await ctx.reply(f"Ops! you must choose a valid AI model: `{' , '.join(ai_models)}`. *current model is `{ini.bot.wizy_chat_ch_ai_type}`*", delete_after= 15)
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      
+   elif _ai_name == 'gpt':
+      ini.bot.wizy_chat_ch_ai_type = _ai_name
+      await ctx.message.delete(delay= 15)
+      await ctx.reply(f"Wizard AI Chat Channel model Has been set to:  `{_ai_name}`!", delete_after= 15)
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+      
+   elif _ai_name == 'bard':
+      ini.bot.wizy_chat_ch_ai_type = _ai_name
+      await ctx.message.delete(delay= 15)
+      await ctx.reply(f"Wizard AI Chat Channel model Has been set to:  `{_ai_name}`!", delete_after= 15)
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+#------------------------------------------------------------------------------------------------------------------------------------------#
+   
 
       
       

@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.4B
-                          version Date :  4 / 11 / 2023
+                          Version : v2.5.5B
+                          version Date :  8 / 11 / 2023
                           Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
@@ -155,46 +155,39 @@ override_help_msgP2 = f"""
 
 
 * __FULL COMANDS LIST & ALIASES__
-                   1. Ask The wizard (Bard)
-                   ```fix
-                   • `WizyBard` "your_question"
-                   • `bard` "your_question"
-                   • `wizyb` "your_question"
-                   • `~ <any_of_prev_CMDs>` "your_question"
-                   ```
-                   
-         2. Ask The wizard (GPT)
+                           
+         1. Ask The wizard (GPT)
          ```fix
          • `wizyGPT` "your_question"
-         • `gpt` "your_question"
          • `wizy` "your_question"
          • `wizardspirit` "your_question"
          • `~ <any_of_prev_CMDs>` "your_question"
          ```
 
-         3. Get a Wizardy Quote
+         2. Get a Wizardy Quote
          ```fix
          • wisewiz
          ```
 
-         4. Get a Wizardy Meme
+         3. Get a Wizardy Meme
          ```fix
          • boringwizard
          ```
 
-         5. Check Status & Latency
+         4. Check Status & Latency
          ```fix
          • ping (gets your message latency)
          • wiz_ping (gets bots latency)
          ```
 
-         6. Control Commands _(only specific roles are eligible to use)_
+         5. Control Commands _(only specific roles are eligible to use)_
          ```fix
          • quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
          • togglerandom (control activity of #memes-highlights channel: `pass nothin` toggles, `0` disable, `1` enable normal mode, `2+` enable special events mode )
+         • wizyaimode (controls the AI model used in wizard chat channel. `ai_name` values : `gpt` or `bard`)
          ```
 
-         7. Voice Activity
+         6. Voice Activity
          ```fix
          • wizyjoin
          • wizyleave
@@ -204,7 +197,7 @@ override_help_msgP2 = f"""
          • wizystop
          ```
          
-         8. Special
+         7. Special
          ```fix
          • wizyawakened
          ```
@@ -224,6 +217,7 @@ class CustomBot(commands.Bot):
    async def setup_hook(self):
       self.is_auto_memequote_state = 1 if len(sys.argv) <= 1 else int(sys.argv[1]) #0 off | 1 on normal mode | 2 on special mode
       self.default_voice_channel: int = wizy_voice_channel
+      self.wizy_chat_ch_ai_type: str = 'gpt'
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
       self.resume_chill_if_free.start()
       self.auto_memequote_sender_task.start()
