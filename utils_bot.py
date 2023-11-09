@@ -758,10 +758,12 @@ def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: s
             kwargs['free_palestina_data'].set_image(url= kwargs['chosen_post_url'] )
          else: #not video
             kwargs['chosen_post_url'] = res['data']['children'][rand_post_no]['data']['url']
-            kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+            org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+            kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
       else: #not video
          kwargs['chosen_post_url'] = res['data']['children'][rand_post_no]['data']['url']
-         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+         org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
          
    elif not kwargs['is_video'] and kwargs['has_crosspost_parent_list']:
       is_crossparent_video = res['data']['children'][rand_post_no]['data']['crosspost_parent_list'][0]['is_video']
@@ -769,14 +771,16 @@ def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: s
          kwargs['is_video'] = is_crossparent_video
          chosen_post_video = None if res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"] is None else res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"]
          kwargs['chosen_post_url'] = '||' + kwargs['chosen_post_url'] + '||' if chosen_post_video is None else '||'+ chosen_post_video + '||'
-         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+         org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
       else: # not video
          kwargs['free_palestina_data'] = discord.Embed(title= kwargs['title'], description= kwargs['chosen_post_text']+ '\npost: ' + kwargs['chosen_post_url'], color=0xff2a2a)
          kwargs['free_palestina_data'].set_image(url= kwargs['chosen_post_url'])
    elif kwargs['is_video']: 
       chosen_post_video = None if res['data']['children'][rand_post_no]['data']['media']['reddit_video']['fallback_url'] is None else res['data']['children'][rand_post_no]['data']['media']["reddit_video"]["fallback_url"]
       kwargs['chosen_post_url'] = kwargs['chosen_post_url'] if chosen_post_video is None else chosen_post_video
-      kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+      org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+      kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
       
       
    return [kwargs['is_video'], kwargs['free_palestina_data'], kwargs['chosen_post_url']]
@@ -816,8 +820,8 @@ async def  final_send_special_ps(target_channel: discord.TextChannel, ps_post_em
    return sent_msg
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_special: bool = False) :
-   from init_bot import memes_highlights_ch_id
-   target_channel = ini.bot.get_channel(memes_highlights_ch_id)
+   from init_bot import wizy_feed_channels
+   target_channel = ini.bot.get_channel(wizy_feed_channels[0]) #TODO: 1) read all channels from jason 2) assign channels for each server 3)cotinue edit the structure to work on multiple servers
 
    print("\ntime NOW" ,ini.datetime.now() )
    print(f"\n\n")
