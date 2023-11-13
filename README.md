@@ -81,7 +81,7 @@
    
 ***FINALLY***: &nbsp;✔️report me any issues!
    
-<sub> ***NOTE:*** _for now_ you wouldn't be able to make your own  sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https://discord.com/invite/Y23B7R3FPq) </sub>
+<sub> ***NOTE:*** _for now_ you wouldn't be able to make your own  special channels e.g.( [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) ) try it in our [**server**](https://discord.com/invite/Y23B7R3FPq). If you want to add  wizy(feed,voice,chat) channels to your server contact me! later on this will be available to all via a command isha</sub>
 
 <sub> ***NOTE:*** the bot does not have any `adminstration` / `managing` / `moving` /  etc.. permissions. though I  recommend always to take a look at allowed permissions in <br> [`beta-bot invite link`](https://discord.com/api/oauth2/authorize?client_id=1117540489365827594&permissions=8&scope=bot%20applications.commands). feel free to sneak peak at our soucre code for any future changing of these intents/permissions💙 </sub>
 
