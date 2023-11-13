@@ -22,51 +22,51 @@ async def on_message(message: discord.Message):
     
    try: #if bard or gpt not available handle that
       
-      if await check_msg(wizard_ch_msg , targetChannelId= wizard_channels):
+      if await check_msg(wizard_ch_msg , targetChannelId= wizy_chat_channels):
       #NOTE : if want to disable talk to all bots in also check if author.bot != True in check_msg() func
       
          print(f"\n\n\n\n\n TESTING###################    {bot.wizy_chat_ch_ai_type}       \n\n ################\n\n\n\n\n ")#TESTING
-            
-         if bot.wizy_chat_ch_ai_type == 'gpt':
-            ask_gpt_task =  bot.loop.create_task( ask_gpt(user_query= wizard_ch_msg.content,
-                                                            user= wizard_ch_msg.author, is_wizy_ch= True) 
-                                                )
-            task_response : tuple = await ask_gpt_task
-            
-         elif bot.wizy_chat_ch_ai_type == 'bard':
-            ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content,
-                                                            user= wizard_ch_msg.author) 
-                                                ) 
-            task_response : tuple = await ask_bard_task
-            
+         async with wizard_ch_msg.channel.typing():
+            if bot.wizy_chat_ch_ai_type == 'gpt':
+               ask_gpt_task =  bot.loop.create_task( ask_gpt(user_query= wizard_ch_msg.content,
+                                                               user= wizard_ch_msg.author, is_wizy_ch= True) 
+                                                   )
+               task_response : tuple = await ask_gpt_task
+               
+            elif bot.wizy_chat_ch_ai_type == 'bard':
+               ask_bard_task =  bot.loop.create_task( ask_bard(user_query= wizard_ch_msg.content,
+                                                               user= wizard_ch_msg.author) 
+                                                   ) 
+               task_response : tuple = await ask_bard_task
+               
 
-         is_bard = True if bot.wizy_chat_ch_ai_type == 'bard' else False
-         await prepare_send_wizard_channel_ans_msg( task_response , wizard_ch_msg, is_bard= is_bard)
-         
-         
-         if bot.wizy_chat_ch_ai_type == 'bard': #NOTE: for gpt3.5 he cant send links nor images as I know
-            final_imgs  , final_links , lnk1_len = None , None , -1#lnk1_len will be needed in sub_sections_msg_sending_ctrl()
-            have_links = False
-            if task_response is not None and len(task_response) >= 2 and len(task_response[1]) > 0 :
-               final_links , task_response , lnk1_len = prepare_links_msg(task_response)
-               if len(final_links) > 0:
-                  have_links = True
-
-            have_imgs = False
-            if task_response is not None and len(task_response) >= 3 and len(task_response[2]) > 0 :
-               final_imgs = prepare_imgs_msg(task_response)
-               if len(final_imgs) > 0:
-                  have_imgs = True
-                  
-            await sub_sections_msg_sending_ctrl( wizard_ch_msg,
-                                                final_links,
-                                                lnk1_len,
-                                                final_imgs,
-                                                have_imgs,
-                                                have_links
-                                                )
+            is_bard = True if bot.wizy_chat_ch_ai_type == 'bard' else False
+            await prepare_send_wizard_channel_ans_msg( task_response , wizard_ch_msg, is_bard= is_bard)
             
-         await aio.sleep(5)
+            
+            if bot.wizy_chat_ch_ai_type == 'bard': #NOTE: for gpt3.5 he cant send links nor images as I know
+               final_imgs  , final_links , lnk1_len = None , None , -1#lnk1_len will be needed in sub_sections_msg_sending_ctrl()
+               have_links = False
+               if task_response is not None and len(task_response) >= 2 and len(task_response[1]) > 0 :
+                  final_links , task_response , lnk1_len = prepare_links_msg(task_response)
+                  if len(final_links) > 0:
+                     have_links = True
+
+               have_imgs = False
+               if task_response is not None and len(task_response) >= 3 and len(task_response[2]) > 0 :
+                  final_imgs = prepare_imgs_msg(task_response)
+                  if len(final_imgs) > 0:
+                     have_imgs = True
+                     
+               await sub_sections_msg_sending_ctrl( wizard_ch_msg,
+                                                   final_links,
+                                                   lnk1_len,
+                                                   final_imgs,
+                                                   have_imgs,
+                                                   have_links
+                                                   )
+               
+         await aio.sleep(2)
          
    except:
       await message.delete(delay= 15)
