@@ -65,10 +65,10 @@ allowed_roles_change_ai = {"ULT! SAQF": 889532272989053019,
                          "ISLE! Booster": 1013995284470169761,
                          "Spirits Overlord": 1118266805006389289
                          } #check by id not the names cuz they're missing emojies
-@bot.hybrid_command(name="togglerandom", help= 'toggles the auto meme-quote sender feature of the bot wizy')
+@bot.hybrid_command(name="togglerandom", help= 'toggles & controls the auto meme-quote sender feature & feed channel of the bot wizy')
 @commands.cooldown(1, 5)
-async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = None ):
-
+async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = None, interval_minutes: int = default_feed_channel_frequency_minutes ):
+   
    global allowed_roles_togglerandom
 
    user_comanded_roles : list[discord.Role] = ctx.message.author.roles
@@ -84,7 +84,7 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = Non
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command..."
                   ) #used a join and map and lambda function just as fast fancy way to print all allowed roles
    else:
-      await util.process_send_togglerandom_cmd(ctx= ctx, _state= state)
+      await util.process_send_togglerandom_cmd(ctx= ctx, _state= state, _interval_minutes = interval_minutes)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="wizyaimode", help= "choose between generative AI models used in wizy's chat channel: gpt / bard")
 @commands.cooldown(1, 5)
