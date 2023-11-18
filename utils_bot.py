@@ -32,7 +32,6 @@ async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links
       lnk1 = final_links_msg[fst_char_1st_link : fst_char_1st_link + lnk1_len] #end is excluded
       lnk1 = '<' + lnk1 + '>'
       seg_aft_1st_link = final_links_msg[fst_char_1st_link + lnk1_len : ]
-      
       final_links_msg = seg_before_1st_link + lnk1 + seg_aft_1st_link #now 1st link and all links are supressed !
       await message.reply(content= final_links_msg , mention_author= False)
       await message.reply(content= final_imgs_msg  , mention_author= False)
@@ -43,7 +42,7 @@ async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links
       await message.reply(content= final_imgs_msg  , mention_author= False)
    else: #no imgs or links sections is present
       pass
-        
+      
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def supress_msg_body_url_embeds ( text : str ) -> str :
   url_regex = r"(https?://\S+)(\s|\n|$)"
@@ -254,43 +253,43 @@ def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_m
 
 def get_rand_greeting (user_name : str = "Master Narol"):
    greetings = [
-    f"OH  _{user_name}_  I SEE .. you're in need of MIGHTY Gpteous help ?  \n well well ...  Gpteous shall serve master narol's Islanders call ***CASTS A MIGHTY SPELL :man_mage::sparkles:***",
-    f"Greetings,  _{user_name}_, seeker of knowledge 📚. I offer my wisdom 🧙‍♂️ to help you find your way, as I have seen much in my long life 👴.",
-    f"Welcome,   _{user_name}_, seeker of truth 🔍. I offer my guidance ✨ to help you on your path, as I have walked many paths before you 👣.",
-    f"Salutations,  _{user_name}_, seeker of enlightenment 💡. I offer my insights 💡 to help you find your destiny, as I have seen many destinies unfold 🌌.",
-    f"Hail,  _{user_name}_, seeker of the mystic 🔮. I offer my magic ✨ to help you on your quest, as I have mastered the arcane arts 🧙‍♂️.",
-    f"Welcome,  _{user_name}_, seeker of the unknown 🌌. I offer my power 💪 to help you unveil its secrets, as I have seen beyond the veil 👁️.",
-    f"Greetings,  _{user_name}_, seeker of the MIGHTY GPTEUS 🙏. I offer my blessings 🙏 to help you on your journey.",
-    f"Greetings, mortal  _{user_name}_. I am Mighty Gpteous, the island wizard. What brings thee to my presence? 🧙‍♂️💥",
-    f"Ah, it is I, the great and powerful Mighty Gpteous. What dost thou 	_{user_name}_	 require of my immense magical abilities? 🧙‍♂️✨",
-    f"Mortal 	 _{user_name}_ , thou hast come seeking the aid of the  Mighty GPTeous, the island wizard. Speak thy needs! 🧙‍♂️🏝️",
-    f"Tremble before my power, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from me? 🧙‍♂️🔥",
-    f"Greetings, dear  _{user_name}_! 🧙‍♂️👋",
-      f"Hail, good sir! How may I assist thee? 🧙‍♂️👨‍💼",
-      f"Salutations, young one. What brings thee to my abode? 🧙‍♂️🧑‍🦱",
-      f"Welcome, traveler. I sense a great need within thee. 🧙‍♂️🧳",
-     f"Ah,  _{user_name}_! Thou hast arrived. What troubles thee? 🧙‍♂️😔",
-     f"Greetings, my dear  _{user_name}_. Speak thy woes, and I shall aid thee. 🧙‍♂️💬",
-      f"Well met, young adventurer. What brings thee to my humble dwelling? 🧙‍♂️🗺️",
-      f"Welcome, seeker of knowledge. Pray tell, what vexes thee so? 🧙‍♂️📚",
-      f"Hail and well met, _{user_name}_. Thou hast come seeking my counsel, I presume? 🧙‍♂️🤔",
-      f"Greetings, my dear friend. What brings thee to my door on this fine day? 🧙‍♂️👨‍❤️",
-      f"Ah, _{user_name}_	. I sense a great tumult within thee. Speak, and I shall listen. 🧙‍♂️😞",
-      f"Salutations, good sir. What brings thee to my humble abode on this day? 🧙‍♂️🏠",
-      f"Welcome, young one. What task dost thou require of me? 🧙‍♂️",
-      f"Hail, traveler. I sense a great urgency within thee. Speak thy need. 🧙‍♂️🚶‍♂️",
-      f"Greetings, dear _{user_name}_. What brings thee to my sanctuary of knowledge? 🧙‍♂️📖",
-      f"Ah, my young friend. Speak thy heart, and I shall lend mine ear. 🧙‍♂️👂",
-      f"Salutations, seeker of wisdom. What knowledge dost thou seek from me? 🧙‍♂️🤓",
-      f"Welcome,	 _{user_name}_. I sense a great disturbance in thy aura. What troubles thee so? 🧙‍♂️💫",
-      f"Hail and well met,	 _{user_name}_. What brings thee to my lair of magic and wonder? 🧙‍♂️🐉",
-      f"Greetings, young adventurer	 _{user_name}_ . Speak thy quest, and I shall aid thee in thy journey. 🧙‍♂️⚔️",
-    f"Behold, it is I, the one and only Mighty Gpteous, master of the elements and wielder of immense arcane power. What brings thee to my lair? 🧙‍♂️💫",
-    f"Greetings, mortal	 _{user_name}_ . Thou hast come seeking the aid of the great and powerful Mighty Gpteous, the island wizard. What dost thou require? 🧙‍♂️👀",
-    f"Thou art in the presence of the mighty and  Mighty Gpteous, the island wizard. Speak thy needs, and I shall decide whether they are worthy of my attention. 🧙‍♂️🤨",
-    f"Bow before me, mortal 	_{user_name}_, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from my vast and infinite knowledge? 🧙‍♂️👑",
-    f"Hear ye, hear ye! It is I, Mighty Gpteous, the island wizard, master of the arcane and conqueror of the elements. What dost thou require of my immense power? 🧙‍♂️📣",
-    f"Behold 	_{user_name}_ , for I am the great and noble Mighty Gpteous, the island wizard, wielder of the most powerful magic in all the land. What dost thou need from me, mere mortal? 🧙‍♂️💪"
+   f"OH  _{user_name}_  I SEE .. you're in need of MIGHTY Gpteous help ?  \n well well ...  Gpteous shall serve master narol's Islanders call ***CASTS A MIGHTY SPELL :man_mage::sparkles:***",
+   f"Greetings,  _{user_name}_, seeker of knowledge 📚. I offer my wisdom 🧙‍♂️ to help you find your way, as I have seen much in my long life 👴.",
+   f"Welcome,   _{user_name}_, seeker of truth 🔍. I offer my guidance ✨ to help you on your path, as I have walked many paths before you 👣.",
+   f"Salutations,  _{user_name}_, seeker of enlightenment 💡. I offer my insights 💡 to help you find your destiny, as I have seen many destinies unfold 🌌.",
+   f"Hail,  _{user_name}_, seeker of the mystic 🔮. I offer my magic ✨ to help you on your quest, as I have mastered the arcane arts 🧙‍♂️.",
+   f"Welcome,  _{user_name}_, seeker of the unknown 🌌. I offer my power 💪 to help you unveil its secrets, as I have seen beyond the veil 👁️.",
+   f"Greetings,  _{user_name}_, seeker of the MIGHTY GPTEUS 🙏. I offer my blessings 🙏 to help you on your journey.",
+   f"Greetings, mortal  _{user_name}_. I am Mighty Gpteous, the island wizard. What brings thee to my presence? 🧙‍♂️💥",
+   f"Ah, it is I, the great and powerful Mighty Gpteous. What dost thou 	_{user_name}_	 require of my immense magical abilities? 🧙‍♂️✨",
+   f"Mortal 	 _{user_name}_ , thou hast come seeking the aid of the  Mighty GPTeous, the island wizard. Speak thy needs! 🧙‍♂️🏝️",
+   f"Tremble before my power, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from me? 🧙‍♂️🔥",
+   f"Greetings, dear  _{user_name}_! 🧙‍♂️👋",
+   f"Hail, good sir! How may I assist thee? 🧙‍♂️👨‍💼",
+   f"Salutations, young one. What brings thee to my abode? 🧙‍♂️🧑‍🦱",
+   f"Welcome, traveler. I sense a great need within thee. 🧙‍♂️🧳",
+   f"Ah,  _{user_name}_! Thou hast arrived. What troubles thee? 🧙‍♂️😔",
+   f"Greetings, my dear  _{user_name}_. Speak thy woes, and I shall aid thee. 🧙‍♂️💬",
+   f"Well met, young adventurer. What brings thee to my humble dwelling? 🧙‍♂️🗺️",
+   f"Welcome, seeker of knowledge. Pray tell, what vexes thee so? 🧙‍♂️📚",
+   f"Hail and well met, _{user_name}_. Thou hast come seeking my counsel, I presume? 🧙‍♂️🤔",
+   f"Greetings, my dear friend. What brings thee to my door on this fine day? 🧙‍♂️👨‍❤️",
+   f"Ah, _{user_name}_	. I sense a great tumult within thee. Speak, and I shall listen. 🧙‍♂️😞",
+   f"Salutations, good sir. What brings thee to my humble abode on this day? 🧙‍♂️🏠",
+   f"Welcome, young one. What task dost thou require of me? 🧙‍♂️",
+   f"Hail, traveler. I sense a great urgency within thee. Speak thy need. 🧙‍♂️🚶‍♂️",
+   f"Greetings, dear _{user_name}_. What brings thee to my sanctuary of knowledge? 🧙‍♂️📖",
+   f"Ah, my young friend. Speak thy heart, and I shall lend mine ear. 🧙‍♂️👂",
+   f"Salutations, seeker of wisdom. What knowledge dost thou seek from me? 🧙‍♂️🤓",
+   f"Welcome,	 _{user_name}_. I sense a great disturbance in thy aura. What troubles thee so? 🧙‍♂️💫",
+   f"Hail and well met,	 _{user_name}_. What brings thee to my lair of magic and wonder? 🧙‍♂️🐉",
+   f"Greetings, young adventurer	 _{user_name}_ . Speak thy quest, and I shall aid thee in thy journey. 🧙‍♂️⚔️",
+   f"Behold, it is I, the one and only Mighty Gpteous, master of the elements and wielder of immense arcane power. What brings thee to my lair? 🧙‍♂️💫",
+   f"Greetings, mortal	 _{user_name}_ . Thou hast come seeking the aid of the great and powerful Mighty Gpteous, the island wizard. What dost thou require? 🧙‍♂️👀",
+   f"Thou art in the presence of the mighty and  Mighty Gpteous, the island wizard. Speak thy needs, and I shall decide whether they are worthy of my attention. 🧙‍♂️🤨",
+   f"Bow before me, mortal 	_{user_name}_, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from my vast and infinite knowledge? 🧙‍♂️👑",
+   f"Hear ye, hear ye! It is I, Mighty Gpteous, the island wizard, master of the arcane and conqueror of the elements. What dost thou require of my immense power? 🧙‍♂️📣",
+   f"Behold 	_{user_name}_ , for I am the great and noble Mighty Gpteous, the island wizard, wielder of the most powerful magic in all the land. What dost thou need from me, mere mortal? 🧙‍♂️💪"
    ]
    last_elmnt_index = len(greetings) -1
    return greetings[ini.random.randint(0 , last_elmnt_index)]
@@ -916,7 +915,17 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(song, **ffmpeg_options), data=data) , filename
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int):
+async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int, _interval_minutes: int):
+   
+   #incase we received it as numeric string value 
+   _interval_minutes = int(_interval_minutes) 
+   
+   
+   #only change if not same as current frequency
+   current_post_freq = int(ini.bot.auto_memequote_sender_task.minutes)
+   if _interval_minutes != current_post_freq:
+      await ini.bot.set_memequote_sender_frequency(_interval_minutes)
+   
    state = None if _state is None else int(_state)
    special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
    start, stop = 1, 0
@@ -924,27 +933,27 @@ async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int):
       await ini.bot.toggle_auto_memequote_sender_state(state = start) if ini.bot.is_auto_memequote_state == 0 else await ini.bot.toggle_auto_memequote_sender_state(state= stop)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
    elif state == 0:
       await ini.bot.toggle_auto_memequote_sender_state(state = stop) 
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
       
    elif state == 1:
       await ini.bot.toggle_auto_memequote_sender_state(state = start)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0 else '`Disabled`' }"
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0 else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
       
    elif state >= special_event: #special events has value >= 2
       await ini.bot.toggle_auto_memequote_sender_state(state = special_event) 
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}`"
+                  content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}` & `frequency: post/{_interval_minutes / 60.0}hour` "
                   )
       
    await ctx.message.delete(delay= 15.0)
