@@ -97,6 +97,11 @@
 <summary><em>  ⌛  in-progress </em> </summary>
     
 *  [ ]  Documentation for functions / classes repo. first readme.md draft
+*  [ ] ON-reaction feedback feature :
+<details>
+<summary><em> <sub> details </sub> </em> </summary> 
+when user reacts on a wizy message wizy responds depending on category of emoji (good, bad, need_help,idk) (feature name : bot ON-reaction feedback feature) (reaction response will only stay for ~5secs except responses to  need_help reactions) 
+</details>
 
 *  [ ] complete track/songs queue class and it's two commands look(https://stackoverflow.com/questions/61276362/how-to-play-the-next-song-after-first-finished-discord-bot)
        
