@@ -176,7 +176,7 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
          else:
-            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**" , delete_after= 15))
+            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Searching Ancient Scrolls for you!...** \n \n `{full_prompt}`" , delete_after= 15))
             await send_initMsg_task
 
          task_response: tuple(str, str) = await ask_gpt_task
