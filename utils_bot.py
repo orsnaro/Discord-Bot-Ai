@@ -21,7 +21,8 @@ async def await_me_maybe(value):
     return value
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def play_chill_track(server: discord.Guild):
-   track_path = r"./tracks/mmo_chill_skyrim&wticher3.mp3"
+   local_tracks= [r"./tracks/mmo_chill_skyrim.mp3", r"./tracks/witcher3_concert.mp3", r"./tracks/x2mate.com - Lord of the Rings _ Middle Earth Music & Ambience, 3 Hours (128 kbps).mp3"]
+   track_path = ini.random.choice(local_tracks)
    await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=track_path)))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links_msg : str , lnk1_len : int , final_imgs_msg : str , lnks_flag = False , imgs_flag = True) :
