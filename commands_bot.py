@@ -17,9 +17,10 @@ slash_cmd_ok_msg = "OK ✅"
 @bot.hybrid_command(name="help")
 @commands.cooldown(1, 5)
 async def help( ctx: commands.Context ):
-   bot_help_msg_p1: discord.Message = await ctx.reply(content= help_bot.override_help_msgP1)
-   await ctx.send(content= help_bot.override_help_msgP2)
-   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+   async with ctx.typing():
+      bot_help_msg_p1: discord.Message = await ctx.reply(content= help_bot.override_help_msgP1)
+      await ctx.send(content= help_bot.override_help_msgP2)
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="boringwizard", help= "wizy sends a random meme from Reddit")
 @commands.cooldown(1, 5)
@@ -176,7 +177,7 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
          else:
-            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Searching Ancient Scrolls for you!...** \n \n `{full_prompt}`" , delete_after= 15))
+            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Searching Ancient Scrolls for you!...** \n \n `{full_prompt}`"))
             await send_initMsg_task
 
          task_response: tuple(str, str) = await ask_gpt_task
