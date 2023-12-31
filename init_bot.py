@@ -104,6 +104,13 @@ class CustomBot(commands.Bot):
          if  not (attr.startswith('__') or attr.startswith('_')):
             value = getattr(self.user, attr)
             print(f'{attr}: {value}')
+      print(f"\nJoined servers: count({len(self.guilds)}) \n ")
+      for guild in self.guilds :
+         print(f"name: {guild.name}")
+         print(f"owner: {guild.owner}")
+         print(f"owner-ID: {guild.owner_id}")
+         print(f"members count: {guild.member_count}")
+         print(f"#####################################")
       print(f"\n\n Bot '{self.user}' Sucessfully connected to Discord!\n\n")
 
 
