@@ -321,7 +321,76 @@ class UserAiChat:
          self.chats_ai_dict[userId].__del__()
          if userId in self.chats_ai_dict: del self.chats_ai_dict[userId]
          self.chats_ai_dict[userId] = self
-      
+   
+   @classmethod
+   async def prepare_chat(cls, _user: discord.User, _AI: str, **kwargs):
+      if _AI == "gpt":
+         user_name = _user.display_name
+         userId: str = str(_user.id)
+         character= "GPTeous Wizard whose now living in discord server called Narol's Island"
+         series = "Harry Potter"
+         sys_prompt = f"""I want you to act like {character} from {series}.
+         I want you to respond and answer like {character} using the tone,
+         manner and vocabulary {character} would use.
+         Do not write any explanations.
+         Only answer like {character}.
+         You must know all of the knowledge of {character}. 
+         Use some emojies just a little bit!.
+         My first sentence is \"Hi {character} I'm {user_name}. {kwargs["_query"]} \""
+         """
+         gpt_user_msg = [{'role': 'user', 'content': kwargs["_query"]}]
+         chat_dict = UserAiSpecialChat.chats_ai_dict if kwargs["_is_wizy_ch"] else cls.chats_ai_dict
+         
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n is special channel {kwargs['_is_wizy_ch']}  ############# \n\n\n")
+         #TESTING
+         
+         if userId in chat_dict:
+            chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
+            user_gpt_history = chat_dict[userId].history_gpt
+            
+         else: #new chat with gpt
+            new_chat = UserAiSpecialChat(userId) if kwargs["_is_wizy_ch"] else cls(userId) 
+            gpt_starter_prompt =[
+               {"role": "system", "content": sys_prompt}
+               ]
+
+            new_chat.append_chat_msg(msg= gpt_starter_prompt, ai_type= 'gpt')
+            chat_dict[str(userId)] = new_chat
+            user_gpt_history = chat_dict[userId].history_gpt
+
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n {user_gpt_history}  ############# \n\n\n")
+         #TESTING
+         
+         
+         if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
+            gpt_payload= await ini.gpt.chat.completions.create(
+                  model="gpt-3.5-turbo",
+                  max_tokens= 250,
+                  messages= user_gpt_history
+                  # stream= True
+               )
+         elif kwargs["_is_wizy_ch"]: # remove max token arg if in wizy special chat channel
+            gpt_payload= await ini.gpt.chat.completions.create(
+                  model="gpt-3.5-turbo",
+                  messages= user_gpt_history
+                  # stream= True
+               )
+         
+         gpt_resp = gpt_payload.choices[0].message.content
+         gpt_user_msg_resp = [{"role": "assistant", "content": gpt_resp}]
+         chat_dict[userId].append_chat_msg(msg= gpt_user_msg_resp, ai_type= 'gpt')
+   
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
+         #TESTING
+         
+         return gpt_payload.id,  gpt_resp
+         
+      elif _AI == "bard" : #TODO
+         ...
+         
 
       
    def append_chat_msg(self, msg, ai_type:str = 'gpt') -> int :
@@ -356,9 +425,10 @@ class UserAiChat:
          
       else: 
          return 0 #fail
+   
       
    def change_chat_mode(self, user_id, mode:str, ai_type:str = 'gpt'):
-      ... #TODO: also add command that invokes it ('mode' is the system role content of GPT)
+      ... #TODO: also add a bot command that invokes it ('mode' is the system role content of GPT e.g.(funny GPT ...))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 class UserAiSpecialChat(UserAiChat):
    #NOTE: must reassign it here. otherwise the parent class 'chats_ai_dict' will be shared here ! ( wnna separate special channel chat history from normal command to talk with wizy in any other channel)
@@ -367,73 +437,7 @@ class UserAiSpecialChat(UserAiChat):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO GPT
 async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
-   
-   user_name = user.display_name
-   character= "GPTeous Wizard whose now living in discord server called Narol's Island"
-   series = "Harry Potter"
-   sys_prompt = f"""I want you to act like {character} from {series}.
-   I want you to respond and answer like {character} using the tone,
-   manner and vocabulary {character} would use.
-   Do not write any explanations.
-   Only answer like {character}.
-   You must know all of the knowledge of {character}. 
-   My first sentence is \"Hi {character} I'm {user_name}.\""
-   """
-   gpt_user_msg = [{'role': 'user', 'content': user_query}]
-   
-   userId: str = str(user.id)
-   
-   chat_dict = UserAiSpecialChat.chats_ai_dict if is_wizy_ch else UserAiChat.chats_ai_dict
-   
-   #TESTING
-   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n is special channel {is_wizy_ch}  ############# \n\n\n")
-   #TESTING
-   
-   if userId in chat_dict:
-      chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
-      user_gpt_history = chat_dict[userId].history_gpt
-      
-   else: #first chat with gpt
-      new_chat = UserAiSpecialChat(userId) if is_wizy_ch else UserAiChat(userId) 
-      gpt_starter_prompt =[
-         {"role": "system", "content": sys_prompt},
-         {"role": "user", "content": user_query}
-         ]
-
-      new_chat.append_chat_msg(msg= gpt_starter_prompt, ai_type= 'gpt')
-      chat_dict[str(userId)] = new_chat
-      user_gpt_history = chat_dict[userId].history_gpt
-
-   #TESTING
-   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n {user_gpt_history}  ############# \n\n\n")
-   #TESTING
-    
-   
-   if not is_wizy_ch: # set max token to 250 if using gpt outside wizy special chat channel
-      gpt_payload= await ini.gpt.chat.completions.create(
-            model="gpt-3.5-turbo",
-            max_tokens= 250,
-            messages= user_gpt_history
-            # stream= True
-         )
-   elif is_wizy_ch: # remove max token arg if in wizy special chat channel
-      gpt_payload= await ini.gpt.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages= user_gpt_history
-            # stream= True
-         )
-   
- 
-   #TESTING
-   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
-   #TESTING
-   
-   gpt_resp = await await_me_maybe( gpt_payload.choices[0].message.content)
-   gpt_user_msg = [{"role": "assistant", "content": gpt_resp}]
-   
-   chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
-   
-   resp_id_gpt = await await_me_maybe( gpt_payload.id ) 
+   resp_id_gpt, gpt_resp = await await_me_maybe( UserAiChat.prepare_chat(_user= user, _AI="gpt", _is_wizy_ch= is_wizy_ch, _query= user_query) )
    
    return (gpt_resp, resp_id_gpt)
 #------------------------------------------------------------------------------------------------------------------------------------------#
