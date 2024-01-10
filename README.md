@@ -1,23 +1,18 @@
-
+![image](https://github.com/orsnaro/Discord-Bot-Ai/assets/77698890/a92249e3-4269-4b95-94ea-eb87ebb90f6e)
  [![Live version badge](https://img.shields.io/badge/Live%20Version-Maintainance-red?logo=amazonaws)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) 
  [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml/badge.svg?branch=production-AWS)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml)
 
 # __Discord Bot Project (Wizard GPTeous)__ 
 
-
-
-
-
 ##### _Discord Bot with generative AI features using python as main project language_
 
 ---
+> [!IMPORTANT]  
+> #### NEW release is out ( for patch `V2.5.5B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
 
-
-> ## 📣 Now Bot is hosted on AWS EC2 servers(🔴)! [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
-
-
-> ## 📣 NEW release is out ( for patch `V2.5.5B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
+> [!IMPORTANT]  
+> #### Now Bot is hosted on AWS EC2 servers(🔴)! [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
 ---
 
 <details>
@@ -230,4 +225,5 @@ when user reacts on a wizy message wizy responds depending on category of emoji 
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-  * **Active Branches lately:**  `master` and [`bot_pycordv2.5.xB`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
+> [!NOTE]  
+> **Active Branches lately:**  `master` and [`bot_pycordv2.5.xB`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
