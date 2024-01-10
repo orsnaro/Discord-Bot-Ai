@@ -1,4 +1,3 @@
-![image](https://github.com/orsnaro/Discord-Bot-Ai/assets/77698890/a92249e3-4269-4b95-94ea-eb87ebb90f6e)
  [![Live version badge](https://img.shields.io/badge/Live%20Version-Maintainance-red?logo=amazonaws)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) 
  [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml/badge.svg?branch=production-AWS)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml)
@@ -7,28 +6,11 @@
 
 ##### _Discord Bot with generative AI features using python as main project language_
 
+![wizy image](./wizard_bot.ico "icon") 
+
 ---
 > [!IMPORTANT]  
 > #### NEW release is out ( for patch `V2.5.5B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
-
-> [!IMPORTANT]  
-> #### Now Bot is hosted on AWS EC2 servers(🔴)! [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
----
-
-<details>
-<summary><em>  ✨Patch (v2.5.5B) notes </em> </summary>
-    
-* add `/wizyaimode` choose between two generative AI models `GPT`/ `Bard`
-* add `/wizygpt` and make gpt default and main wizy chatting option 
-* refactoring some commands 
-* edit `on_message()` to accomodate new GPT features
-* support to `Bard` still there but the API is down most of time
-* activate one of current special events `FREE PALESTINE 🇵🇸🍉`
-
- </details> 
-      
-      
-  
 
 <details>
 <summary><em>  ✨ Current version (v2.5B) main features! </em> </summary>
@@ -54,11 +36,29 @@
  * now wizy have special events in command and channel ! current special event `FREE PALESTINE 🇵🇸🍉`
 
  * _soon_ music/tracks queue feature!
+   
+
 
  </details>
 
+<details>
+<summary><em>  ✨Last Patch (v2.5.5B) notes  </em> </summary>
 
-![ alt text for screen readers](./wizard_bot.ico "icon") 
+    
+* add `/wizyaimode` choose between two generative AI models `GPT`/ `Bard`
+* add `/wizygpt` and make gpt default and main wizy chatting option 
+* refactoring some commands 
+* edit `on_message()` to accomodate new GPT features
+* support to `Bard` still there but the API is down most of time
+* activate one of current special events `FREE PALESTINE 🇵🇸🍉`
+ </details> 
+
+> [!IMPORTANT]  
+> #### Now Bot is hosted on AWS EC2 servers(🔴)! [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
+---
+
+
+
 
 </br>
 </br>
