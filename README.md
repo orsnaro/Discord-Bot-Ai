@@ -1,45 +1,22 @@
-
  [![Live version badge](https://img.shields.io/badge/Live%20Version-Maintainance-red?logo=amazonaws)](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-AWS) 
  [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml/badge.svg?branch=production-AWS)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml)
 
 # __Discord Bot Project (Wizard GPTeous)__ 
 
-
-
-
-
 ##### _Discord Bot with generative AI features using python as main project language_
 
+![wizy image](./wizard_bot.ico "icon") 
+
 ---
-
-
-> ## 📣 Now Bot is hosted on AWS EC2 servers(🔴)!
-[AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
-
-> ## 📣 NEW release is out ( for patch V2.5.5B  )!
-[Release v2.5.5B Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.5B)
-
-<details>
-<summary><em>  ✨Patch (2.5.5B) notes </em> </summary>
-    
-* add `/wizyaimode` choose between two generative AI models `GPT`/ `Bard`
-* add `/wizygpt` and make gpt default and main wizy chatting option 
-* refactoring some commands 
-* edit `on_message()` to accomodate new GPT features
-* support to `Bard` still there but the API is down most of time
-* activate one of current special events `FREE PALESTINE 🇵🇸🍉`
-
- </details> 
-      
-      
-  
+> [!IMPORTANT]  
+> #### NEW release is out ( for patch `V2.5.5B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
 
 <details>
 <summary><em>  ✨ Current version (v2.5B) main features! </em> </summary>
 
  * now Finally you can use Chat GPT for free via our wizy bot -_[video](https://youtu.be/8Je6Pb5EYmI)_- in discord (you are also free to choose between `gpt` or `bard` though bard's API isn't stable at all!)
- *     
+     
  * now understands your arabic messages! 
 
  * now can enjoy Mighty GPTeuos memes using `/BoringWizard` command
@@ -59,11 +36,29 @@
  * now wizy have special events in command and channel ! current special event `FREE PALESTINE 🇵🇸🍉`
 
  * _soon_ music/tracks queue feature!
+   
+
 
  </details>
 
+<details>
+<summary><em>  ✨Last Patch (v2.5.5B) notes  </em> </summary>
 
-![ alt text for screen readers](./wizard_bot.ico "icon") 
+    
+* add `/wizyaimode` choose between two generative AI models `GPT`/ `Bard`
+* add `/wizygpt` and make gpt default and main wizy chatting option 
+* refactoring some commands 
+* edit `on_message()` to accomodate new GPT features
+* support to `Bard` still there but the API is down most of time
+* activate one of current special events `FREE PALESTINE 🇵🇸🍉`
+ </details> 
+
+> [!IMPORTANT]  
+> #### Now Bot is hosted on AWS EC2 servers(🔴)! [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
+---
+
+
+
 
 </br>
 </br>
@@ -81,7 +76,7 @@
    
 ***FINALLY***: &nbsp;✔️report me any issues!
    
-<sub> ***NOTE:*** _for now_ you wouldn't be able to make your own  sepcial channel [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) for now only try it in our [**server**](https://discord.com/invite/Y23B7R3FPq) </sub>
+<sub> ***NOTE:*** _for now_ you wouldn't be able to make your own  special channels e.g.( [`🧙Ask-the-wizard channel`](https://discord.gg/ptAVHmrtJX) ) try it in our [**server**](https://discord.com/invite/Y23B7R3FPq). If you want to add  wizy(feed,voice,chat) channels to your server contact me! later on this will be available to all via a command isha</sub>
 
 <sub> ***NOTE:*** the bot does not have any `adminstration` / `managing` / `moving` /  etc.. permissions. though I  recommend always to take a look at allowed permissions in <br> [`beta-bot invite link`](https://discord.com/api/oauth2/authorize?client_id=1117540489365827594&permissions=8&scope=bot%20applications.commands). feel free to sneak peak at our soucre code for any future changing of these intents/permissions💙 </sub>
 
@@ -97,6 +92,11 @@
 <summary><em>  ⌛  in-progress </em> </summary>
     
 *  [ ]  Documentation for functions / classes repo. first readme.md draft
+*  [ ] ON-reaction feedback feature :
+<details>
+<summary><em> <sub> details </sub> </em> </summary> 
+when user reacts on a wizy message wizy responds depending on category of emoji (good, bad, need_help,idk) (feature name : bot ON-reaction feedback feature) (reaction response will only stay for ~5secs except responses to  need_help reactions) 
+</details>
 
 *  [ ] complete track/songs queue class and it's two commands look(https://stackoverflow.com/questions/61276362/how-to-play-the-next-song-after-first-finished-discord-bot)
        
@@ -123,7 +123,7 @@
 
 * [ ]  OOP it!  and handle errors!
 
-* [ ]  save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
+* [ ]  (bard)save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
 
 * [ ]  complete [`bard_key_refresh.py`](./bard_key_refresh.py)
 
@@ -137,8 +137,6 @@
 
 * [ ]  add and test poe-API (starred at my GitHub)
      - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
-
-* [ ] add command to switch between BARD mode and poe-GPT mode
   
 * [ ]  ~use google translator API~
   
@@ -152,6 +150,9 @@
 
 <details>
 <summary><em>  🟢 Done </em> </summary>
+ 
+![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
+) add command to switch between BARD mode and poe-GPT mode
     
 ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 ) converte all command to be hybrid (works in legacy style and new slash command style) -> use discord's new paradigm 'interaction based system'
@@ -224,4 +225,5 @@
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-  * **Active Branches lately:**  `master` and [`bot_pycordv2.5.xB`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
+> [!NOTE]  
+> **Active Branches lately:**  `master` and [`bot_pycordv2.5.xB`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
