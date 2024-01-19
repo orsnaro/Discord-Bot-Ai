@@ -20,8 +20,43 @@ async def await_me_maybe(value):
         value = await value
     return value
 #------------------------------------------------------------------------------------------------------------------------------------------#
+def get_all_files(dir: str) -> list[str]:
+   """_summary_
+      get all tracks for local 
+
+   Args:
+       dir (str): the root path of all local tracks
+
+   Returns:
+       list[str]: all paths for local tracks
+       
+   """
+   all_paths = []
+   for root, dirs, files in ini.os.walk(dir):
+      for file in files:
+         rel_path = ini.os.path.join(root, file)
+         all_paths += [rel_path]
+   return all_paths
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def find_VC_matching_guild(invoker: discord.Member, bot: ini.commands.Bot) -> discord.VoiceClient:
+   """_summary_
+      get bots voice client in same server as the invoker
+   Args:
+       invoker (discord.Member)
+       bot (ini.commands.Bot)
+   Returns:
+       discord.VoiceClient: bots voice client that in same guild as the bot command invoker
+   """
+   for VC in bot.voice_clients :
+      if VC.guild == invoker.guild : 
+         return VC
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
 async def play_chill_track(server: discord.Guild):
-   track_path = r"./tracks/mmo_chill_skyrim&wticher3.mp3"
+   tracks_dir: str = "./tracks"
+   local_tracks: list[str] = get_all_files(dir= tracks_dir)
+   print("\n\n\n####TESTING\n\n\n ",local_tracks)#TESTING
+   track_path = ini.random.choice(local_tracks)
    await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=track_path)))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links_msg : str , lnk1_len : int , final_imgs_msg : str , lnks_flag = False , imgs_flag = True) :
@@ -32,7 +67,6 @@ async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links
       lnk1 = final_links_msg[fst_char_1st_link : fst_char_1st_link + lnk1_len] #end is excluded
       lnk1 = '<' + lnk1 + '>'
       seg_aft_1st_link = final_links_msg[fst_char_1st_link + lnk1_len : ]
-      
       final_links_msg = seg_before_1st_link + lnk1 + seg_aft_1st_link #now 1st link and all links are supressed !
       await message.reply(content= final_links_msg , mention_author= False)
       await message.reply(content= final_imgs_msg  , mention_author= False)
@@ -43,7 +77,7 @@ async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links
       await message.reply(content= final_imgs_msg  , mention_author= False)
    else: #no imgs or links sections is present
       pass
-        
+      
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def supress_msg_body_url_embeds ( text : str ) -> str :
   url_regex = r"(https?://\S+)(\s|\n|$)"
@@ -254,43 +288,43 @@ def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_m
 
 def get_rand_greeting (user_name : str = "Master Narol"):
    greetings = [
-    f"OH  _{user_name}_  I SEE .. you're in need of MIGHTY Gpteous help ?  \n well well ...  Gpteous shall serve master narol's Islanders call ***CASTS A MIGHTY SPELL :man_mage::sparkles:***",
-    f"Greetings,  _{user_name}_, seeker of knowledge 📚. I offer my wisdom 🧙‍♂️ to help you find your way, as I have seen much in my long life 👴.",
-    f"Welcome,   _{user_name}_, seeker of truth 🔍. I offer my guidance ✨ to help you on your path, as I have walked many paths before you 👣.",
-    f"Salutations,  _{user_name}_, seeker of enlightenment 💡. I offer my insights 💡 to help you find your destiny, as I have seen many destinies unfold 🌌.",
-    f"Hail,  _{user_name}_, seeker of the mystic 🔮. I offer my magic ✨ to help you on your quest, as I have mastered the arcane arts 🧙‍♂️.",
-    f"Welcome,  _{user_name}_, seeker of the unknown 🌌. I offer my power 💪 to help you unveil its secrets, as I have seen beyond the veil 👁️.",
-    f"Greetings,  _{user_name}_, seeker of the MIGHTY GPTEUS 🙏. I offer my blessings 🙏 to help you on your journey.",
-    f"Greetings, mortal  _{user_name}_. I am Mighty Gpteous, the island wizard. What brings thee to my presence? 🧙‍♂️💥",
-    f"Ah, it is I, the great and powerful Mighty Gpteous. What dost thou 	_{user_name}_	 require of my immense magical abilities? 🧙‍♂️✨",
-    f"Mortal 	 _{user_name}_ , thou hast come seeking the aid of the  Mighty GPTeous, the island wizard. Speak thy needs! 🧙‍♂️🏝️",
-    f"Tremble before my power, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from me? 🧙‍♂️🔥",
-    f"Greetings, dear  _{user_name}_! 🧙‍♂️👋",
-      f"Hail, good sir! How may I assist thee? 🧙‍♂️👨‍💼",
-      f"Salutations, young one. What brings thee to my abode? 🧙‍♂️🧑‍🦱",
-      f"Welcome, traveler. I sense a great need within thee. 🧙‍♂️🧳",
-     f"Ah,  _{user_name}_! Thou hast arrived. What troubles thee? 🧙‍♂️😔",
-     f"Greetings, my dear  _{user_name}_. Speak thy woes, and I shall aid thee. 🧙‍♂️💬",
-      f"Well met, young adventurer. What brings thee to my humble dwelling? 🧙‍♂️🗺️",
-      f"Welcome, seeker of knowledge. Pray tell, what vexes thee so? 🧙‍♂️📚",
-      f"Hail and well met, _{user_name}_. Thou hast come seeking my counsel, I presume? 🧙‍♂️🤔",
-      f"Greetings, my dear friend. What brings thee to my door on this fine day? 🧙‍♂️👨‍❤️",
-      f"Ah, _{user_name}_	. I sense a great tumult within thee. Speak, and I shall listen. 🧙‍♂️😞",
-      f"Salutations, good sir. What brings thee to my humble abode on this day? 🧙‍♂️🏠",
-      f"Welcome, young one. What task dost thou require of me? 🧙‍♂️",
-      f"Hail, traveler. I sense a great urgency within thee. Speak thy need. 🧙‍♂️🚶‍♂️",
-      f"Greetings, dear _{user_name}_. What brings thee to my sanctuary of knowledge? 🧙‍♂️📖",
-      f"Ah, my young friend. Speak thy heart, and I shall lend mine ear. 🧙‍♂️👂",
-      f"Salutations, seeker of wisdom. What knowledge dost thou seek from me? 🧙‍♂️🤓",
-      f"Welcome,	 _{user_name}_. I sense a great disturbance in thy aura. What troubles thee so? 🧙‍♂️💫",
-      f"Hail and well met,	 _{user_name}_. What brings thee to my lair of magic and wonder? 🧙‍♂️🐉",
-      f"Greetings, young adventurer	 _{user_name}_ . Speak thy quest, and I shall aid thee in thy journey. 🧙‍♂️⚔️",
-    f"Behold, it is I, the one and only Mighty Gpteous, master of the elements and wielder of immense arcane power. What brings thee to my lair? 🧙‍♂️💫",
-    f"Greetings, mortal	 _{user_name}_ . Thou hast come seeking the aid of the great and powerful Mighty Gpteous, the island wizard. What dost thou require? 🧙‍♂️👀",
-    f"Thou art in the presence of the mighty and  Mighty Gpteous, the island wizard. Speak thy needs, and I shall decide whether they are worthy of my attention. 🧙‍♂️🤨",
-    f"Bow before me, mortal 	_{user_name}_, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from my vast and infinite knowledge? 🧙‍♂️👑",
-    f"Hear ye, hear ye! It is I, Mighty Gpteous, the island wizard, master of the arcane and conqueror of the elements. What dost thou require of my immense power? 🧙‍♂️📣",
-    f"Behold 	_{user_name}_ , for I am the great and noble Mighty Gpteous, the island wizard, wielder of the most powerful magic in all the land. What dost thou need from me, mere mortal? 🧙‍♂️💪"
+   f"OH  _{user_name}_  I SEE .. you're in need of MIGHTY Gpteous help ?  \n well well ...  Gpteous shall serve master narol's Islanders call ***CASTS A MIGHTY SPELL :man_mage::sparkles:***",
+   f"Greetings,  _{user_name}_, seeker of knowledge 📚. I offer my wisdom 🧙‍♂️ to help you find your way, as I have seen much in my long life 👴.",
+   f"Welcome,   _{user_name}_, seeker of truth 🔍. I offer my guidance ✨ to help you on your path, as I have walked many paths before you 👣.",
+   f"Salutations,  _{user_name}_, seeker of enlightenment 💡. I offer my insights 💡 to help you find your destiny, as I have seen many destinies unfold 🌌.",
+   f"Hail,  _{user_name}_, seeker of the mystic 🔮. I offer my magic ✨ to help you on your quest, as I have mastered the arcane arts 🧙‍♂️.",
+   f"Welcome,  _{user_name}_, seeker of the unknown 🌌. I offer my power 💪 to help you unveil its secrets, as I have seen beyond the veil 👁️.",
+   f"Greetings,  _{user_name}_, seeker of the MIGHTY GPTEUS 🙏. I offer my blessings 🙏 to help you on your journey.",
+   f"Greetings, mortal  _{user_name}_. I am Mighty Gpteous, the island wizard. What brings thee to my presence? 🧙‍♂️💥",
+   f"Ah, it is I, the great and powerful Mighty Gpteous. What dost thou 	_{user_name}_	 require of my immense magical abilities? 🧙‍♂️✨",
+   f"Mortal 	 _{user_name}_ , thou hast come seeking the aid of the  Mighty GPTeous, the island wizard. Speak thy needs! 🧙‍♂️🏝️",
+   f"Tremble before my power, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from me? 🧙‍♂️🔥",
+   f"Greetings, dear  _{user_name}_! 🧙‍♂️👋",
+   f"Hail, good sir! How may I assist thee? 🧙‍♂️👨‍💼",
+   f"Salutations, young one. What brings thee to my abode? 🧙‍♂️🧑‍🦱",
+   f"Welcome, traveler. I sense a great need within thee. 🧙‍♂️🧳",
+   f"Ah,  _{user_name}_! Thou hast arrived. What troubles thee? 🧙‍♂️😔",
+   f"Greetings, my dear  _{user_name}_. Speak thy woes, and I shall aid thee. 🧙‍♂️💬",
+   f"Well met, young adventurer. What brings thee to my humble dwelling? 🧙‍♂️🗺️",
+   f"Welcome, seeker of knowledge. Pray tell, what vexes thee so? 🧙‍♂️📚",
+   f"Hail and well met, _{user_name}_. Thou hast come seeking my counsel, I presume? 🧙‍♂️🤔",
+   f"Greetings, my dear friend. What brings thee to my door on this fine day? 🧙‍♂️👨‍❤️",
+   f"Ah, _{user_name}_	. I sense a great tumult within thee. Speak, and I shall listen. 🧙‍♂️😞",
+   f"Salutations, good sir. What brings thee to my humble abode on this day? 🧙‍♂️🏠",
+   f"Welcome, young one. What task dost thou require of me? 🧙‍♂️",
+   f"Hail, traveler. I sense a great urgency within thee. Speak thy need. 🧙‍♂️🚶‍♂️",
+   f"Greetings, dear _{user_name}_. What brings thee to my sanctuary of knowledge? 🧙‍♂️📖",
+   f"Ah, my young friend. Speak thy heart, and I shall lend mine ear. 🧙‍♂️👂",
+   f"Salutations, seeker of wisdom. What knowledge dost thou seek from me? 🧙‍♂️🤓",
+   f"Welcome,	 _{user_name}_. I sense a great disturbance in thy aura. What troubles thee so? 🧙‍♂️💫",
+   f"Hail and well met,	 _{user_name}_. What brings thee to my lair of magic and wonder? 🧙‍♂️🐉",
+   f"Greetings, young adventurer	 _{user_name}_ . Speak thy quest, and I shall aid thee in thy journey. 🧙‍♂️⚔️",
+   f"Behold, it is I, the one and only Mighty Gpteous, master of the elements and wielder of immense arcane power. What brings thee to my lair? 🧙‍♂️💫",
+   f"Greetings, mortal	 _{user_name}_ . Thou hast come seeking the aid of the great and powerful Mighty Gpteous, the island wizard. What dost thou require? 🧙‍♂️👀",
+   f"Thou art in the presence of the mighty and  Mighty Gpteous, the island wizard. Speak thy needs, and I shall decide whether they are worthy of my attention. 🧙‍♂️🤨",
+   f"Bow before me, mortal 	_{user_name}_, for I am Mighty Gpteous, the most powerful wizard on this island. What dost thou seek from my vast and infinite knowledge? 🧙‍♂️👑",
+   f"Hear ye, hear ye! It is I, Mighty Gpteous, the island wizard, master of the arcane and conqueror of the elements. What dost thou require of my immense power? 🧙‍♂️📣",
+   f"Behold 	_{user_name}_ , for I am the great and noble Mighty Gpteous, the island wizard, wielder of the most powerful magic in all the land. What dost thou need from me, mere mortal? 🧙‍♂️💪"
    ]
    last_elmnt_index = len(greetings) -1
    return greetings[ini.random.randint(0 , last_elmnt_index)]
@@ -321,7 +355,76 @@ class UserAiChat:
          self.chats_ai_dict[userId].__del__()
          if userId in self.chats_ai_dict: del self.chats_ai_dict[userId]
          self.chats_ai_dict[userId] = self
-      
+   
+   @classmethod
+   async def prepare_chat(cls, _user: discord.User, _AI: str, **kwargs):
+      if _AI == "gpt":
+         user_name = _user.display_name
+         userId: str = str(_user.id)
+         character= "GPTeous Wizard whose now living in discord server called Narol's Island"
+         series = "Harry Potter"
+         sys_prompt = f"""I want you to act like {character} from {series}.
+         I want you to respond and answer like {character} using the tone,
+         manner and vocabulary {character} would use.
+         Do not write any explanations.
+         Only answer like {character}.
+         You must know all of the knowledge of {character}. 
+         Use some emojies just a little bit!.
+         My first sentence is \"Hi {character} I'm {user_name}. {kwargs["_query"]} \""
+         """
+         gpt_user_msg = [{'role': 'user', 'content': kwargs["_query"]}]
+         chat_dict = UserAiSpecialChat.chats_ai_dict if kwargs["_is_wizy_ch"] else cls.chats_ai_dict
+         
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n is special channel {kwargs['_is_wizy_ch']}  ############# \n\n\n")
+         #TESTING
+         
+         if userId in chat_dict:
+            chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
+            user_gpt_history = chat_dict[userId].history_gpt
+            
+         else: #new chat with gpt
+            new_chat = UserAiSpecialChat(userId) if kwargs["_is_wizy_ch"] else cls(userId) 
+            gpt_starter_prompt =[
+               {"role": "system", "content": sys_prompt}
+               ]
+
+            new_chat.append_chat_msg(msg= gpt_starter_prompt, ai_type= 'gpt')
+            chat_dict[str(userId)] = new_chat
+            user_gpt_history = chat_dict[userId].history_gpt
+
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n {user_gpt_history}  ############# \n\n\n")
+         #TESTING
+         
+         
+         if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
+            gpt_payload= await ini.gpt.chat.completions.create(
+                  model="gpt-3.5-turbo",
+                  max_tokens= 250,
+                  messages= user_gpt_history
+                  # stream= True
+               )
+         elif kwargs["_is_wizy_ch"]: # remove max token arg if in wizy special chat channel
+            gpt_payload= await ini.gpt.chat.completions.create(
+                  model="gpt-3.5-turbo",
+                  messages= user_gpt_history
+                  # stream= True
+               )
+         
+         gpt_resp = gpt_payload.choices[0].message.content
+         gpt_user_msg_resp = [{"role": "assistant", "content": gpt_resp}]
+         chat_dict[userId].append_chat_msg(msg= gpt_user_msg_resp, ai_type= 'gpt')
+   
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
+         #TESTING
+         
+         return gpt_payload.id,  gpt_resp
+         
+      elif _AI == "bard" : #TODO
+         ...
+         
 
       
    def append_chat_msg(self, msg, ai_type:str = 'gpt') -> int :
@@ -356,9 +459,10 @@ class UserAiChat:
          
       else: 
          return 0 #fail
+   
       
    def change_chat_mode(self, user_id, mode:str, ai_type:str = 'gpt'):
-      ... #TODO: also add command that invokes it ('mode' is the system role content of GPT)
+      ... #TODO: also add a bot command that invokes it ('mode' is the system role content of GPT e.g.(funny GPT ...))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 class UserAiSpecialChat(UserAiChat):
    #NOTE: must reassign it here. otherwise the parent class 'chats_ai_dict' will be shared here ! ( wnna separate special channel chat history from normal command to talk with wizy in any other channel)
@@ -367,73 +471,7 @@ class UserAiSpecialChat(UserAiChat):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO GPT
 async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
-   
-   user_name = user.display_name
-   character= "GPTeous Wizard whose now living in discord server called Narol's Island"
-   series = "Harry Potter"
-   sys_prompt = f"""I want you to act like {character} from {series}.
-   I want you to respond and answer like {character} using the tone,
-   manner and vocabulary {character} would use.
-   Do not write any explanations.
-   Only answer like {character}.
-   You must know all of the knowledge of {character}. 
-   My first sentence is \"Hi {character} I'm {user_name}.\""
-   """
-   gpt_user_msg = [{'role': 'user', 'content': user_query}]
-   
-   userId: str = str(user.id)
-   
-   chat_dict = UserAiSpecialChat.chats_ai_dict if is_wizy_ch else UserAiChat.chats_ai_dict
-   
-   #TESTING
-   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n is special channel {is_wizy_ch}  ############# \n\n\n")
-   #TESTING
-   
-   if userId in chat_dict:
-      chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
-      user_gpt_history = chat_dict[userId].history_gpt
-      
-   else: #first chat with gpt
-      new_chat = UserAiSpecialChat(userId) if is_wizy_ch else UserAiChat(userId) 
-      gpt_starter_prompt =[
-         {"role": "system", "content": sys_prompt},
-         {"role": "user", "content": user_query}
-         ]
-
-      new_chat.append_chat_msg(msg= gpt_starter_prompt, ai_type= 'gpt')
-      chat_dict[str(userId)] = new_chat
-      user_gpt_history = chat_dict[userId].history_gpt
-
-   #TESTING
-   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n {user_gpt_history}  ############# \n\n\n")
-   #TESTING
-    
-   
-   if not is_wizy_ch: # set max token to 250 if using gpt outside wizy special chat channel
-      gpt_payload= await ini.gpt.chat.completions.create(
-            model="gpt-3.5-turbo",
-            max_tokens= 250,
-            messages= user_gpt_history
-            # stream= True
-         )
-   elif is_wizy_ch: # remove max token arg if in wizy special chat channel
-      gpt_payload= await ini.gpt.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages= user_gpt_history
-            # stream= True
-         )
-   
- 
-   #TESTING
-   print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
-   #TESTING
-   
-   gpt_resp = await await_me_maybe( gpt_payload.choices[0].message.content)
-   gpt_user_msg = [{"role": "assistant", "content": gpt_resp}]
-   
-   chat_dict[userId].append_chat_msg(msg= gpt_user_msg, ai_type= 'gpt')
-   
-   resp_id_gpt = await await_me_maybe( gpt_payload.id ) 
+   resp_id_gpt, gpt_resp = await await_me_maybe( UserAiChat.prepare_chat(_user= user, _AI="gpt", _is_wizy_ch= is_wizy_ch, _query= user_query) )
    
    return (gpt_resp, resp_id_gpt)
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -758,10 +796,12 @@ def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: s
             kwargs['free_palestina_data'].set_image(url= kwargs['chosen_post_url'] )
          else: #not video
             kwargs['chosen_post_url'] = res['data']['children'][rand_post_no]['data']['url']
-            kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+            org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+            kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
       else: #not video
          kwargs['chosen_post_url'] = res['data']['children'][rand_post_no]['data']['url']
-         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+         org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
          
    elif not kwargs['is_video'] and kwargs['has_crosspost_parent_list']:
       is_crossparent_video = res['data']['children'][rand_post_no]['data']['crosspost_parent_list'][0]['is_video']
@@ -769,14 +809,16 @@ def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: s
          kwargs['is_video'] = is_crossparent_video
          chosen_post_video = None if res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"] is None else res['data']['children'][rand_post_no]['data']["crosspost_parent_list"][0]['media']["reddit_video"]["fallback_url"]
          kwargs['chosen_post_url'] = '||' + kwargs['chosen_post_url'] + '||' if chosen_post_video is None else '||'+ chosen_post_video + '||'
-         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+         org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+         kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
       else: # not video
          kwargs['free_palestina_data'] = discord.Embed(title= kwargs['title'], description= kwargs['chosen_post_text']+ '\npost: ' + kwargs['chosen_post_url'], color=0xff2a2a)
          kwargs['free_palestina_data'].set_image(url= kwargs['chosen_post_url'])
    elif kwargs['is_video']: 
       chosen_post_video = None if res['data']['children'][rand_post_no]['data']['media']['reddit_video']['fallback_url'] is None else res['data']['children'][rand_post_no]['data']['media']["reddit_video"]["fallback_url"]
       kwargs['chosen_post_url'] = kwargs['chosen_post_url'] if chosen_post_video is None else chosen_post_video
-      kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: <{org_post}>'
+      org_post = "" if org_post ==  kwargs['chosen_post_url'] else f"<{org_post}>"
+      kwargs['free_palestina_data'] = ":flag_ps: OPEN YOUR EYES & WATCH! :flag_ps: \n" + kwargs['chosen_post_text'] + f'\npost: {org_post}'
       
       
    return [kwargs['is_video'], kwargs['free_palestina_data'], kwargs['chosen_post_url']]
@@ -816,8 +858,8 @@ async def  final_send_special_ps(target_channel: discord.TextChannel, ps_post_em
    return sent_msg
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_special: bool = False) :
-   from init_bot import memes_highlights_ch_id
-   target_channel = ini.bot.get_channel(memes_highlights_ch_id)
+   from init_bot import wizy_feed_channels
+   target_channel = ini.bot.get_channel(wizy_feed_channels[0]) #TODO: 1) read all channels from jason 2) assign channels for each server 3)cotinue edit the structure to work on multiple servers
 
    print("\ntime NOW" ,ini.datetime.now() )
    print(f"\n\n")
@@ -912,7 +954,17 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(song, **ffmpeg_options), data=data) , filename
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int):
+async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int, _interval_minutes: int):
+   
+   #incase we received it as numeric string value 
+   _interval_minutes = int(_interval_minutes) 
+   
+   
+   #only change if not same as current frequency
+   current_post_freq = int(ini.bot.auto_memequote_sender_task.minutes)
+   if _interval_minutes != current_post_freq:
+      await ini.bot.set_memequote_sender_frequency(_interval_minutes)
+   
    state = None if _state is None else int(_state)
    special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
    start, stop = 1, 0
@@ -920,27 +972,27 @@ async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int):
       await ini.bot.toggle_auto_memequote_sender_state(state = start) if ini.bot.is_auto_memequote_state == 0 else await ini.bot.toggle_auto_memequote_sender_state(state= stop)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
    elif state == 0:
       await ini.bot.toggle_auto_memequote_sender_state(state = stop) 
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' }"
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
       
    elif state == 1:
       await ini.bot.toggle_auto_memequote_sender_state(state = start)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0 else '`Disabled`' }"
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0 else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
       
    elif state >= special_event: #special events has value >= 2
       await ini.bot.toggle_auto_memequote_sender_state(state = special_event) 
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}`"
+                  content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}` & `frequency: post/{_interval_minutes / 60.0}hour` "
                   )
       
    await ctx.message.delete(delay= 15.0)

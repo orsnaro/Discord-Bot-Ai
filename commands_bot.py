@@ -17,9 +17,10 @@ slash_cmd_ok_msg = "OK ✅"
 @bot.hybrid_command(name="help")
 @commands.cooldown(1, 5)
 async def help( ctx: commands.Context ):
-   bot_help_msg_p1: discord.Message = await ctx.reply(content= override_help_msgP1)
-   await ctx.send(content= override_help_msgP2)
-   ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+   async with ctx.typing():
+      bot_help_msg_p1: discord.Message = await ctx.reply(content= help_bot.override_help_msgP1)
+      await ctx.send(content= help_bot.override_help_msgP2)
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="boringwizard", help= "wizy sends a random meme from Reddit")
 @commands.cooldown(1, 5)
@@ -34,9 +35,9 @@ async def boring( ctx: commands.Context ):
 async def awake( ctx: commands.Context ):
    ps_post_get_task = await bot.loop.create_task(palestina_free(_title= ":flag_ps: *r/Palestine* :flag_ps:"))
    ps_post_embed_is_video, ps_post_data, ps_post_url = await await_me_maybe(ps_post_get_task)
-   
+
    await util.final_send_special_ps(ctx, ps_post_embed_is_video, ps_post_data, ps_post_url)
-      
+
    #if used via slash command will not add reaction cuz it raises discord error msg not found
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -65,10 +66,10 @@ allowed_roles_change_ai = {"ULT! SAQF": 889532272989053019,
                          "ISLE! Booster": 1013995284470169761,
                          "Spirits Overlord": 1118266805006389289
                          } #check by id not the names cuz they're missing emojies
-@bot.hybrid_command(name="togglerandom", help= 'toggles the auto meme-quote sender feature of the bot wizy')
+@bot.hybrid_command(name="togglerandom", help= 'toggles & controls the auto meme-quote sender feature & feed channel of the bot wizy')
 @commands.cooldown(1, 5)
-async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = None ):
-
+async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = None, interval_minutes: int = default_feed_channel_frequency_minutes ):
+   
    global allowed_roles_togglerandom
 
    user_comanded_roles : list[discord.Role] = ctx.message.author.roles
@@ -84,15 +85,15 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = Non
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ are allowed to use this command..."
                   ) #used a join and map and lambda function just as fast fancy way to print all allowed roles
    else:
-      await util.process_send_togglerandom_cmd(ctx= ctx, _state= state)
+      await util.process_send_togglerandom_cmd(ctx= ctx, _state= state, _interval_minutes = interval_minutes)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="wizyaimode", help= "choose between generative AI models used in wizy's chat channel: gpt / bard")
 @commands.cooldown(1, 5)
 @commands.has_any_role(*list(allowed_roles_change_ai.values()))
 async def change_wizy_ai_type( ctx: commands.Context, ai_name:str = None ):
    await util.process_send_change_wizy_ai_cmd(ctx= ctx, _ai_name= None if ai_name is None else ai_name.strip().lower())
-   
-      
+
+
 @change_wizy_ai_type.error
 async def change_wizy_ai_type_error(ctx: commands.Context , error):
    print (f'\n\nTESTING#################E R R O R: {error}\n\n')
@@ -112,7 +113,7 @@ max_quote_size = 5070
 async def change_quote_mx_sz( ctx: commands.Context, new_quote_sz: str):
    global custom_quote_threshhold
    await util.process_send_quotesz_cmd(ctx= ctx, _quote_sz = new_quote_sz, _quote_threshhold= custom_quote_threshhold, _max_sz= max_quote_size)
-   
+
 
 @change_quote_mx_sz.error
 async def change_quote_mx_sz_error(ctx: commands.Context , error):
@@ -158,34 +159,37 @@ async def wiz_ping(ctx: commands.Context):
 @commands.cooldown(1, 5)
 async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 
-   valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
+   #since I prefer no classic command 'prefix' ignore chat commands when inside wizy speical chat channel i.e.(avoid duplicated ans)
+   if ctx.channel.id not in wizy_chat_channels :
+       
+      valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
 
-   if valid_reply[0] and valid_reply[1] is not  None :
-      full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
+      if valid_reply[0] and valid_reply[1] is not  None :
+         full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
 
-   #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
-   try:
-      user_msg = ctx.message
-         
-      ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author, is_wizy_ch= False ))
-      
-      if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
-         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-         await send_initMsg_task
-      else:
-         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**" , delete_after= 15))
-         await send_initMsg_task
-         
-      task_response: tuple(str, str) = await ask_gpt_task
-      embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+      #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
+      try:
+         user_msg = ctx.message
 
-      send_func_return = bot.loop.create_task(user_msg.reply(embed=embed) if not ctx.interaction else ctx.reply(embed=embed))
-      returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
-   except: 
-      async with ctx.typing():
-         ctx.message.delete(delay= 15)
-         bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
-   
+         ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author, is_wizy_ch= False ))
+
+         if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+            await send_initMsg_task
+         else:
+            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Searching Ancient Scrolls for you!...** \n \n `{full_prompt}`"))
+            await send_initMsg_task
+
+         task_response: tuple(str, str) = await ask_gpt_task
+         embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+
+         send_func_return = bot.loop.create_task(user_msg.reply(embed=embed) if not ctx.interaction else ctx.reply(embed=embed))
+         returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+      except:
+         async with ctx.typing():
+            ctx.message.delete(delay= 15)
+            bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
+
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
 @bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using BARD ... etc') # command name is defaulted to method name
@@ -193,43 +197,45 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
 #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
 #using BARD API
+   #since I prefer no classic command 'prefix' ignore chat commands when inside wizy speical chat channel i.e.(avoid duplicated ans)
+   if ctx.channel.id not in wizy_chat_channels :
 
-   valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message, chk_type= 2)
+      valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message, chk_type= 2)
 
-   if valid_reply[0] and valid_reply[1] is not  None :
-      full_prompt = await get_new_reply_prompt(valid_reply[1], full_prompt)
+      if valid_reply[0] and valid_reply[1] is not  None :
+         full_prompt = await get_new_reply_prompt(valid_reply[1], full_prompt)
 
-   try:
-      #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
-         
-      user_msg = ctx.message
-      ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author, is_wizy_ch= False ))
-      
-      if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
-         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-         await send_initMsg_task
-      else:
-         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**", delete_after= 15 ))
-         await send_initMsg_task
-         
-      task_response : tuple = await ask_gpt_task
-      embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+      try:
+         #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
 
-      send_func_return = bot.loop.create_task(user_msg.reply(embed=embed))
-      returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
-   except: 
-      async with ctx.typing():
-         ctx.message.delete(delay= 15)
-         bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
-         
+         user_msg = ctx.message
+         ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author, is_wizy_ch= False ))
 
-   # img_embds = list()
-   # if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
-   # 	for img in task_response[2]:
-   # 		img_embds.append(discord.Embed(type='image').set_image(img))
+         if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+            await send_initMsg_task
+         else:
+            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**", delete_after= 15 ))
+            await send_initMsg_task
 
-   # 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
-   # 	await send_img_msg_task
+         task_response : tuple = await ask_gpt_task
+         embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+
+         send_func_return = bot.loop.create_task(user_msg.reply(embed=embed))
+         returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+      except:
+         async with ctx.typing():
+            ctx.message.delete(delay= 15)
+            bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
+
+
+      # img_embds = list()
+      # if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
+      # 	for img in task_response[2]:
+      # 		img_embds.append(discord.Embed(type='image').set_image(img))
+
+      # 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
+      # 	await send_img_msg_task
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # #NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
 # @bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using BARD ... etc') # command name is defaulted to method name
@@ -271,26 +277,29 @@ async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMP
 #NOTE: (search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "):
 #using BARD API
-   valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
+    #since I prefer no classic command 'prefix' ignore chat commands when inside wizy speical chat channel i.e.(avoid duplicated ans)
+   if ctx.channel.id not in wizy_chat_channels :
 
-   if valid_reply[0] and valid_reply[1] is not  None :
-      full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
-   #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
-   try:
-      ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
-      await send_initMsg_task
-      task_response : tuple = await ask_bard_task
-      send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-      embed = prepare_discord_embed(task_response , is_reply= valid_reply[0], is_bard= True)
+      valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
 
-      send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
-      returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
-      del embed
-      del valid_reply
-   except: 
-      async with ctx.typing():
-         ctx.message.delete(delay= 15)
-         bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
+      if valid_reply[0] and valid_reply[1] is not  None :
+         full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
+      #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
+      try:
+         ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
+         await send_initMsg_task
+         task_response : tuple = await ask_bard_task
+         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
+         embed = prepare_discord_embed(task_response , is_reply= valid_reply[0], is_bard= True)
+
+         send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
+         returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
+         del embed
+         del valid_reply
+      except:
+         async with ctx.typing():
+            ctx.message.delete(delay= 15)
+            bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 
    # img_embds = list()
    # if task_response[2] is not None and len(task_response[2]) != 0 and send_func_return.done():
@@ -315,11 +324,16 @@ async def leave_voice_wizard( ctx: commands.Context ):
 @commands.cooldown(1, 5)
 async def join_voice_wizard( ctx: commands.Context ):
 
+   #TESTING
+   print(f"######## 'wizyjoin' INVOKER VOICE STATE (TESTING): \n\n\n\n\n{ctx.author.voice}\n\n\n\n {True if ctx.author.voice else False }\n\n\n\n\n {ctx.guild.voice_client} ###########\n\n\n\n")
+   #TESTING
+   
    if ( ctx.author.voice ):
       if ctx.guild.voice_client is not None:
          await ctx.guild.voice_client.disconnect()
 
       target_voice_channel = ctx.message.author.voice.channel
+      await  target_voice_channel.connect()
 
       if ctx.interaction: #if invoked using slash commmand
          bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
@@ -328,7 +342,6 @@ async def join_voice_wizard( ctx: commands.Context ):
       await ctx.message.delete(delay= 15.0)
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 
-      await  target_voice_channel.connect()
    else :
       user = ctx.message.author.mention
       bot_reply_msg: discord.Message = await ctx.reply(
@@ -345,37 +358,49 @@ async def play(ctx: commands.Context, url: str= None):
    print(f"TESTING ######### \n\n\n {url} \n\n\n ###########")
    try :
       guild_obj = ctx.message.guild
-      voice_channel = guild_obj.voice_client
+      bot_vioce_client: discord.voice_client = guild_obj.voice_client
+      
+      
+      #make bot (join + play) in one command! (IF he is already in a VC you must move him first!)
+      if ( ctx.author.voice ):
+         if bot_vioce_client is not None and (bot_vioce_client.channel != ctx.author.voice.channel):
+            raise Exception("Bot is Being Used in another Voice Channel!")
+         elif bot_vioce_client is None: #user is in a voice ch and bot is not in any voice channel
+            await ctx.author.voice.channel.connect()
+            bot_vioce_client: discord.voice_client = guild_obj.voice_client
+         
+         if url != None:
+            async with ctx.typing():
+               #NOTE: if stream arg causes error set to false (download file then play from local pc)
+               song_obj , filename = await YTDLSource.from_url(url, loop=bot.loop, stream= True)
 
-      if url != None:
-         async with ctx.typing():
-            #NOTE: if stream arg causes error set to false (download file then play from local pc)
-            song_obj , filename = await YTDLSource.from_url(url, loop=bot.loop, stream= True)
+               if bot_vioce_client.is_playing():
+                  bot_vioce_client.stop()
 
-            if voice_channel.is_playing():
-               voice_channel.stop()
+               bot_vioce_client.play(song_obj)
 
-            voice_channel.play(song_obj)
-
-         bot_reply_msg: discord.Message = await ctx.reply(f'**Now playing:** {filename} **-** _islander_ {ctx.message.author.mention}')
-         ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-         await ctx.message.delete(delay= 15.0)
-      else: #play default chill tracks locally on your pc (infinity loop)
-         async with ctx.typing():
-            if voice_channel.is_playing():
-               voice_channel.stop()
-
-            await util.play_chill_track(guild_obj)
-            bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} started Wizy's Default MMO Chill Tracks** enjoy! :blue_heart::notes:")
+            bot_reply_msg: discord.Message = await ctx.reply(f'**Now playing:** {filename} **-** _islander_ {ctx.message.author.mention}')
             ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
             ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
             await ctx.message.delete(delay= 15.0)
+         else: #play default chill tracks locally on your pc (infinity loop)
+            async with ctx.typing():
+               if bot_vioce_client.is_playing():
+                  bot_vioce_client.stop()
+               
+               await util.play_chill_track(guild_obj)
+               bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} started Wizy's Default MMO Chill Tracks** enjoy! :blue_heart::notes:")
+               ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+               ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+               await ctx.message.delete(delay= 15.0)
+      else: 
+         raise Exception("USER NOT IN VALID VOICE STATE (probably not inside a Voice Channel)!")
+      
 
    except Exception as e:
       print(f"######### \n\n\n Exception Raised from 'wizyplay' cmd: {e} \n\n\n ###########")
-      bot_reply_msg: discord.Message =await ctx.reply("Ops:kissing: ! either The bot is not connected to a voice channel __OR__ provided link is not a YouTube Music",
-                                                      delete_after= 15
+      bot_reply_msg: discord.Message = await ctx.reply(f"Ops:kissing: !{e} __OR__ provided link is not a YouTube Music",
+                                                       delete_after= 15
                                                       )
       ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
