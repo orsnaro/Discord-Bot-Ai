@@ -1,0 +1,44 @@
+{
+	"797143628215877672":{
+		"admin_rooms": [
+			889999601350881390
+		],
+		"wizy_voice_channels": [
+			890209823898107904
+		],
+		"wizy_chat_channels": [
+			1137242260203909151
+		],
+		"wizy_feed_channels": {
+
+		},
+		"wizard_bot_id": 1117540489365827594,
+		"setup": {
+				"is_auto_memequote_state": 2,
+				"wizy_chat_ch_ai_type": "gpt",
+				"quotesz": 200
+		},
+		"allowed_roles": {
+			"togglerandom": {
+				"ULT! SAQF": 889532272989053019,
+				"ULT! ADMIN": 889931295365414993,
+				"ULT! CODER": 1014300476814147656,
+				"Spirits Overlord": 1118266805006389289
+			},
+			"quotesz": {
+				"ULT! SAQF": 889532272989053019,
+				"ULT! ADMIN": 889931295365414993,
+				"ULT! CODER": 1014300476814147656,
+				"Spirits Overlord": 1118266805006389289
+			},
+			"change_ai": {
+				"ULT! SAQF": 889532272989053019,
+				"ULT! ADMIN": 889931295365414993,
+				"ULT! CODER": 1014300476814147656,
+				"Land MASTERS": 890586687623798834,
+				"ISLE! Booster": 1013995284470169761,
+				"Spirits Overlord": 1118266805006389289
+			}
+		}
+	}
+}
