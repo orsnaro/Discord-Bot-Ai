@@ -324,11 +324,16 @@ async def leave_voice_wizard( ctx: commands.Context ):
 @commands.cooldown(1, 5)
 async def join_voice_wizard( ctx: commands.Context ):
 
+   #TESTING
+   print(f"######## 'wizyjoin' INVOKER VOICE STATE (TESTING): \n\n\n\n\n{ctx.author.voice}\n\n\n\n {True if ctx.author.voice else False }\n\n\n\n\n {ctx.guild.voice_client} ###########\n\n\n\n")
+   #TESTING
+   
    if ( ctx.author.voice ):
       if ctx.guild.voice_client is not None:
          await ctx.guild.voice_client.disconnect()
 
       target_voice_channel = ctx.message.author.voice.channel
+      await  target_voice_channel.connect()
 
       if ctx.interaction: #if invoked using slash commmand
          bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
@@ -337,7 +342,6 @@ async def join_voice_wizard( ctx: commands.Context ):
       await ctx.message.delete(delay= 15.0)
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 
-      await  target_voice_channel.connect()
    else :
       user = ctx.message.author.mention
       bot_reply_msg: discord.Message = await ctx.reply(
@@ -354,37 +358,49 @@ async def play(ctx: commands.Context, url: str= None):
    print(f"TESTING ######### \n\n\n {url} \n\n\n ###########")
    try :
       guild_obj = ctx.message.guild
-      voice_channel = guild_obj.voice_client
+      bot_vioce_client: discord.voice_client = guild_obj.voice_client
+      
+      
+      #make bot (join + play) in one command! (IF he is already in a VC you must move him first!)
+      if ( ctx.author.voice ):
+         if bot_vioce_client is not None and (bot_vioce_client.channel != ctx.author.voice.channel):
+            raise Exception("Bot is Being Used in another Voice Channel!")
+         elif bot_vioce_client is None: #user is in a voice ch and bot is not in any voice channel
+            await ctx.author.voice.channel.connect()
+            bot_vioce_client: discord.voice_client = guild_obj.voice_client
+         
+         if url != None:
+            async with ctx.typing():
+               #NOTE: if stream arg causes error set to false (download file then play from local pc)
+               song_obj , filename = await YTDLSource.from_url(url, loop=bot.loop, stream= True)
 
-      if url != None:
-         async with ctx.typing():
-            #NOTE: if stream arg causes error set to false (download file then play from local pc)
-            song_obj , filename = await YTDLSource.from_url(url, loop=bot.loop, stream= True)
+               if bot_vioce_client.is_playing():
+                  bot_vioce_client.stop()
 
-            if voice_channel.is_playing():
-               voice_channel.stop()
+               bot_vioce_client.play(song_obj)
 
-            voice_channel.play(song_obj)
-
-         bot_reply_msg: discord.Message = await ctx.reply(f'**Now playing:** {filename} **-** _islander_ {ctx.message.author.mention}')
-         ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-         await ctx.message.delete(delay= 15.0)
-      else: #play default chill tracks locally on your pc (infinity loop)
-         async with ctx.typing():
-            if voice_channel.is_playing():
-               voice_channel.stop()
-
-            await util.play_chill_track(guild_obj)
-            bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} started Wizy's Default MMO Chill Tracks** enjoy! :blue_heart::notes:")
+            bot_reply_msg: discord.Message = await ctx.reply(f'**Now playing:** {filename} **-** _islander_ {ctx.message.author.mention}')
             ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
             ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
             await ctx.message.delete(delay= 15.0)
+         else: #play default chill tracks locally on your pc (infinity loop)
+            async with ctx.typing():
+               if bot_vioce_client.is_playing():
+                  bot_vioce_client.stop()
+               
+               await util.play_chill_track(guild_obj)
+               bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} started Wizy's Default MMO Chill Tracks** enjoy! :blue_heart::notes:")
+               ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+               ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+               await ctx.message.delete(delay= 15.0)
+      else: 
+         raise Exception("USER NOT IN VALID VOICE STATE (probably not inside a Voice Channel)!")
+      
 
    except Exception as e:
       print(f"######### \n\n\n Exception Raised from 'wizyplay' cmd: {e} \n\n\n ###########")
-      bot_reply_msg: discord.Message =await ctx.reply("Ops:kissing: ! either The bot is not connected to a voice channel __OR__ provided link is not a YouTube Music",
-                                                      delete_after= 15
+      bot_reply_msg: discord.Message = await ctx.reply(f"Ops:kissing: !{e} __OR__ provided link is not a YouTube Music",
+                                                       delete_after= 15
                                                       )
       ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
