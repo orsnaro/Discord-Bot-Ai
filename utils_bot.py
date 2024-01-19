@@ -20,8 +20,42 @@ async def await_me_maybe(value):
         value = await value
     return value
 #------------------------------------------------------------------------------------------------------------------------------------------#
+def get_all_files(dir: str) -> list[str]:
+   """_summary_
+      get all tracks for local 
+
+   Args:
+       dir (str): the root path of all local tracks
+
+   Returns:
+       list[str]: all paths for local tracks
+       
+   """
+   all_paths = []
+   for root, dirs, files in ini.os.walk(dir):
+      for file in files:
+         rel_path = ini.os.path.join(root, file)
+         all_paths += [rel_path]
+   return all_paths
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def find_VC_matching_guild(invoker: discord.Member, bot: ini.commands.Bot) -> discord.VoiceClient:
+   """_summary_
+      get bots voice client in same server as the invoker
+   Args:
+       invoker (discord.Member)
+       bot (ini.commands.Bot)
+   Returns:
+       discord.VoiceClient: bots voice client that in same guild as the bot command invoker
+   """
+   for VC in bot.voice_clients :
+      if VC.guild == invoker.guild : 
+         return VC
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
 async def play_chill_track(server: discord.Guild):
-   local_tracks= [r"./tracks/mmo_chill_skyrim.mp3", r"./tracks/witcher3_concert.mp3", r"./tracks/x2mate.com - Lord of the Rings _ Middle Earth Music & Ambience, 3 Hours (128 kbps).mp3"]
+   tracks_dir: str = "./tracks"
+   local_tracks: list[str] = get_all_files(dir= tracks_dir)
+   print("\n\n\n####TESTING\n\n\n ",local_tracks)#TESTING
    track_path = ini.random.choice(local_tracks)
    await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=track_path)))
 #------------------------------------------------------------------------------------------------------------------------------------------#
