@@ -10,7 +10,7 @@
 
 ---
 <details>
-<summary><em>  ✨ Wizy's Latest features! </em> </summary>
+<summary><em>  ✨ Wizy's Latest features <sub>(v2.5B)</sub>! </em> </summary>
 
  * now Finally you can use Chat GPT for free via our wizy bot -_[video](https://youtu.be/8Je6Pb5EYmI)_- in discord (you are also free to choose between `gpt` or `bard` though bard's API isn't stable at all!)
      
