@@ -12,6 +12,8 @@
 <details>
 <summary><em>  ✨ Wizy's Latest features <sub>(v2.5B)</sub>! </em> </summary>
 
+ * NOW! you can use wizy In DM messages no need to be in a server that has wizy!
+  
  * now Finally you can use Chat GPT for free via our wizy bot -_[video](https://youtu.be/8Je6Pb5EYmI)_- in discord (you are also free to choose between `gpt` or `bard` though bard's API isn't stable at all!)
      
  * now understands your arabic messages! 
