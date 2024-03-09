@@ -32,7 +32,7 @@ import contextlib
 import os
 import help_bot
 import keys
-import configs
+from configs import Configs
 import sys
 # from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -95,24 +95,61 @@ class CustomBot(commands.Bot):
       self.resume_chill_if_free.start()
       self.auto_memequote_sender_task.start()
       self.play_chill_loop.start()
+      self.load_cfg.start()
+      self.init_send_master_dm_msg.start()
+      
 
    async def on_ready(self):
       #next line needed to enable slash commands (slash commands are type of interactions not ctx or message or normal command any more)
       await self.tree.sync()
-      print(f"Bot info: \n (magic and dunder attrs. excluded) ")
-      for attr in dir(self.user):
-         if  not (attr.startswith('__') or attr.startswith('_')):
-            value = getattr(self.user, attr)
-            print(f'{attr}: {value}')
-      print(f"\nJoined servers: count({len(self.guilds)}) \n ")
-      for guild in self.guilds :
-         print(f"name: {guild.name}")
-         print(f"owner: {guild.owner}")
-         print(f"owner-ID: {guild.owner_id}")
-         print(f"members count: {guild.member_count}")
-         print(f"#####################################")
       print(f"\n\n Bot '{self.user}' Sucessfully connected to Discord!\n\n")
 
+
+   @tasks.loop(seconds= 10, count= 1) #do once
+   async def load_cfg(self):
+      # load the configs 
+      # (loads default config file if no custom config is found (later either all servers config in one json or each server will have their config class and config json))
+      Configs.cfg_load()
+      
+   @tasks.loop(seconds= 20, count= 1) #do once
+   async def init_send_master_dm_msg(self):
+      if Configs.config_json_dict :  #if dict not empty
+         
+         #send any init  dm message to admin (defaults to Narol 'me')
+         bot_master: discord.User = self.get_user(Configs.config_json_dict["bot_master_id"])
+         master_dm_ch = bot_master.dm_channel or await self.create_dm(bot_master) # if dm channel is none will create new dm (shortcut)
+         
+         init_master_dm_msg: str = "# Wizy bot Initialized! sending DM init MSG:\n "
+         init_master_dm_msg = init_master_dm_msg + f"## Bot info: \n (magic and dunder attrs. excluded)\n\n"
+         print(f"Bot info: \n (magic and dunder attrs. excluded) ")
+         
+         # get and print important bot info
+         for attr in dir(self.user):
+            if  not (attr.startswith('__') or attr.startswith('_')):
+               value = getattr(self.user, attr)
+               print(f'{attr}: {value}')
+               init_master_dm_msg = init_master_dm_msg + f'{attr}: {value}\n'
+         init_master_dm_msg = init_master_dm_msg + f"#####################################\n"
+         await master_dm_ch.send(init_master_dm_msg)  #send first portion of the msg
+               
+         init_master_dm_msg = f"\n\n\n # JOINED SERVERS INFO: \n ## servers count({len(self.guilds)})\n"
+         print(f"\n ## Joined servers: count({len(self.guilds)}) \n ")
+         for guild in self.guilds :
+            print(f"name: {guild.name}")
+            print(f"owner: {guild.owner}")
+            print(f"owner-ID: {guild.owner_id}")
+            print(f"members count: {guild.member_count}")
+            print(f"#####################################")
+            init_master_dm_msg = init_master_dm_msg + f"Gname: {guild.name}, owner: {guild.owner}, owner-ID: {guild.owner_id}, members count: {guild.member_count}\n"
+            init_master_dm_msg = init_master_dm_msg + f"#####################################\n"
+            await master_dm_ch.send(init_master_dm_msg)  #send the rest of dm msg to bot master dm
+            init_master_dm_msg =""
+            
+            
+   @init_send_master_dm_msg.before_loop
+   async def wait_send_until_ready(self):
+      await self.wait_until_ready()
+   
 
    @tasks.loop(seconds= 5)
    async def  resume_chill_if_free(self):
