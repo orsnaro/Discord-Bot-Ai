@@ -54,7 +54,7 @@ import commands_bot
 import asyncforismatic
 # import bard_key_refresh #TODO
 
-init_bot.boot_bot()
+init_bot.boot_bot(__file__)
 
 
 

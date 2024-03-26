@@ -259,9 +259,10 @@ bot = CustomBot(
                   help_command= None,
                )
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def get_last_conv_id()  : ...  #TODO
+
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def boot_bot() :
+def boot_bot(main_file: str) :
+   util.cd_to_main_dir(main_file)
    log_std = open("std.log" , 'a') #logs all stderr and stdout and discord.py msgs
    log_discord = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='a')#logs only discord.py msgs
    if 'IS_PRODUTCION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :

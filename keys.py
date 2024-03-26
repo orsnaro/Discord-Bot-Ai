@@ -26,12 +26,12 @@ if( keysFileOk ):
       bardGmail        = keys_dict['BARD_GMAIL']
       bardGmail_KEY    = keys_dict['BARD_GMAILPASS']
 
-else : #if json file is not there
+else : #if json file is not there (the ones with default None val are not super necessary)
    openaiAPI_KEY    = os.environ['OPENAI_API_KEY']
    openaiAPI_ORG_ID = os.environ['OPENAI_ORG_ID']
    Token_gpteousBot = os.environ['DISCORDBOTTOKEN_GPTEOUS']
    bardAPI_KEY      = os.environ['BARD_APIKEY']
-   bardAPI_KEY2     = os.environ['BARD_APIKEY2']
-   bardAPI_KEY3     = os.environ['BARD_APIKEY3']
-   bardGmail        = os.environ['BARD_GMAIL']
-   bardGmailK_KEY   = os.environ['BARD_GMAILPASS']
+   bardAPI_KEY2     = os.environ.get('BARD_APIKEY2', None) 
+   bardAPI_KEY3     = os.environ.get('BARD_APIKEY3', None)
+   bardGmail        = os.environ.get('BARD_GMAIL', None) 
+   bardGmailK_KEY   = os.environ.get('BARD_GMAILPASS', None) 

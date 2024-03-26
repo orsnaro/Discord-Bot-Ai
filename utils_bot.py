@@ -13,6 +13,13 @@ import asyncio as aio
 import aiohttp
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
+def get_last_conv_id()  : ...  #TODO
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def cd_to_main_dir(main_file: str):
+   abspath = ini.os.path.abspath(main_file)
+   dname = ini.os.path.dirname(abspath)
+   ini.os.chdir(dname)
+#------------------------------------------------------------------------------------------------------------------------------------------#
 async def await_me_maybe(value):
     if callable(value):
         value = value()
@@ -680,7 +687,7 @@ class EmbedLimits(object):
                             description= ansText + " \n `E N D` "
                             ) #url will be  hyperlink in title
       
-      embed.set_author(name= author, url=wizardChannelLink, icon_url= gptIcon )
+      embed.set_author(name= author, url=wizardChannelLink, icon_url= None )
       embed.set_footer(text= f"Scroll ID({ansID}) • powered by OpenAI", icon_url= footerIcon )
       if is_reply :
          embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
