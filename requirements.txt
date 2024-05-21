@@ -58,7 +58,7 @@ PyYAML==6.0
 quote==2.0.4
 Random-Word==1.0.11
 random2==1.0.1
-requests==2.31.0
+requests==2.32.0
 rsa==4.9
 selenium==4.10.0
 six==1.16.0
