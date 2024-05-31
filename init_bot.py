@@ -169,7 +169,8 @@ class CustomBot(commands.Bot):
                   connected_users_cnt = len( guild.voice_client.channel.members ) - 1
                   if connected_users_cnt >= 1 :
                      await guild.voice_client.channel.send("*3+ minutes of Silence:pleading_face: resuming* **MMO Chill Track** ...")
-                     await util.play_chill_track(guild)
+                     
+                     await guild.voice_client.resume() if guild.voice_client.is_paused() else await util.play_chill_track(guild)
                   else:
                      #TESTING
                      print("\n\n\n\n\n\n TESTING########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\n######################\n\n\n\n")
