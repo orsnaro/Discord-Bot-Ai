@@ -176,9 +176,9 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
          if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
-         else:
-            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Searching Ancient Scrolls for you!...** \n \n `{full_prompt}`"))
-            await send_initMsg_task
+            
+         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Ah I see! Searching Ancient Scrolls for you on: ** \n \n `{full_prompt}` ..."))
+         await send_initMsg_task
 
          task_response: tuple(str, str) = await ask_gpt_task
          embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
