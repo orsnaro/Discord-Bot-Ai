@@ -2,7 +2,7 @@
                           Coder : Omar
                           Version : v2.5.5B
                           version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | BARD | HTTP | ASYNC
+                          Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
@@ -94,22 +94,22 @@ def supress_msg_body_url_embeds ( text : str ) -> str :
   return text
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # TODO : join all prepare funcs in one class or control function
-async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : discord.Message , discord_msg_limit = 2000, is_bard:bool = True) :
+async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : discord.Message , discord_msg_limit = 2000, is_gemini:bool = True) :
 
    #Supress i.e.(no embed) any URL inside the msg body and not in links msg section
-   if is_bard :
-      _bard_response = _response
+   if is_gemini :
+      _gemini_response = _response
       bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
-      full_response = bot_msg_header + _bard_response[0]
+      full_response = bot_msg_header + _gemini_response[0]
 
       print ("TESTING: " , full_response) #TESTING
 
    #MSG FRAGMENTER SECTION ( TODO : make message fragmenter function for both msg and links msg in utils_bot.py )
       full_resp_len = len(full_response)
-      if full_resp_len >= discord_msg_limit : #break bard response   to smaller messages to fit in discord msg
+      if full_resp_len >= discord_msg_limit : #break gemini response   to smaller messages to fit in discord msg
 
          bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** `[this msg will be fragmented: exceeds 2000chars]`\n"
-         full_response = bot_msg_header + _bard_response[0]
+         full_response = bot_msg_header + _gemini_response[0]
          full_response = supress_msg_body_url_embeds(full_response)
 
          full_resp_len = len(full_response) #re-calc
@@ -136,7 +136,7 @@ async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : di
                   break
 
 
-            elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full bard response
+            elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full gemini response
                msg_frag = full_response[ : ]
                await message.reply(content= msg_frag  , mention_author= True)
                await message.reply(content= end_flag  , mention_author= True)
@@ -150,12 +150,12 @@ async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : di
             needed_msgs -= 1
 
 
-      else: #all bard response can fit in one discord msg
+      else: #all gemini response can fit in one discord msg
          full_response = supress_msg_body_url_embeds(full_response)
          await message.reply(content= full_response  , mention_author= True)
          
          
-   elif not is_bard: #GPT
+   elif not is_gemini: #GPT
       _gpt_response = _response
       bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** \n"
       full_response = bot_msg_header + _gpt_response[0]
@@ -164,7 +164,7 @@ async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : di
 
    #MSG FRAGMENTER SECTION ( TODO : make message fragmenter function for both msg and links msg in utils_bot.py )
       full_resp_len = len(full_response)
-      if full_resp_len >= discord_msg_limit : #break bard response   to smaller messages to fit in discord msg
+      if full_resp_len >= discord_msg_limit : #break gemini response   to smaller messages to fit in discord msg
 
          bot_msg_header = f"***MIGHTY GPTEOUS Answers :man_mage:! *** `[this msg will be fragmented: exceeds 2000chars]`\n"
          full_response = bot_msg_header + _gpt_response[0]
@@ -194,7 +194,7 @@ async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : di
                   break
 
 
-            elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full bard response
+            elif needed_msgs == 1 and remain == 0 : #send end flag in discord msg to indicate end of full gemini response
                msg_frag = full_response[ : ]
                await message.reply(content= msg_frag  , mention_author= True)
                await message.reply(content= end_flag  , mention_author= True)
@@ -208,18 +208,18 @@ async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : di
             needed_msgs -= 1
 
 
-      else: #all bard response can fit in one discord msg
+      else: #all gemini response can fit in one discord msg
          full_response = supress_msg_body_url_embeds(full_response)
          await message.reply(content= full_response  , mention_author= True)
       
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000, is_bard:bool = True) -> tuple :
+def prepare_links_msg( _gemini_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000, is_gemini:bool = True) -> tuple :
 
 
    links_msg_header = f"\n```ini\n [Sources & links]```" #len = 29 [0 -> 28]
-   links_list = list( set( _bard_response[1]) if is_bard else set(_bard_response[1]))#TODO: add gpt + #remove duplicate links
+   links_list = list( set( _gemini_response[1]) if is_gemini else set(_gemini_response[1]))#TODO: add gpt + #remove duplicate links
 
-   #CHECK if there is images between the links and move them to bard_images_list(at_end):
+   #CHECK if there is images between the links and move them to gemini_images_list(at_end):
 
    i = 0
    while len(links_list) != 0  and i < len(links_list) :
@@ -227,8 +227,8 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
       if link.endswith((".jpg",".png",".webp"))  or link.startswith( ("https://lh3.googleusercontent.com" , "https://www.freepik.com") ) or (link.find(".jpg") != -1) :
          links_list.remove(link)
          link = set(link)
-         if _bard_response[2] is not None:
-            _bard_response[2].union(link)
+         if _gemini_response[2] is not None:
+            _gemini_response[2].union(link)
 
          i = 0 # not to got out of index after removal of a link
          continue #to prevent  inc and skip zeroth element!
@@ -250,7 +250,7 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
 
    #if last link exceeds discord msg limit then will leave it else will take it
    lnks_no_lmt -= 1 if tot_lnk_len > discord_msg_limit - 1 else 0
-   # (any way we take all links until first link  that its sum with the earlier links exceeds the limit for now we discard the rest of  links from bard ans)
+   # (any way we take all links until first link  that its sum with the earlier links exceeds the limit for now we discard the rest of  links from gemini ans)
 
    #remove embed from all links except the first ( also works in discord chat !)
    lnk1_len = len(links_list[0]) # will be needed later in sub_sections_msg_sending_ctrl()
@@ -262,14 +262,14 @@ def prepare_links_msg( _bard_response : tuple , _links_limit : int = 5 , discord
    links_list[0] = '\n * '+ links_list[0]  # prepend with each link with bullet point
    final_links = links_msg_header  + '\n* '.join(links_list[ : lnks_no_lmt])  #list is zero based and end at limit - 1
 
-   return (final_links , _bard_response , lnk1_len)
+   return (final_links , _gemini_response , lnk1_len)
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_msg_limit = 2000, is_bard:bool = True) -> str :
+def prepare_imgs_msg( _gemini_response : tuple , _imgs_limit : int = 5 , discord_msg_limit = 2000, is_gemini:bool = True) -> str :
 
    imgs_msg_header = f"\n```ini\n [Images]``` \n"
    
-   imgs_list = list( set( _bard_response[2]) if is_bard else set(_bard_response[2]) )#TODO: add gpt + #remove duplicate imgs
+   imgs_list = list( set( _gemini_response[2]) if is_gemini else set(_gemini_response[2]) )#TODO: add gpt + #remove duplicate imgs
 
    #IMAGES MSG FRAGMENTER SECTION (currently discord only allow 5 messages per message and ignores the later ones and we'll stick with 5 images also at max)
    tot_img_len = 0
@@ -285,7 +285,7 @@ def prepare_imgs_msg( _bard_response : tuple , _imgs_limit : int = 5 , discord_m
    allowed_imgs : int = i
    #if last imgs link length exceeds discord msg limit then will leave it else will take it
    allowed_imgs -= 1 if tot_img_len > discord_msg_limit - 1 else 0
-   # (any way we take all imgs until first img  that its sum with the earlier imgs exceeds the limit of (links chars len or imgs no.)for now we discard the rest of  imgs from bard ans)
+   # (any way we take all imgs until first img  that its sum with the earlier imgs exceeds the limit of (links chars len or imgs no.)for now we discard the rest of  imgs from gemini ans)
 
 
    #FINAL FORMAT FOR imgs MESSAGE
@@ -353,12 +353,12 @@ class UserAiChat:
          self.chats_ai_dict[userId] = self
          #each history element(gpt): {'role': system,user,asistant ,'content': str}
          self.history_gpt: list[dict] = []
-         self.history_bard: list[dict] = []
+         self.history_gemini: list[dict] = []
          
       else: 
          #dont make new/reset history there is already one! (mostly this won't happen we handle this before making new obj. But! just in case...)
          self.history_gpt: list[dict] = self.chats_ai_dict[userId].history_gpt
-         self.history_bard: list[dict] = self.chats_ai_dict[userId].history_bard
+         self.history_gemini: list[dict] = self.chats_ai_dict[userId].history_gemini
          self.chats_ai_dict[userId].__del__()
          if userId in self.chats_ai_dict: del self.chats_ai_dict[userId]
          self.chats_ai_dict[userId] = self
@@ -429,7 +429,7 @@ class UserAiChat:
          
          return gpt_payload.id,  gpt_resp
          
-      elif _AI == "bard" : #TODO
+      elif _AI == "gemini" : #TODO
          ...
          
 
@@ -453,15 +453,15 @@ class UserAiChat:
             self.history_gpt += msg
             return 1
             
-      elif ai_type == 'bard': 
+      elif ai_type == 'gemini': 
          #so we want only to clear if user msgs exceeds limit not all chat msgs
-         user_msgs_cnt = (len(self.history_bard) - 1) // 2
+         user_msgs_cnt = (len(self.history_gemini) - 1) // 2
          if user_msgs_cnt >= self.queries_limit:
-            self.history_bard.clear()
-            self.history_bard += msg
+            self.history_gemini.clear()
+            self.history_gemini += msg
             return 2 #done + done + cleared history due to 'queries_limit' exceeding
          else: #still can append to history
-            self.history_bard += msg
+            self.history_gemini += msg
             return 1 #done
          
       else: 
@@ -483,7 +483,7 @@ async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> tu
    return (gpt_resp, resp_id_gpt)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
-async def ask_bard(user_query: str, user= discord.user ) -> tuple:
+async def ask_gemini(user_query: str, user= discord.user ) -> tuple:
    
    user_name = user.display_name
    character= "GPTeous Wizard whose now living in discord server called Narol's Island "
@@ -498,9 +498,9 @@ async def ask_bard(user_query: str, user= discord.user ) -> tuple:
    My first sentence is \"Hi {character} I'm {user_name}. {user_query} .\"
    """
    
-   bard_ans = await await_me_maybe(ini.bard.get_answer(classic_prmpt))
-   # return skip_line(bard_ans['content']) , bard_ans['links'] , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id'] # skip first line that has my prompt
-   return bard_ans['content'] , bard_ans['links'] if 'links' in bard_ans else None , bard_ans['images'] , bard_ans['response_id'] , bard_ans['conversation_id']
+   gemini_ans = await await_me_maybe(ini.gemini.get_answer(classic_prmpt))
+   # return skip_line(gemini_ans['content']) , gemini_ans['links'] , gemini_ans['images'] , gemini_ans['response_id'] , gemini_ans['conversation_id'] # skip first line that has my prompt
+   return gemini_ans['content'] , gemini_ans['links'] if 'links' in gemini_ans else None , gemini_ans['images'] , gemini_ans['response_id'] , gemini_ans['conversation_id']
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : 
    #TODO : later check type must be in dictionary contains all types and check it self becomes a class
@@ -533,10 +533,10 @@ async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , 
 
    else: return False
 #------------------------------------------------------------------------------------------------------------------------------------------#
-bard_conversation_ids_buffer = set()
+gemini_conversation_ids_buffer = set()
 def save_gpt_last_conversation_id() : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_discord_embed( _ans_data: tuple, is_reply: bool = False, is_bard= True) -> discord.Embed :
+def prepare_discord_embed( _ans_data: tuple, is_reply: bool = False, is_gemini= True) -> discord.Embed :
    #TODO : handle if embed exceeds max size of max size of fields ( ini.bot will continue work anyway but tell user that OF happend of paganating)
    '''
 EMBED TOTAL MAX SIZE is 6000 chars ( # NOTE : use reactions and pagination if exceeded )
@@ -556,33 +556,33 @@ class EmbedLimits(object):
 
 
    #TODO : this is a mess refactor it later you could do it in half codes!  
-   if is_bard :
-      bard_ans_data = _ans_data
-      ansText = bard_ans_data[0]
+   if is_gemini :
+      gemini_ans_data = _ans_data
+      ansText = gemini_ans_data[0]
       footerIcon="https://em-content.zobj.net/thumbs/120/whatsapp/352/scroll_1f4dc.png"
       wizardChannelLink ="https://discord.com/channels/797143628215877672/1118953370510696498"
       note_compined_msg = "_This is combined response i.e.(more than one message) and still not perfectly formatted_"
       embedTitle = "MIGHTY GPTEOUS Ancient Scroll :scroll: Found! \n"
       timeNow = ini.datetime.now()
-      author = "Bard AI"
-      bardIcon = "https://i.imgur.com/u0J6wRz.png"
+      author = "GEMINI AI"
+      geminiIcon = "https://i.imgur.com/u0J6wRz.png"
       redTint = 10038562
       darkGreen = discord.Colour.dark_green()
       
       
       #TESTING BLOCK
       print ("\n\n\n TESTING : EMBED conetns lengths :")
-      print ("ans text" , bard_ans_data[0] )
-      print ("#######ans text len" , len(bard_ans_data[0]) )
+      print ("ans text" , gemini_ans_data[0] )
+      print ("#######ans text len" , len(gemini_ans_data[0]) )
 
-      print ("links" , bard_ans_data[1] )
-      print ("images" , bard_ans_data[2] )
+      print ("links" , gemini_ans_data[1] )
+      print ("images" , gemini_ans_data[2] )
       imgs_sz =0
-      for img in bard_ans_data[2]:
+      for img in gemini_ans_data[2]:
          imgs_sz += len(img)
       print ("#######imgs len" , imgs_sz)
       print ("############# len images" , imgs_sz)
-      tot_len = len(bard_ans_data[0]) + len(bard_ans_data[1]) + len(bard_ans_data[2]) + 200
+      tot_len = len(gemini_ans_data[0]) + len(gemini_ans_data[1]) + len(gemini_ans_data[2]) + 200
       #TESTING BLOCK
 
       embed = discord.Embed(type='rich',
@@ -593,31 +593,31 @@ class EmbedLimits(object):
                             description= ansText + " \n `*END OF ANSWER*` "
                             ) #url will be  hyperlink in title
       
-      embed.set_author(name= author, url="https://bard.google.com" , icon_url= bardIcon )
+      embed.set_author(name= author, url="https://gemini.google.com" , icon_url= geminiIcon )
 
-      if bard_ans_data[1] is not None and len(bard_ans_data[1]) != 0 :
+      if gemini_ans_data[1] is not None and len(gemini_ans_data[1]) != 0 :
 
-         bard_ans_links = list(set(bard_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so I removed duplicates
+         gemini_ans_links = list(set(gemini_ans_data[1])) #NOTE = FOR SOME reason there is many redundancy in links so I removed duplicates
 
        #TESTING BLOCk
          link_sz =0
-         for i in range(len(bard_ans_data[1])):
-            link_sz += len(bard_ans_data[1][i])
+         for i in range(len(gemini_ans_data[1])):
+            link_sz += len(gemini_ans_data[1][i])
          print ("#######links len" , link_sz)
       #TESTING BLOCk
 
 
          tot_len_of_links_sections = 0
-         for i in range(len(bard_ans_links)):
-            tot_len_of_links_sections += len(bard_ans_links[i])
+         for i in range(len(gemini_ans_links)):
+            tot_len_of_links_sections += len(gemini_ans_links[i])
 
          if tot_len_of_links_sections >= 1022:
 
             one_field_mx = 1022 #less than discord_limit  (for safety)
             super_list = [] #each element is an list of links / content that is tot char counts is <= 1023
             super_list.append([])
-            links_list = bard_ans_links
-            max_i =  len(bard_ans_links)
+            links_list = gemini_ans_links
+            max_i =  len(gemini_ans_links)
             char_cnt , field_indx , i  = 0 , 0 , 0 # vars controlling while loop
             bullet_point_format_len = 6
             while i < max_i:
@@ -643,17 +643,17 @@ class EmbedLimits(object):
 
 
          else:
-            bard_ans_links[0] = '\n * ' + bard_ans_links[0] #fix join dont format 1st element
-            tmp = '\n * '.join(bard_ans_links) #TESTING
+            gemini_ans_links[0] = '\n * ' + gemini_ans_links[0] #fix join dont format 1st element
+            tmp = '\n * '.join(gemini_ans_links) #TESTING
             print ("TESTING final sources format " , tmp)
             embed.add_field(name= f"_ __sources & links__  _",
                             inline= False,
-                            value= '\n * '.join(bard_ans_links))
+                            value= '\n * '.join(gemini_ans_links))
 
       if is_reply :
          embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
 
-      embed.set_footer(text= f"Scroll ID({bard_ans_data[3]})" , icon_url= footerIcon )
+      embed.set_footer(text= f"Scroll ID({gemini_ans_data[3]})" , icon_url= footerIcon )
 
       #TESTING BLOCK
       field_sz += len((embed.fields)[i])
@@ -665,7 +665,7 @@ class EmbedLimits(object):
       print ("###### embed tot " ,len(embed))
       #TESTING BLOCK
    
-   elif not is_bard:
+   elif not is_gemini:
       gpt_ans_data = _ans_data
       ansText = gpt_ans_data[0]
       ansID = gpt_ans_data[1]
@@ -706,7 +706,7 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    first_msg_content = await msg_fetch_task
    first_msg_content : discord.Message.content = first_msg_content.content
 
-   first_msg_content : str =  first_msg_content.replace(f"<@{ini.wizard_bot_id}" , ' ')#if other commands like 'bard' or 'wizard' its mostly ok # NOTE : (still testing)
+   first_msg_content : str =  first_msg_content.replace(f"<@{ini.wizard_bot_id}" , ' ')#if other commands like 'gemini' or 'wizard' its mostly ok # NOTE : (still testing)
    new_prompt : str = old_prompt + ' ' + f"\"{first_msg_content}\""
 
 
@@ -1040,7 +1040,7 @@ async def process_send_quotesz_cmd(ctx: ini.commands.context, _quote_sz: str, _q
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def process_send_change_wizy_ai_cmd(ctx: ini.commands.context, _ai_name:str):
-   ai_models = ['gpt','bard']
+   ai_models = ['gpt','gemini']
    if _ai_name == None or _ai_name not in ai_models :
       await ctx.message.delete(delay= 15)
       await ctx.reply(f"Ops! you must choose a valid AI model: `{' , '.join(ai_models)}`. *current model is `{ini.bot.wizy_chat_ch_ai_type}`*", delete_after= 15)
@@ -1052,7 +1052,7 @@ async def process_send_change_wizy_ai_cmd(ctx: ini.commands.context, _ai_name:st
       await ctx.reply(f"Wizard AI Chat Channel model Has been set to:  `{_ai_name}`!", delete_after= 15)
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
       
-   elif _ai_name == 'bard':
+   elif _ai_name == 'gemini':
       ini.bot.wizy_chat_ch_ai_type = _ai_name
       await ctx.message.delete(delay= 15)
       await ctx.reply(f"Wizard AI Chat Channel model Has been set to:  `{_ai_name}`!", delete_after= 15)

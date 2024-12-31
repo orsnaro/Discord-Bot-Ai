@@ -2,7 +2,7 @@
                           Coder : Omar
                           Version : v2.5.5B
                           version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | BARD | HTTP | ASYNC
+                          Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Customs Help code for Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
@@ -33,7 +33,7 @@ default_help_msg = f"""
                    ```fix
                    1. @WizardSpirit "your_question"
                    2. `wiz` "your_question"
-                   3. `bard` "your_question"
+                   3. `gemini` "your_question"
                    4. `wizard` "your_question"
                    5. `wizardspirit` "your_question"
                    6. `~ <any_of_prev_CMDs>` "your_question"
@@ -110,7 +110,7 @@ override_help_msgP2 = f"""
          ```fix
          • quotesz <new size> (defaulted to 200 chars and max  is ~5070 chars)
          • togglerandom (control activity of #memes-highlights channel: `pass nothin` toggles, `0` disable, `1` enable normal mode, `2+` enable special events mode )
-         • wizyaimode (controls the AI model used in wizard chat channel. `ai_name` values : `gpt` or `bard`)
+         • wizyaimode (controls the AI model used in wizard chat channel. `ai_name` values : `gpt` or `gemini`)
          ```
 
          6. Voice Activity

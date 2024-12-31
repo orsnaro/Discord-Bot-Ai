@@ -2,7 +2,7 @@
                           Coder : Omar
                           Version : v2.5.5B
                           version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
+                          Code Type : python | Discrod | GEMINI | GPT | HTTP | ASYNC
                           Title : Read Bot config file and Initialize the config variables
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """

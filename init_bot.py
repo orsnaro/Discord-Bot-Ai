@@ -2,7 +2,7 @@
                           Coder : Omar
                           Version : v2.5.5B
                           version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
+                          Code Type : python | Discrod | GEMINI | GPT | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
@@ -12,7 +12,7 @@ import utils_bot as util
 import asyncio as aio
 import random
 import random2
-from bardapi import BardAsync , Bard , BardCookies , SESSION_HEADERS
+import google.generativeai as genai
 from openai import AsyncOpenAI
 import openai
 from inspect import getmembers , isfunction
@@ -34,7 +34,6 @@ import help_bot
 import keys
 from configs import Configs
 import sys
-# from bard_key_refresh import regenerate_cookie #TODO:
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -45,34 +44,14 @@ def init_gpt_session():
 
 gpt = init_gpt_session()
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def init_bard_session () :
-   # session = requests.Session()
-   # session.headers = {
-   #          "Host": "bard.google.com",
-   #          "X-Same-Domain": "1",
-   #          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
-   #          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-   #          "Origin": "https://bard.google.com",
-   #          "Referer": "https://bard.google.com/",
-   #      }
-   # session.cookies.set("__Secure-1PSID", bardAPI_KEY)
-   # bard = Bard(token=bardAPI_KEY , session=session, timeout=30)
+#TODO : complete moving from old un-official bard api to new better gemini(ex-bard) api 
+def init_gemini_session () : 
+   ... #TODO
+#    genai.configure_session(api_key= keys.geminiAPI_KEY)
+#    gemini = genai.GenerativeModel(model_name= 'gemini-1.5-flash')
+#    return gemini
 
-   
-   bard = BardAsync(token=keys.bardAPI_KEY) #add -> language= 'ar' to respond in arabic only (experimental)
-   
-   # while True:
-   # 	try :
-   # 		bard = BardAsync(token= bardAPI_KEY ) #add -> language= 'ar' to respond in arabic only (experimental)
-   # 		break;
-
-   # 	except Exception as e :
-   # 		regenerate_cookie()
-   # 		print ( e.__str__() + " TESTING NOTE : this is manual error message from init_bard_session() function")
-
-   return bard
-
-bard = init_bard_session()
+# gemini = init_gemini_session()
 
 # regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
 admin_rooms: list = [889999601350881390,]
@@ -82,9 +61,9 @@ narols_island_wizard_channel_id = 1118953370510696498
 testing_wizard_channel_id = 1133103993942462577
 wizy_chat_channels = [narols_island_wizard_channel_id , testing_wizard_channel_id]
 wizard_bot_id = 1117540489365827594
-default_feed_channel_frequency_minutes: int = 120
+default_feed_channel_frequency_minutes: int = 360
 #------------------------------------------------------------------------------------------------------------------------------------------#
-#NOTE: in order to go  away from on_ready() issues override Bot class and move all on ready to it's setup_hook()
+#NOTE: in order to avoid on_ready() issues override Bot class and move all on ready to it's setup_hook()
 class CustomBot(commands.Bot):
 
    async def setup_hook(self):

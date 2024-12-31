@@ -2,12 +2,12 @@
                           Coder : Omar
                           Version : v2.5.5B
                           version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | BARD | HTTP | ASYNC
+                          Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
 from init_bot import *
-from utils_bot import ask_bard, ask_gpt, get_rand_greeting, prepare_discord_embed, prepare_quote
+from utils_bot import ask_gemini, ask_gpt, get_rand_greeting, prepare_discord_embed, prepare_quote
 from utils_bot import check_msg, get_new_reply_prompt, YTDLSource, await_me_maybe
 import keys
 from typing import List
@@ -87,7 +87,7 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = Non
    else:
       await util.process_send_togglerandom_cmd(ctx= ctx, _state= state, _interval_minutes = interval_minutes)
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.hybrid_command(name="wizyaimode", help= "choose between generative AI models used in wizy's chat channel: gpt / bard")
+@bot.hybrid_command(name="wizyaimode", help= "choose between generative AI models used in wizy's chat channel: gpt / gemini")
 @commands.cooldown(1, 5)
 @commands.has_any_role(*list(allowed_roles_change_ai.values()))
 async def change_wizy_ai_type( ctx: commands.Context, ai_name:str = None ):
@@ -181,7 +181,7 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
          await send_initMsg_task
 
          task_response: tuple(str, str) = await ask_gpt_task
-         embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+         embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_gemini= False)
 
          send_func_return = bot.loop.create_task(user_msg.reply(embed=embed) if not ctx.interaction else ctx.reply(embed=embed))
          returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
@@ -192,11 +192,11 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
 
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
-@bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using BARD ... etc') # command name is defaulted to method name
+@bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using GEMINI ... etc') # command name is defaulted to method name
 @commands.cooldown(1, 5)
 #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
 async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
-#using BARD API
+#using GEMINI API
    #since I prefer no classic command 'prefix' ignore chat commands when inside wizy speical chat channel i.e.(avoid duplicated ans)
    if ctx.channel.id not in wizy_chat_channels :
 
@@ -219,7 +219,7 @@ async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMP
             await send_initMsg_task
 
          task_response : tuple = await ask_gpt_task
-         embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_bard= False)
+         embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_gemini= False)
 
          send_func_return = bot.loop.create_task(user_msg.reply(embed=embed))
          returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
@@ -238,11 +238,11 @@ async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMP
       # 	await send_img_msg_task
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # #NOTE: this left as non-hybrid command cuz if it's name (command name being a bot mention is good for classic commands only anyway)
-# @bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using BARD ... etc') # command name is defaulted to method name
+# @bot.command(name=f"<@{wizard_bot_id}>", help= 'wizy answers you questions using GEMINI ... etc') # command name is defaulted to method name
 # @commands.cooldown(1, 5)
 # #(search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
-# async def bardAIfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
-# #using BARD API
+# async def geminiAIfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "  ):
+# #using GEMINI API
 
 #    valid_reply : tuple(bool, discord.Message ) = await check_msg ( _message= ctx.message, chk_type= 2)
 
@@ -251,9 +251,9 @@ async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMP
 
 #    #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
 #    send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-#    ask_bard_task = bot.loop.create_task(ask_bard(full_prompt, user_name= ctx.author.display_name ))
+#    ask_gemini_task = bot.loop.create_task(ask_gemini(full_prompt, user_name= ctx.author.display_name ))
 #    await send_initMsg_task
-#    task_response : tuple = await ask_bard_task
+#    task_response : tuple = await ask_gemini_task
 #    embed = prepare_discord_embed(task_response , is_reply= valid_reply[0])
 
 #    send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
@@ -271,26 +271,26 @@ async def ChatGPTfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY PROMP
 #    # 	await send_img_msg_task
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 
-@bot.hybrid_command(name="wizybard", aliases=["wizyb", "bard"], help= 'wizy answers you questions using BARD ... etc')
-# command name is defaulted to method name 'bardAI'
+@bot.hybrid_command(name="wizygemini", aliases=["gemini"], help= 'wizy answers you questions using GEMINI ... etc')
+# command name is defaulted to method name 'geminiAI'
 @commands.cooldown(1, 5)
 #NOTE: (search keyword-only arguments) astrisk in alone arg is to force the later argument to be  passed by name e.g.( prompt="string1" )
-async def bardAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "):
-#using BARD API
+async def geminiAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT. CHECK REPLY: "):
+#using GEMINI API
     #since I prefer no classic command 'prefix' ignore chat commands when inside wizy speical chat channel i.e.(avoid duplicated ans)
    if ctx.channel.id not in wizy_chat_channels :
 
-      valid_reply : tuple(bool , discord.Message ) = await check_msg ( _message= ctx.message , chk_type= 2)
+      valid_reply : tuple[ bool , discord.Message ] = await check_msg ( _message= ctx.message , chk_type= 2) 
 
       if valid_reply[0] and valid_reply[1] is not  None :
          full_prompt = await get_new_reply_prompt(valid_reply[1] , full_prompt)
       #NOTE: (next line) if you put ctx.message.reference  instead of ctx.message in reference arg this will reply to very first message you replied to (if you have)
       try:
-         ask_bard_task = bot.loop.create_task(ask_bard(full_prompt , user_name= ctx.author.display_name ))
+         ask_gemini_task = bot.loop.create_task(ask_gemini(full_prompt , user_name= ctx.author.display_name ))
          await send_initMsg_task
-         task_response : tuple = await ask_bard_task
+         task_response : tuple = await ask_gemini_task
          send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message ,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
-         embed = prepare_discord_embed(task_response , is_reply= valid_reply[0], is_bard= True)
+         embed = prepare_discord_embed(task_response , is_reply= valid_reply[0], is_gemini= True)
 
          send_func_return = bot.loop.create_task(ctx.reply(embed=embed))
          returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
