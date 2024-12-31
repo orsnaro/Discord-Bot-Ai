@@ -13,4 +13,6 @@ README.md
 std.log
 discord.log
 .is_autovEnv
+.discord_bot_ai_venv/*
+.discord_bot_ai_venv/
 *.webm
