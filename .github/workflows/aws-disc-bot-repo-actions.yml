@@ -32,7 +32,11 @@ jobs:
           REMOTE_HOST: ${{ secrets.HOST_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
-
+      - name: DEBUG TESTING STEP show env vars
+        env: 
+           TARGET: ${{ secrets.TARGET_DIR }}  
+        run: |
+           echo "dir: $TARGET"
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
         env: 
