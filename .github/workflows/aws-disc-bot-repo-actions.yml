@@ -16,6 +16,11 @@ jobs:
           - 3.11 # with a build matrix, you can specify a list of python versions to deploy with
     steps:
       - uses: actions/checkout@v3
+      - name: DEBUG TESTING STEP show env vars
+        env: 
+           TARGET: ${{ secrets.TARGET_DIR }}  
+        run: |
+           echo "dir: $TARGET"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -32,11 +37,6 @@ jobs:
           REMOTE_HOST: ${{ secrets.HOST_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
-      - name: DEBUG TESTING STEP show env vars
-        env: 
-           TARGET: ${{ secrets.TARGET_DIR }}  
-        run: |
-           echo "dir: $TARGET"
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
         env: 
