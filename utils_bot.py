@@ -64,7 +64,7 @@ async def play_chill_track(server: discord.Guild):
    local_tracks: list[str] = get_all_files(dir= tracks_dir)
    print("\n\n\n####TESTING\n\n\n ",local_tracks)#TESTING
    track_path = ini.random.choice(local_tracks)
-   await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=track_path)))
+   await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg", source=track_path)))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links_msg : str , lnk1_len : int , final_imgs_msg : str , lnks_flag = False , imgs_flag = True) :
    if  lnks_flag and imgs_flag : # meaning I will supress first link also cuz there is imgs already
