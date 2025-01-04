@@ -16,16 +16,6 @@ jobs:
           - 3.11 # with a build matrix, you can specify a list of python versions to deploy with
     steps:
       - uses: actions/checkout@v3
-      - name: DEBUG TESTING STEP show env vars
-        env: 
-          BARD_GMAILPASS: ${{ secrets.BARD_GMAILPASS }}
-          BARD_GMAIL: ${{ secrets.BARD_GMAIL }}
-          BARD_APIKEY: ${{ secrets.BARD_APIKEY }}
-          DISCORDBOTTOKEN_GPTEOUS: ${{ secrets.DISCORDBOTTOKEN_GPTEOUS }}
-          OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
-          TARGET: ${{ secrets.TARGET_DIR }}  
-        run: |
-           echo "dir: $TARGET \n BARD_APIKEY: $BARD_APIKEY"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
