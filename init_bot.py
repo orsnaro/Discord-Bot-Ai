@@ -262,7 +262,7 @@ def boot_bot(main_file: str) :
    if 'IS_PRODUCTION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
       with contextlib.redirect_stdout(log_std):
          with contextlib.redirect_stderr(log_std):
-            bot.run(keys.Token_gpteousBot , log_handler= log_discord)#default logging level is info
+            bot.run(keys.Token_gpteousBot , log_handler= log_discord, log_level= logging.INFO)#default logging level is info
    else :
       bot.run(keys.Token_gpteousBot , log_level= logging.DEBUG) #default handler is stdout , debug log level is more verbose!
 #------------------------------------------------------------------------------------------------------------------------------------------#
