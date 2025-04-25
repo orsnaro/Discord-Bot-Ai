@@ -2,7 +2,7 @@
                           Coder : Omar
                           Version : v2.5.5B
                           version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | GEMINI | GPT | HTTP | ASYNC
+                          Code Type : python | Discrod | GEMINI | GPT | DEEPSEEK | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
 """
@@ -14,7 +14,6 @@ import random
 import random2
 import google.generativeai as genai
 from openai import AsyncOpenAI
-import openai
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
@@ -34,6 +33,7 @@ import help_bot
 import keys
 from configs import Configs
 import sys
+import setproctitle
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -43,6 +43,13 @@ def init_gpt_session():
    return gpt   
 
 gpt = init_gpt_session()
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def init_deepSeek_session():
+   #by default checks keys in sys. env variables check func docstring
+   deepSeek = AsyncOpenAI(api_key= keys.deepseekAPI_KEY, base_url="https://api.deepseek.com") 
+   return deepSeek   
+
+deepSeek = init_deepSeek_session()
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO : complete moving from old un-official bard api to new better gemini(ex-bard) api 
 def init_gemini_session () : 
@@ -69,7 +76,7 @@ class CustomBot(commands.Bot):
    async def setup_hook(self):
       self.is_auto_memequote_state = 1 if len(sys.argv) <= 1 else int(sys.argv[1]) #0 off | 1 on normal mode | 2 on special mode
       self.default_voice_channel: int = wizy_voice_channels[0] #TODO : later will 1) load all voice channels from json 2)assign each wizy voice channel for each server
-      self.wizy_chat_ch_ai_type: str = 'gpt'
+      self.wizy_chat_ch_ai_type: str = 'deep'
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
       self.resume_chill_if_free.start()
       self.auto_memequote_sender_task.start()
@@ -239,12 +246,19 @@ bot = CustomBot(
                   help_command= None,
                )
 #------------------------------------------------------------------------------------------------------------------------------------------#
-
-#------------------------------------------------------------------------------------------------------------------------------------------#
-def boot_bot(main_file: str) :
-   util.cd_to_main_dir(main_file)
+def pre_boot_setup(_main_file: str):
+   
+   if sys.platform.startswith('linux'): # change process name on linux cuz it's hard on win :(
+      setproctitle.setproctitle("bot_wizy_discord.py") 
+   
+   util.cd_to_main_dir(_main_file) #so log files will be written in the same project dir
    log_std = open("std.log" , 'a') #logs all stderr and stdout and discord.py msgs
    log_discord = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='a')#logs only discord.py msgs
+   return log_std , log_discord
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def boot_bot(main_file: str) :
+   log_std, log_discord = pre_boot_setup(main_file)
    if 'IS_PRODUTCION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
       with contextlib.redirect_stdout(log_std):
          with contextlib.redirect_stderr(log_std):
