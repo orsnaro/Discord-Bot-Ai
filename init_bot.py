@@ -259,7 +259,7 @@ def pre_boot_setup(_main_file: str):
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def boot_bot(main_file: str) :
    log_std, log_discord = pre_boot_setup(main_file)
-   if 'IS_PRODUTCION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
+   if 'IS_PRODUCTION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
       with contextlib.redirect_stdout(log_std):
          with contextlib.redirect_stderr(log_std):
             bot.run(keys.Token_gpteousBot , log_handler= log_discord)#default logging level is info
