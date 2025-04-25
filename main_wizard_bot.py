@@ -1,10 +1,10 @@
 """
                           Coder : Omar
-                          Version : v2.5.5B
-                          version Date :  8 / 11 / 2023
+                          Version : v2.5.6B
+                          version Date :  26 / 04 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : main code for Discord Bot (with generative AI)
-                          Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
+                          Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
 """
 
 #TODO : Documentaion for functions / classes and repo readme.md
@@ -37,7 +37,7 @@
 #TODO : add and test poe-API (starred at GH)
 #TODO : Edit your gemini args and prompt to send full arabic query to gemini (gemini now has arabic lang suuport )
 #TODO : complete moving from old un-official bard api to new better gemini(ex-bard) api 
-
+#TODO: for commands & events using deepSeek AI: add attach files/images feature cuz deepseek supports it!
 #       the issue is that gemini.get_answer() itself doesnt take any args put the query prompt (can easly add new param but prefer search more on this first)
 
 #NOTE : the rest of tasks is on mod's channel 'todo' in my narol's server + (to find all TODO s search via global vs code search )

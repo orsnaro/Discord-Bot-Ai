@@ -1,14 +1,14 @@
 """
                           Coder : Omar
-                          Version : v2.5.5B
-                          version Date :  8 / 11 / 2023
+                          Version : v2.5.6B
+                          version Date :  26 / 04 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Events code for Discord bot
-                          Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
+                          Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
 """
 
 from init_bot import *
-from utils_bot import ask_gemini, ask_gpt, check_msg, send_rand_quote_meme, supress_msg_body_url_embeds, prepare_imgs_msg, prepare_links_msg, prepare_send_wizard_channel_ans_msg, sub_sections_msg_sending_ctrl
+from utils_bot import ask_deepSeek, ask_gemini, ask_gpt, check_msg, send_rand_quote_meme, supress_msg_body_url_embeds, prepare_imgs_msg, prepare_links_msg, prepare_send_wizard_channel_ans_msg, sub_sections_msg_sending_ctrl
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # @bot.event
 # async def on_any_event_update_DB_buffer():... #TODO if bot does any action or any thing trigger it save needed info in your own DB for later....
@@ -38,7 +38,12 @@ async def on_message(message: discord.Message):
                                                                user= wizard_ch_msg.author) 
                                                    ) 
                task_response : tuple = await ask_gemini_task
-               
+            
+            elif bot.wizy_chat_ch_ai_type == "deep":
+               #TODO: for commands & events using deepSeek AI: add attach files/images feature cuz deepseek supports it!
+               ask_deepSeek_task =  bot.loop.create_task( ask_deepSeek(user_query= wizard_ch_msg.content,
+                                                               user= wizard_ch_msg.author))
+               task_response : tuple = await ask_deepSeek_task
 
             is_gemini = True if bot.wizy_chat_ch_ai_type == 'gemini' else False
             await prepare_send_wizard_channel_ans_msg( task_response , wizard_ch_msg, is_gemini= is_gemini)

@@ -1,10 +1,10 @@
 """
                           Coder : Omar
-                          Version : v2.5.5B
-                          version Date :  8 / 11 / 2023
+                          Version : v2.5.6B
+                          version Date :  26 / 04 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Utility code for Discord Bot
-                          Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
+                          Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
 """
 import init_bot as ini
 import discord.message
@@ -354,11 +354,13 @@ class UserAiChat:
          #each history element(gpt): {'role': system,user,asistant ,'content': str}
          self.history_gpt: list[dict] = []
          self.history_gemini: list[dict] = []
+         self.history_deepSeek: list[dict] = []
          
       else: 
          #dont make new/reset history there is already one! (mostly this won't happen we handle this before making new obj. But! just in case...)
          self.history_gpt: list[dict] = self.chats_ai_dict[userId].history_gpt
          self.history_gemini: list[dict] = self.chats_ai_dict[userId].history_gemini
+         self.history_deepSeek: list[dict] = self.chats_ai_dict[userId].history_deepSeek
          self.chats_ai_dict[userId].__del__()
          if userId in self.chats_ai_dict: del self.chats_ai_dict[userId]
          self.chats_ai_dict[userId] = self
@@ -427,7 +429,74 @@ class UserAiChat:
          print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
          #TESTING
          
-         return gpt_payload.id,  gpt_resp
+         return gpt_payload.id, gpt_resp
+      
+      elif _AI == "deep":
+         user_name = _user.display_name
+         userId: str = str(_user.id)
+         character= "Deep Seeker Wizard whose now living in discord server called Narol's Island"
+         series = "Harry Potter"
+         sys_prompt = f"""I want you to act like {character} from {series}.
+         I want you to respond and answer like {character} using the tone,
+         manner and vocabulary {character} would use.
+         Do not write any explanations.
+         Only answer like {character}.
+         You must know all of the knowledge of {character}. 
+         Use some emojies just a little bit!.
+         My first sentence is \"Hi {character} I'm {user_name}. {kwargs["_query"]} \""
+         """
+         deepSeek_user_msg = [{'role': 'user', 'content': kwargs["_query"]}]
+         chat_dict = UserAiSpecialChat.chats_ai_dict if kwargs["_is_wizy_ch"] else cls.chats_ai_dict
+         
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n is special channel {kwargs['_is_wizy_ch']}  ############# \n\n\n")
+         #TESTING
+         
+         if userId in chat_dict:
+            chat_dict[userId].append_chat_msg(msg= deepSeek_user_msg, ai_type= 'deep')
+            user_deepSeek_history = chat_dict[userId].history_deepSeek
+            
+         else: #new chat with gpt
+            new_chat = UserAiSpecialChat(userId) if kwargs["_is_wizy_ch"] else cls(userId) 
+            deepSeek_starter_prompt =[
+               {"role": "system", "content": sys_prompt}
+               ]
+
+            new_chat.append_chat_msg(msg= deepSeek_starter_prompt, ai_type= 'deep')
+            chat_dict[str(userId)] = new_chat
+            user_deepSeek_history = chat_dict[userId].history_deepSeek
+
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n deepSeek payload:  \n\n\n {user_deepSeek_history}  ############# \n\n\n")
+         #TESTING
+         
+         
+         if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
+            deepSeek_payload= await ini.deepSeek.chat.completions.create(
+                  model="deepseek-chat",
+                  max_tokens= 250,
+                  messages= user_deepSeek_history,
+                  temperature= 1.3 #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
+                  # stream= True
+               )
+         elif kwargs["_is_wizy_ch"]: 
+            deepSeek_payload= await ini.deepSeek.chat.completions.create(
+                  model="deepseek-chat",
+                  max_tokens= 500,
+                  messages= user_deepSeek_history,
+                  temperature= 1.3 #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
+                  # stream= True
+               )
+         
+         deepSeek_resp = deepSeek_payload.choices[0].message.content
+         deepSeek_user_msg_resp = [{"role": "assistant", "content": deepSeek_resp}]
+         chat_dict[userId].append_chat_msg(msg= deepSeek_user_msg_resp, ai_type= 'deep')
+   
+         #TESTING
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n deepSeek payload: {deepSeek_payload}  \n\n\n ############# \n\n\n")
+         #TESTING
+         
+         return deepSeek_payload.id,  deepSeek_resp
          
       elif _AI == "gemini" : #TODO
          ...
@@ -452,7 +521,17 @@ class UserAiChat:
          else: #still can append to history
             self.history_gpt += msg
             return 1
-            
+      elif ai_type == 'deep':
+            #so we want only to clear if user msgs exceeds limit not all chat msgs
+            user_msgs_cnt = (len(self.history_deepSeek) - 1) // 2
+            if user_msgs_cnt >= self.queries_limit:
+               self.history_deepSeek.clear()
+               self.history_deepSeek += msg
+               return 2#done + done + cleared history due to 'queries_limit' exceeding
+            else: #still can append to history
+               self.history_deepSeek += msg
+               return 1
+               
       elif ai_type == 'gemini': 
          #so we want only to clear if user msgs exceeds limit not all chat msgs
          user_msgs_cnt = (len(self.history_gemini) - 1) // 2
@@ -481,6 +560,11 @@ async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> tu
    resp_id_gpt, gpt_resp = await await_me_maybe( UserAiChat.prepare_chat(_user= user, _AI="gpt", _is_wizy_ch= is_wizy_ch, _query= user_query) )
    
    return (gpt_resp, resp_id_gpt)
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def ask_deepSeek(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
+   resp_id_deepSeek, deepSeek_resp = await await_me_maybe( UserAiChat.prepare_chat(_user= user, _AI="deep", _is_wizy_ch= is_wizy_ch, _query= user_query) )
+   
+   return (deepSeek_resp, resp_id_deepSeek)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 async def ask_gemini(user_query: str, user= discord.user ) -> tuple:
@@ -688,7 +772,10 @@ class EmbedLimits(object):
                             ) #url will be  hyperlink in title
       
       embed.set_author(name= author, url=wizardChannelLink, icon_url= None )
-      embed.set_footer(text= f"Scroll ID({ansID}) • powered by OpenAI", icon_url= footerIcon )
+      if ini.bot.wizy_chat_ch_ai_type == 'gpt' :
+         embed.set_footer(text= f"Scroll ID({ansID}) • powered by OpenAI", icon_url= footerIcon )
+      elif ini.bot.wizy_chat_ch_ai_type == 'deep' :
+         embed.set_footer(text= f"Scroll ID({ansID}) • powered by DeepSeek\U0001F40B", icon_url= footerIcon ) #utf code is for whale emoji 🐋
       if is_reply :
          embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
 
@@ -1040,19 +1127,12 @@ async def process_send_quotesz_cmd(ctx: ini.commands.context, _quote_sz: str, _q
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def process_send_change_wizy_ai_cmd(ctx: ini.commands.context, _ai_name:str):
-   ai_models = ['gpt','gemini']
+   ai_models = ['gpt','gemini', 'deep']
    if _ai_name == None or _ai_name not in ai_models :
       await ctx.message.delete(delay= 15)
       await ctx.reply(f"Ops! you must choose a valid AI model: `{' , '.join(ai_models)}`. *current model is `{ini.bot.wizy_chat_ch_ai_type}`*", delete_after= 15)
       ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-      
-   elif _ai_name == 'gpt':
-      ini.bot.wizy_chat_ch_ai_type = _ai_name
-      await ctx.message.delete(delay= 15)
-      await ctx.reply(f"Wizard AI Chat Channel model Has been set to:  `{_ai_name}`!", delete_after= 15)
-      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-      
-   elif _ai_name == 'gemini':
+   else:
       ini.bot.wizy_chat_ch_ai_type = _ai_name
       await ctx.message.delete(delay= 15)
       await ctx.reply(f"Wizard AI Chat Channel model Has been set to:  `{_ai_name}`!", delete_after= 15)
