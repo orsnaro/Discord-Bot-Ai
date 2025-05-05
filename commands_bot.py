@@ -171,7 +171,7 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
 
          ask_gpt_task = bot.loop.create_task(ask_gpt(full_prompt, user= ctx.author, is_wizy_ch= False ))
 
-         if str(ctx.author.id) not in util.UserAiChat.chats_ai_dict:
+         if str(ctx.author.id) not in util.UserAiQuery.chats_ai_dict:
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
             
@@ -207,7 +207,7 @@ async def deepSeek (ctx : commands.Context, * , full_prompt:str ): #(search keyw
          user_msg = ctx.message
          ask_deepSeek_task = bot.loop.create_task(ask_deepSeek(full_prompt, user= ctx.author, is_wizy_ch= False))
 
-         if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+         if str(ctx.author.id) not in  util.UserAiQuery.chats_ai_dict:
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
             
@@ -246,7 +246,7 @@ async def ChatDeepSeekfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY 
          user_msg = ctx.message
          ask_deepSeek_task = bot.loop.create_task(ask_deepSeek(full_prompt, user= ctx.author, is_wizy_ch= False ))
 
-         if str(ctx.author.id) not in  util.UserAiChat.chats_ai_dict:
+         if str(ctx.author.id) not in  util.UserAiQuery.chats_ai_dict:
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
          else:

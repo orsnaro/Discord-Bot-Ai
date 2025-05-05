@@ -341,9 +341,9 @@ def skip_line(full_ans):
   lines = full_ans.split('\n')
   return '\n'.join(lines[1:])
 #------------------------------------------------------------------------------------------------------------------------------------------#
-class UserAiChat:
-   
-   queries_limit = 20
+class UserAiQuery:
+   queries_limit = 100
+   command_query_tokken_limit = 300
    chats_ai_dict: dict = {} #key:value => {'userid': UserAiChat_obj}
    
    def __init__(self, userId:str):
@@ -394,6 +394,9 @@ class UserAiChat:
             
          else: #new chat with gpt
             new_chat = UserAiSpecialChat(userId) if kwargs["_is_wizy_ch"] else cls(userId) 
+            # tell th AI tokkens limit  to assure him to not send longer messages!
+            tokken_limit = new_chat.chat_query_tokken_limit if kwargs['_is_wizy_ch'] else new_chat.command_query_tokken_limit
+            sys_prompt += f"\nResponse must not exceed {tokken_limit} tokkens!"
             gpt_starter_prompt =[
                {"role": "system", "content": sys_prompt}
                ]
@@ -407,16 +410,17 @@ class UserAiChat:
          #TESTING
          
          
-         if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
+         if not kwargs["_is_wizy_ch"]: # set max token limit for query types of requests
             gpt_payload= await ini.gpt.chat.completions.create(
                   model="gpt-3.5-turbo",
-                  max_tokens= 250,
+                  max_tokens= UserAiQuery.command_query_tokken_limit,
                   messages= user_gpt_history
                   # stream= True
                )
-         elif kwargs["_is_wizy_ch"]: # remove max token arg if in wizy special chat channel
+         elif kwargs["_is_wizy_ch"]: # set max token limit for chat types of requests
             gpt_payload= await ini.gpt.chat.completions.create(
                   model="gpt-3.5-turbo",
+                  max_tokens= UserAiSpecialChat.chat_query_tokken_limit,
                   messages= user_gpt_history
                   # stream= True
                )
@@ -458,6 +462,9 @@ class UserAiChat:
             
          else: #new chat with gpt
             new_chat = UserAiSpecialChat(userId) if kwargs["_is_wizy_ch"] else cls(userId) 
+            # tell th AI tokkens limit  to assure him to not send longer messages!
+            tokken_limit = new_chat.chat_query_tokken_limit if kwargs['_is_wizy_ch'] else new_chat.command_query_tokken_limit
+            sys_prompt += f"\nResponse must not exceed {tokken_limit} tokkens!"
             deepSeek_starter_prompt =[
                {"role": "system", "content": sys_prompt}
                ]
@@ -474,7 +481,7 @@ class UserAiChat:
          if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
             deepSeek_payload= await ini.deepSeek.chat.completions.create(
                   model="deepseek-chat",
-                  max_tokens= 250,
+                  max_tokens= UserAiQuery.command_query_tokken_limit,
                   messages= user_deepSeek_history,
                   temperature= 1.3 #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
                   # stream= True
@@ -482,7 +489,7 @@ class UserAiChat:
          elif kwargs["_is_wizy_ch"]: 
             deepSeek_payload= await ini.deepSeek.chat.completions.create(
                   model="deepseek-chat",
-                  max_tokens= 500,
+                  max_tokens= UserAiSpecialChat.chat_query_tokken_limit,
                   messages= user_deepSeek_history,
                   temperature= 1.3 #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
                   # stream= True
@@ -550,19 +557,20 @@ class UserAiChat:
    def change_chat_mode(self, user_id, mode:str, ai_type:str = 'gpt'):
       ... #TODO: also add a bot command that invokes it ('mode' is the system role content of GPT e.g.(funny GPT ...))
 #------------------------------------------------------------------------------------------------------------------------------------------#
-class UserAiSpecialChat(UserAiChat):
+class UserAiSpecialChat(UserAiQuery):
    #NOTE: must reassign it here. otherwise the parent class 'chats_ai_dict' will be shared here ! ( wnna separate special channel chat history from normal command to talk with wizy in any other channel)
+   chat_query_tokken_limit = 600
    chats_ai_dict: dict = {} 
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO GPT
 async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
-   resp_id_gpt, gpt_resp = await await_me_maybe( UserAiChat.prepare_chat(_user= user, _AI="gpt", _is_wizy_ch= is_wizy_ch, _query= user_query) )
+   resp_id_gpt, gpt_resp = await await_me_maybe( UserAiQuery.prepare_chat(_user= user, _AI="gpt", _is_wizy_ch= is_wizy_ch, _query= user_query) )
    
    return (gpt_resp, resp_id_gpt)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def ask_deepSeek(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
-   resp_id_deepSeek, deepSeek_resp = await await_me_maybe( UserAiChat.prepare_chat(_user= user, _AI="deep", _is_wizy_ch= is_wizy_ch, _query= user_query) )
+   resp_id_deepSeek, deepSeek_resp = await await_me_maybe( UserAiQuery.prepare_chat(_user= user, _AI="deep", _is_wizy_ch= is_wizy_ch, _query= user_query) )
    
    return (deepSeek_resp, resp_id_deepSeek)
 #------------------------------------------------------------------------------------------------------------------------------------------#

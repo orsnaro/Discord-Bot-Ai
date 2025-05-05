@@ -42,7 +42,7 @@ async def on_message(message: discord.Message):
             elif bot.wizy_chat_ch_ai_type == "deep":
                #TODO: for commands & events using deepSeek AI: add attach files/images feature cuz deepseek supports it!
                ask_deepSeek_task =  bot.loop.create_task( ask_deepSeek(user_query= wizard_ch_msg.content,
-                                                               user= wizard_ch_msg.author))
+                                                               user= wizard_ch_msg.author, is_wizy_ch= True))
                task_response : tuple = await ask_deepSeek_task
 
             is_gemini = True if bot.wizy_chat_ch_ai_type == 'gemini' else False
