@@ -8,7 +8,7 @@
 ---
 
 
-> ## Officially `2.5.6B` is out 🧙‍♂️🎊!
+> ## Officially [`2.5.6B`](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.6B) is out 🧙‍♂️🎊!
 
 
 <details>
@@ -16,8 +16,7 @@
 
 * now wizy  lives on a home server running ♾️
 * now wizy  supports partially DeepSeek R1 AI model 🐳
-* and more!
-* **Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/V2.5.5B...V2.5.6B
+* and more! **Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/V2.5.5B...V2.5.6B
 </details>
 
       
