@@ -1,10 +1,10 @@
 """
                           Coder : Omar
-                          Version : v2.5.5B
-                          version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | BARD | GPT | HTTP | ASYNC
+                          Version : v2.5.6B
+                          version Date :  26 / 04 / 2025
+                          Code Type : python | Discrod | GEMINI | GPT | DEEPSEEK | HTTP | ASYNC
                           Title : Initialization of Discord Bot
-                          Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
+                          Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
 """
 import discord
 from discord.ext import commands , tasks
@@ -12,9 +12,8 @@ import utils_bot as util
 import asyncio as aio
 import random
 import random2
-from bardapi import BardAsync , Bard , BardCookies , SESSION_HEADERS
+import google.generativeai as genai
 from openai import AsyncOpenAI
-import openai
 from inspect import getmembers , isfunction
 import aiohttp
 import requests
@@ -32,9 +31,9 @@ import contextlib
 import os
 import help_bot
 import keys
-import configs
+from configs import Configs
 import sys
-# from bard_key_refresh import regenerate_cookie #TODO:
+import setproctitle
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #USER MODULES
 #------------------------------------------------------------------------------------------------------------------------------------------#
@@ -45,34 +44,21 @@ def init_gpt_session():
 
 gpt = init_gpt_session()
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def init_bard_session () :
-   # session = requests.Session()
-   # session.headers = {
-   #          "Host": "bard.google.com",
-   #          "X-Same-Domain": "1",
-   #          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
-   #          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-   #          "Origin": "https://bard.google.com",
-   #          "Referer": "https://bard.google.com/",
-   #      }
-   # session.cookies.set("__Secure-1PSID", bardAPI_KEY)
-   # bard = Bard(token=bardAPI_KEY , session=session, timeout=30)
+def init_deepSeek_session():
+   #by default checks keys in sys. env variables check func docstring
+   deepSeek = AsyncOpenAI(api_key= keys.deepseekAPI_KEY, base_url="https://api.deepseek.com") 
+   return deepSeek   
 
-   
-   bard = BardAsync(token=keys.bardAPI_KEY) #add -> language= 'ar' to respond in arabic only (experimental)
-   
-   # while True:
-   # 	try :
-   # 		bard = BardAsync(token= bardAPI_KEY ) #add -> language= 'ar' to respond in arabic only (experimental)
-   # 		break;
+deepSeek = init_deepSeek_session()
+#------------------------------------------------------------------------------------------------------------------------------------------#
+#TODO : complete moving from old un-official bard api to new better gemini(ex-bard) api 
+def init_gemini_session () : 
+   ... #TODO
+#    genai.configure_session(api_key= keys.geminiAPI_KEY)
+#    gemini = genai.GenerativeModel(model_name= 'gemini-1.5-flash')
+#    return gemini
 
-   # 	except Exception as e :
-   # 		regenerate_cookie()
-   # 		print ( e.__str__() + " TESTING NOTE : this is manual error message from init_bard_session() function")
-
-   return bard
-
-bard = init_bard_session()
+# gemini = init_gemini_session()
 
 # regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
 admin_rooms: list = [889999601350881390,]
@@ -82,37 +68,74 @@ narols_island_wizard_channel_id = 1118953370510696498
 testing_wizard_channel_id = 1133103993942462577
 wizy_chat_channels = [narols_island_wizard_channel_id , testing_wizard_channel_id]
 wizard_bot_id = 1117540489365827594
-default_feed_channel_frequency_minutes: int = 120
+default_feed_channel_frequency_minutes: int = 360
 #------------------------------------------------------------------------------------------------------------------------------------------#
-#NOTE: in order to go  away from on_ready() issues override Bot class and move all on ready to it's setup_hook()
+#NOTE: in order to avoid on_ready() issues override Bot class and move all on ready to it's setup_hook()
 class CustomBot(commands.Bot):
 
    async def setup_hook(self):
       self.is_auto_memequote_state = 1 if len(sys.argv) <= 1 else int(sys.argv[1]) #0 off | 1 on normal mode | 2 on special mode
       self.default_voice_channel: int = wizy_voice_channels[0] #TODO : later will 1) load all voice channels from json 2)assign each wizy voice channel for each server
-      self.wizy_chat_ch_ai_type: str = 'gpt'
+      self.wizy_chat_ch_ai_type: str = 'deep'
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
       self.resume_chill_if_free.start()
       self.auto_memequote_sender_task.start()
       self.play_chill_loop.start()
+      self.load_cfg.start()
+      self.init_send_master_dm_msg.start()
+      
 
    async def on_ready(self):
       #next line needed to enable slash commands (slash commands are type of interactions not ctx or message or normal command any more)
       await self.tree.sync()
-      print(f"Bot info: \n (magic and dunder attrs. excluded) ")
-      for attr in dir(self.user):
-         if  not (attr.startswith('__') or attr.startswith('_')):
-            value = getattr(self.user, attr)
-            print(f'{attr}: {value}')
-      print(f"\nJoined servers: count({len(self.guilds)}) \n ")
-      for guild in self.guilds :
-         print(f"name: {guild.name}")
-         print(f"owner: {guild.owner}")
-         print(f"owner-ID: {guild.owner_id}")
-         print(f"members count: {guild.member_count}")
-         print(f"#####################################")
       print(f"\n\n Bot '{self.user}' Sucessfully connected to Discord!\n\n")
 
+
+   @tasks.loop(seconds= 10, count= 1) #do once
+   async def load_cfg(self):
+      # load the configs 
+      # (loads default config file if no custom config is found (later either all servers config in one json or each server will have their config class and config json))
+      Configs.cfg_load()
+      
+   @tasks.loop(seconds= 20, count= 1) #do once
+   async def init_send_master_dm_msg(self):
+      if Configs.config_json_dict :  #if dict not empty
+         
+         #send any init  dm message to admin (defaults to Narol 'me')
+         bot_master: discord.User = self.get_user(Configs.config_json_dict["bot_master_id"])
+         master_dm_ch = bot_master.dm_channel or await self.create_dm(bot_master) # if dm channel is none will create new dm (shortcut)
+         
+         init_master_dm_msg: str = "# Wizy bot Initialized! sending DM init MSG:\n "
+         init_master_dm_msg = init_master_dm_msg + f"## Bot info: \n (magic and dunder attrs. excluded)\n\n"
+         print(f"Bot info: \n (magic and dunder attrs. excluded) ")
+         
+         # get and print important bot info
+         for attr in dir(self.user):
+            if  not (attr.startswith('__') or attr.startswith('_')):
+               value = getattr(self.user, attr)
+               print(f'{attr}: {value}')
+               init_master_dm_msg = init_master_dm_msg + f'{attr}: {value}\n'
+         init_master_dm_msg = init_master_dm_msg + f"#####################################\n"
+         await master_dm_ch.send(init_master_dm_msg)  #send first portion of the msg
+               
+         init_master_dm_msg = f"\n\n\n # JOINED SERVERS INFO: \n ## servers count({len(self.guilds)})\n"
+         print(f"\n ## Joined servers: count({len(self.guilds)}) \n ")
+         for guild in self.guilds :
+            print(f"name: {guild.name}")
+            print(f"owner: {guild.owner}")
+            print(f"owner-ID: {guild.owner_id}")
+            print(f"members count: {guild.member_count}")
+            print(f"#####################################")
+            init_master_dm_msg = init_master_dm_msg + f"Gname: {guild.name}, owner: {guild.owner}, owner-ID: {guild.owner_id}, members count: {guild.member_count}\n"
+            init_master_dm_msg = init_master_dm_msg + f"#####################################\n"
+            await master_dm_ch.send(init_master_dm_msg)  #send the rest of dm msg to bot master dm
+            init_master_dm_msg =""
+            
+            
+   @init_send_master_dm_msg.before_loop
+   async def wait_send_until_ready(self):
+      await self.wait_until_ready()
+   
 
    @tasks.loop(seconds= 5)
    async def  resume_chill_if_free(self):
@@ -132,7 +155,8 @@ class CustomBot(commands.Bot):
                   connected_users_cnt = len( guild.voice_client.channel.members ) - 1
                   if connected_users_cnt >= 1 :
                      await guild.voice_client.channel.send("*3+ minutes of Silence:pleading_face: resuming* **MMO Chill Track** ...")
-                     await util.play_chill_track(guild)
+                     
+                     await guild.voice_client.resume() if guild.voice_client.is_paused() else await util.play_chill_track(guild)
                   else:
                      #TESTING
                      print("\n\n\n\n\n\n TESTING########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\n######################\n\n\n\n")
@@ -222,15 +246,23 @@ bot = CustomBot(
                   help_command= None,
                )
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def get_last_conv_id()  : ...  #TODO
-#------------------------------------------------------------------------------------------------------------------------------------------#
-def boot_bot() :
+def pre_boot_setup(_main_file: str):
+   
+   if sys.platform.startswith('linux'): # change process name on linux cuz it's hard on win :(
+      setproctitle.setproctitle("bot_wizy_discord.py") 
+   
+   util.cd_to_main_dir(_main_file) #so log files will be written in the same project dir
    log_std = open("std.log" , 'a') #logs all stderr and stdout and discord.py msgs
    log_discord = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='a')#logs only discord.py msgs
-   if 'IS_PRODUTCION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
+   return log_std , log_discord
+   
+#------------------------------------------------------------------------------------------------------------------------------------------#
+def boot_bot(main_file: str) :
+   log_std, log_discord = pre_boot_setup(main_file)
+   if 'IS_PRODUCTION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
       with contextlib.redirect_stdout(log_std):
          with contextlib.redirect_stderr(log_std):
-            bot.run(keys.Token_gpteousBot , log_handler= log_discord)#default logging level is info
+            bot.run(keys.Token_gpteousBot , log_handler= log_discord, log_level= logging.INFO)#default logging level is info
    else :
       bot.run(keys.Token_gpteousBot , log_level= logging.DEBUG) #default handler is stdout , debug log level is more verbose!
 #------------------------------------------------------------------------------------------------------------------------------------------#

@@ -1,10 +1,10 @@
 """
                           Coder : Omar
-                          Version : v2.5.5B
-                          version Date :  8 / 11 / 2023
-                          Code Type : python | Discrod | BARD | HTTP | ASYNC
+                          Version : v2.5.6B
+                          version Date :  26 / 04 / 2025
+                          Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : #
-                          Interpreter : cPython  v3.11.0 [Compiler : MSC v.1933 AMD64]
+                          Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
 
 """
 import os
@@ -19,19 +19,17 @@ if( keysFileOk ):
 
       openaiAPI_KEY    = keys_dict['OPENAI_API_KEY']
       openaiAPI_ORG_ID = keys_dict['OPENAI_ORG_ID']
+      deepseekAPI_KEY    = keys_dict['DEEPSEEK_API_KEY']
       Token_gpteousBot = keys_dict['DISCORDBOTTOKEN_GPTEOUS']
-      bardAPI_KEY      = keys_dict['BARD_APIKEY']
-      bardAPI_KEY2     = keys_dict['BARD_APIKEY2']
-      bardAPI_KEY3     = keys_dict['BARD_APIKEY3']
-      bardGmail        = keys_dict['BARD_GMAIL']
-      bardGmail_KEY    = keys_dict['BARD_GMAILPASS']
+      geminiAPI_KEY      = keys_dict['GEMINI_APIKEY']
+      geminiGmail        = keys_dict['GEMINI_GMAIL']
+      geminiGmail_KEY    = keys_dict['GEMINI_GMAILPASS']
 
-else : #if json file is not there
+else : #if json file is not there (the ones with default None val are not super necessary)
    openaiAPI_KEY    = os.environ['OPENAI_API_KEY']
    openaiAPI_ORG_ID = os.environ['OPENAI_ORG_ID']
+   deepseekAPI_KEY    = os.environ['DEEPSEEK_API_KEY']
    Token_gpteousBot = os.environ['DISCORDBOTTOKEN_GPTEOUS']
-   bardAPI_KEY      = os.environ['BARD_APIKEY']
-   bardAPI_KEY2     = os.environ['BARD_APIKEY2']
-   bardAPI_KEY3     = os.environ['BARD_APIKEY3']
-   bardGmail        = os.environ['BARD_GMAIL']
-   bardGmailK_KEY   = os.environ['BARD_GMAILPASS']
+   geminiAPI_KEY      = os.environ['GEMINI_APIKEY']
+   geminiGmail        = os.environ.get('GEMINI_GMAIL', None) 
+   geminiGmailK_KEY   = os.environ.get('GEMINI_GMAILPASS', None) 

@@ -12,6 +12,8 @@ tracks/
 README.md
 std.log
 discord.log
-.is_autovEnv
+.is_autoVenv
+.env_autoLeave
+.discord_bot_ai_venv/*
+.discord_bot_ai_venv/
 *.webm
-tst.py

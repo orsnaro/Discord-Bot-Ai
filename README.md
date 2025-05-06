@@ -2,17 +2,30 @@
  [![lastest pre release was](https://img.shields.io/github/release-date-pre/orsnaro/discord-bot-ai?label=latest%20release&color=9332af)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml/badge.svg?branch=production-AWS)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/aws-disc-bot-repo-actions.yml)
 
-# __Discord Bot Project (Wizard GPTeous)__ 
+# __Discord Bot Project (Wizard GPTeous)__  [![version badge](https://img.shields.io/badge/Remote%20Host-v2.5.6B-green)](TODO)
+
+
 
 ##### _Discord Bot with generative AI features using python as main project language_
 
 ![wizy image](./wizard_bot.ico "icon") 
 
 ---
-<details>
-<summary><em>  ✨ Wizy's Latest features <sub>(v2.5B)</sub>! </em> </summary>
 
- * NOW! you can use wizy In DM messages no need to be in a server that has wizy!
+
+> ## Officially [`2.5.6B`](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.6B) is out 🧙‍♂️🎊!
+
+
+<details>
+<summary><em>  ✨Patch (2.5.6B) notes </em> </summary>
+
+* now wizy  lives on a home server running ♾️
+* now wizy  supports partially DeepSeek R1 AI model 🐳
+* and more! **Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/V2.5.5B...V2.5.6B
+</details>
+
+      
+      
   
  * now Finally you can use Chat GPT for free via our wizy bot -_[video](https://youtu.be/8Je6Pb5EYmI)_- in discord (you are also free to choose between `gpt` or `bard` though bard's API isn't stable at all!)
      
@@ -22,21 +35,18 @@
  
  * now all bot commands work in slash commands menu! as well as classic commands style
 
- * now can learn from the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `/WiseWiz` command
+ * now can enjoy Mighty GPTeuos memes using `/BoringWizard` command
 
- * now long Bard AI answers is working in [`🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
+ * now can learn for the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `/WiseWiz` command
+
+ * now chat mode is live! get Wizy DeepSeeker answers in [`🟢🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
 
  * now Bot sends random quotes and memes multiple times a day
 
- * now bot has basic voice commands e.g.(`wizyjoin`/`wizyleave`/`wizyplay`/`wizypause`/`wizyresume`/`wizystop`) commands
+ * now bot has basic voice commands e.g.(`/wizyjoin`/`/wizyleave`) commands
 
- * now if wizy is free in a voice channel he plays an abmient chilling music track!
-   
- * now wizy have special events in command and channel ! current special event `FREE PALESTINE 🇵🇸🍉`
 
- * _soon_ music/tracks queue feature!
-   
-
+* and more! (just type `/help`) 
 
  </details>
  
@@ -94,18 +104,12 @@ when user reacts on a wizy message wizy responds depending on category of emoji 
     
 *  [ ] make command groups or cogs
   
-* [ ]  remove any global variables
-  
-* [ ]  use `logging` library to print debug and testing info to console instead of `print()` (🔵DONE PARTIALLY)
-  
-* [ ] to increase bot speed and avoid non-async http api requests effects -> every  48 hour or initializing of bot  store new 24 memes and 24 quotes  locally
-  
-* [ ]  implement new bard feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Bard API wrapper v0.1.27](https://github.com/dsdanielpark/Bard-API/releases/tag/0.1.27) now also  supports it
+*   implement new Gemini feature _i.e.( upload image and ask about it )_ in your bot since it's now available and [Gemini API wrapper v0.1.27](https://github.com/dsdanielpark/Gemini-API/releases/tag/0.1.27) now also  supports it
   
     
 * [ ]  send Embeds fragmented in parts/pages if it exceeds max size  (6000char) or exceeds max fields (25 field)  <sub>note: use pagination </sub>
 
-* [ ]  show embedded images in bard answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
+*   show embedded images in Gemini answer (seperate images in links -> append them to an image section 'embed or normal message' -> show the images!)
 
 * [ ]  wizard bot sqlite-DB  design and connect the DB with bot code
   
@@ -115,7 +119,7 @@ when user reacts on a wizy message wizy responds depending on category of emoji 
 
 * [ ]  (bard)save last conversation ID (load it in init_bot.py) in text file and add command to start new conv. and set default  to continue old one.
 
-* [ ]  complete [`bard_key_refresh.py`](./bard_key_refresh.py)
+*   ~complete [`Gemini_key_refresh.py`](./Gemini_key_refresh.py)~
 
 * [ ]  add `TTS` feature : read text in audio + ability for bot to join voice chats
 
@@ -125,14 +129,14 @@ when user reacts on a wizy message wizy responds depending on category of emoji 
 
 * [ ] complete your [`quote`](https://github.com/orsnaro/quote-async) lib fork and make it fully async.
 
-* [ ]  add and test poe-API (starred at my GitHub)
-     - _NOTE:_ BARD API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
+*   add and test poe-API (starred at my GitHub)
+     - _NOTE:_ DeepSeek API is the one used now due to connection and belling issues beteen GPT-API i.e.(openAI API) and my country (Egypt)
+
+*   add command to switch between Gemini mode and poe-GPT mode
   
-* [ ]  ~use google translator API~
-  
-    *    _(NOT necessary  NEED any more! now bard speaks arabic and bard API python wrapper also supports that  just edit your internal prompt / appendings and formating to discord messages to have arabic variation)_
+       *  _(NOT necessary  NEED any more! now Gemini speaks arabic and Gemini API python wrapper also supports that  just edit your internal prompt / appendings and formating to discord messages to have arabic variation)_
     
-* [ ] Edit your bard args. and prompt to send full arabic query to bard (Bard now has arabic lang suuport)
+*   Edit your Gemini args. and prompt to send full arabic query to Gemini (Gemini now has arabic lang suuport)
 
 
  </details> 
@@ -185,10 +189,10 @@ when user reacts on a wizy message wizy responds depending on category of emoji 
 )   ~reply to his message (take the content of replayed message and respond accordingly to it + new message)~
 
  ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
-)  ~use SESSION with ASYNC BARD ( contact BardAPI maker or raise issue in their repo)(I was  kinda  wrong)~
+)  ~use SESSION with ASYNC Gemini ( contact GeminiAPI maker or raise issue in their repo)(I was  kinda  wrong)~
 
  ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
-)  ~show embedded links in bard answer~
+)  ~show embedded links in Gemini answer~
 
  ![**(DONE)**](https://img.shields.io/badge/DONE-green?style=for-the-badge
 )  ~show  images in Wizard special channel~
@@ -215,5 +219,4 @@ when user reacts on a wizy message wizy responds depending on category of emoji 
 ---
 > ### [🧾 References ](./sources&refs.md)
 
-> [!NOTE]  
-> **Active Branches lately:**  `master` and [`bot_pycordv2.5.xB`](https://github.com/orsnaro/Discord-Bot-Ai/tree/bot_pycordv2.5.1B)
+  * **Active Branches lately:**  `main` and [`bot_pycordv2.5.xB`](https://github.com/orsnaro/Discord-Bot-Ai/edit/bot_pycordv2.5.xB)

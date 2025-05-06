@@ -1,4 +1,5 @@
 {
+	"bot_master_id": 726888595754844202,
 	"797143628215877672":{
 		"admin_rooms": [
 			889999601350881390
@@ -15,7 +16,7 @@
 		"wizard_bot_id": 1117540489365827594,
 		"setup": {
 				"is_auto_memequote_state": 2,
-				"wizy_chat_ch_ai_type": "gpt",
+				"wizy_chat_ch_ai_type": "deep",
 				"quotesz": 200
 		},
 		"allowed_roles": {
