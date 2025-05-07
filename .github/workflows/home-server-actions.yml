@@ -61,7 +61,7 @@ jobs:
         # script_stop: true
           envs: IS_PRODUCTION , DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , DEEPSEEK_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
           script: | 
-            set -e  # Exit immediately on error
+            # set -e  # Exit immediately on error
             echo "Starting bot deployment..."
             if pgrep -f "bot_wizy_discord.py" >/dev/null; then
               pkill -f bot_wizy_discord.py
