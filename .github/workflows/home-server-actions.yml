@@ -60,22 +60,24 @@ jobs:
         # script_stop: true
           envs: IS_PRODUCTION , DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , DEEPSEEK_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
           script: | # chmod u+x bot_runner.sh : 'u' owner permission and 'x' is execute permission
-            set -e  # Exit immediately on error
-            echo "Starting bot deployment..."
-            pkill -f bot_wizy_discord.py     
-            source /home/ors/crons/cron_env_vars
-            echo -e "discord bot wizy  was not running! ... starting wizy bot"
-            export IS_PRODUCTION='1'
-            export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
-            cd $DIR
-            echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std.log
-            echo "python3 $DIR/main_wizard_bot.py 2" > ../discord_bot_runner.sh
-            chmod u+x ../discord_bot_runner.sh
-            if ! tmux has-session -t discord_bot_runner 2>/dev/null;                            then
-                    tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
-            else
-              tmux kill-session -t discord_bot_runner
-              tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
-            fi
-            rm ../discord_bot_runner.sh
-            cd /home/ors
+            whoami
+            ls -al
+            # set -e  # Exit immediately on error
+            # echo "Starting bot deployment..."
+            # pkill -f bot_wizy_discord.py     
+            # source /home/ors/crons/cron_env_vars
+            # echo -e "discord bot wizy  was not running! ... starting wizy bot"
+            # export IS_PRODUCTION='1'
+            # export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
+            # cd $DIR
+            # echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std.log
+            # echo "python3 $DIR/main_wizard_bot.py 2" > ../discord_bot_runner.sh
+            # chmod u+x ../discord_bot_runner.sh
+            # if ! tmux has-session -t discord_bot_runner 2>/dev/null;                            then
+            #         tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
+            # else
+            #   tmux kill-session -t discord_bot_runner
+            #   tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
+            # fi
+            # rm ../discord_bot_runner.sh
+            # cd /home/ors
