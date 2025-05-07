@@ -28,7 +28,7 @@ jobs:
       - name: Test SSH connection
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} \
-          -i <(echo "${{ secrets.EC2_SSH_KEY }}") \
+          -i <(echo "${{ secrets.HOME_SERVER_SSH_KEY }}") \
           ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} "echo 'Connection successful'"
       - name: Deploy to Home Server discord bot server
         uses: easingthemes/ssh-deploy@main
