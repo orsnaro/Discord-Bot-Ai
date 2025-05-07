@@ -1,4 +1,4 @@
-name: push-aws-bot-server
+name: push-home-bot-server
 
 # Trigger deployment only on push to production-AWS branch
 on:
@@ -25,6 +25,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} \
+          -i <(echo "${{ secrets.EC2_SSH_KEY }}") \
+          ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} "echo 'Connection successful'"
       - name: Deploy to Home Server discord bot server
         uses: easingthemes/ssh-deploy@main
         env:
