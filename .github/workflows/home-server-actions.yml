@@ -38,7 +38,7 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
       - name: Executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1
         env: 
           BARD_GMAILPASS: ${{ secrets.BARD_GMAILPASS }}
           BARD_GMAIL: ${{ secrets.BARD_GMAIL }}
@@ -51,7 +51,7 @@ jobs:
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.HOME_SERVER_SSH_KEY }}
+          password: ${{ secrets.HOME_SERVER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           command_timeout: 3m
         # script_stop: true
