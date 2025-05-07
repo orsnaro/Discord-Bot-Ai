@@ -63,7 +63,9 @@ jobs:
           script: | 
             set -e  # Exit immediately on error
             echo "Starting bot deployment..."
-            pkill -f bot_wizy_discord.py     
+            if pgrep -f "bot_wizy_discord.py" >/dev/null; then
+              pkill -f bot_wizy_discord.py
+            fi
             echo "Starting bot deployment2..."
             . /home/ors/crons/cron_env_vars
             echo -e "discord bot wizy  was not running! ... starting wizy bot"
