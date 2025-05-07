@@ -64,6 +64,7 @@ jobs:
             # set -e  # Exit immediately on error
             echo "Starting bot deployment..."
             if pgrep -f "bot_wizy_discord.py" >/dev/null; then
+              echo "terminating old wizy..."
               pkill -f bot_wizy_discord.py
             fi
             echo "Starting bot deployment2..."
@@ -72,6 +73,7 @@ jobs:
             # export IS_PRODUCTION='1'
             export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
             cd $DIR
+            git checkout production-Home-Server
             echo "Starting bot deployment3..."
             echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std.log
             echo "#!/bin/bash" > ../discord_bot_runner.sh
@@ -83,5 +85,6 @@ jobs:
               tmux kill-session -t discord_bot_runner
               tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
             fi
+            # git checkout bot_pycordv2.5.xB
             rm ../discord_bot_runner.sh
             cd /home/ors
