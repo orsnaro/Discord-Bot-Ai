@@ -14,6 +14,7 @@ jobs:
       matrix:
         python-version:
           - 3.11.8 # with a build matrix, you can specify a list of python versions to deploy with
+        cache: ['pip']
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -63,11 +64,13 @@ jobs:
             set -e  # Exit immediately on error
             echo "Starting bot deployment..."
             pkill -f bot_wizy_discord.py     
+            echo "Starting bot deployment2..."
             . /home/ors/crons/cron_env_vars
             echo -e "discord bot wizy  was not running! ... starting wizy bot"
             # export IS_PRODUCTION='1'
             export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
             cd $DIR
+            echo "Starting bot deployment3..."
             echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std.log
             echo "#!/bin/bash" > ../discord_bot_runner.sh
             echo "python3 $DIR/main_wizard_bot.py 2" >> ../discord_bot_runner.sh
