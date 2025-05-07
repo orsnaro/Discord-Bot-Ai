@@ -1,11 +1,11 @@
 name: push-home-bot-server
 
-# Trigger deployment only on push to production-AWS branch
+# Trigger deployment only on push to production-Home-Server branch
 on:
   push:
     branches:
       - production-Home-Server
-
+  workflow_dispatch:
 jobs:
   deploy:
     name: Deploy to ORS Home Server on every production-Home-Server branch push
@@ -25,15 +25,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      # - name: Test SSH connection
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} \
-      #     -i <(echo "${{ secrets.HOME_SERVER_SSH_KEY }}") \
-      #     ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} "echo 'Connection successful'"
+      - name: install ssh keys
+        # check this thread to understand why its needed:
+        # https://stackoverflow.com/a/70447517
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.HOME_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.HOST_DNS }} > ~/.ssh/known_hosts
       - name: Deploy to Home Server discord bot server
         uses: easingthemes/ssh-deploy@main
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.HOME_SERVER_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.HOST_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
@@ -51,7 +53,8 @@ jobs:
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.HOME_SERVER_SSH_KEY }}
+          #password: ${{ secrets.HOME_SERVER_SSH_KEY }}
+          key: ${{ secrets.HOME_SERVER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           command_timeout: 3m
         # script_stop: true
