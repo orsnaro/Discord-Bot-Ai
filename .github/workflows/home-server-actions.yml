@@ -56,10 +56,12 @@ jobs:
           #password: ${{ secrets.HOME_SERVER_SSH_KEY }}
           key: ${{ secrets.HOME_SERVER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          command_timeout: 3m
+          command_timeout: 10m
         # script_stop: true
           envs: IS_PRODUCTION , DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , DEEPSEEK_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
           script: | # chmod u+x bot_runner.sh : 'u' owner permission and 'x' is execute permission
+            set -e  # Exit immediately on error
+            echo "Starting bot deployment..."
             pkill -f bot_wizy_discord.py     
             source /home/ors/crons/cron_env_vars
             echo -e "discord bot wizy  was not running! ... starting wizy bot"
