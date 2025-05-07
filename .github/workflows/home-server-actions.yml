@@ -25,13 +25,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: install ssh keys
-        # check this thread to understand why its needed:
-        # https://stackoverflow.com/a/70447517
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.HOME_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.HOST_DNS }} > ~/.ssh/known_hosts
+      # - name: install ssh keys
+      # this a manual ssh install step if the auto one 'Deploy to Home Server discord bot server' stopped working!
+      # this partt of this article:https://www.programonaut.com/how-to-deploy-a-git-repository-to-a-server-using-github-actions/
+      #   run: |
+      #     install -m 600 -D /dev/null ~/.ssh/id_rsa
+      #     echo "${{ secrets.HOME_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+      #     ssh-keyscan -H ${{ secrets.HOST_DNS }} > ~/.ssh/known_hosts
       - name: Deploy to Home Server discord bot server
         uses: easingthemes/ssh-deploy@main
         env:
@@ -41,43 +41,42 @@ jobs:
           TARGET: ${{ secrets.TARGET_DIR }}
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v1
-        env: 
-          BARD_GMAILPASS: ${{ secrets.BARD_GMAILPASS }}
-          BARD_GMAIL: ${{ secrets.BARD_GMAIL }}
-          BARD_APIKEY: ${{ secrets.BARD_APIKEY }}
-          DISCORDBOTTOKEN_GPTEOUS: ${{ secrets.DISCORDBOTTOKEN_GPTEOUS }}
-          OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
-          DIR : ${{ secrets.TARGET_DIR }}   
-          DEEPSEEK_APIKEY: ${{secrets.DEEPSEEK_APIKEY}}
-          IS_PRODUCTION : '1'
+        # env: # next line is dedundunt of next envs in same action(source: DeepSeek)
+        #   BARD_GMAILPASS: ${{ secrets.BARD_GMAILPASS }}
+        #   BARD_GMAIL: ${{ secrets.BARD_GMAIL }}
+        #   BARD_APIKEY: ${{ secrets.BARD_APIKEY }}
+        #   DISCORDBOTTOKEN_GPTEOUS: ${{ secrets.DISCORDBOTTOKEN_GPTEOUS }}
+        #   OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
+        #   DIR : ${{ secrets.TARGET_DIR }}   
+        #   DEEPSEEK_APIKEY: ${{secrets.DEEPSEEK_APIKEY}}
+        #   IS_PRODUCTION : '1'
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           #password: ${{ secrets.HOME_SERVER_SSH_KEY }}
           key: ${{ secrets.HOME_SERVER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          command_timeout: 10m
+          command_timeout: 5m
         # script_stop: true
           envs: IS_PRODUCTION , DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , DEEPSEEK_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
           script: | # chmod u+x bot_runner.sh : 'u' owner permission and 'x' is execute permission
-            whoami
-            ls -al
-            # set -e  # Exit immediately on error
-            # echo "Starting bot deployment..."
-            # pkill -f bot_wizy_discord.py     
-            # source /home/ors/crons/cron_env_vars
-            # echo -e "discord bot wizy  was not running! ... starting wizy bot"
+            set -e  # Exit immediately on error
+            echo "Starting bot deployment..."
+            pkill -f bot_wizy_discord.py     
+            source /home/ors/crons/cron_env_vars
+            echo -e "discord bot wizy  was not running! ... starting wizy bot"
             # export IS_PRODUCTION='1'
-            # export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
-            # cd $DIR
-            # echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std.log
-            # echo "python3 $DIR/main_wizard_bot.py 2" > ../discord_bot_runner.sh
-            # chmod u+x ../discord_bot_runner.sh
-            # if ! tmux has-session -t discord_bot_runner 2>/dev/null;                            then
-            #         tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
-            # else
-            #   tmux kill-session -t discord_bot_runner
-            #   tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
-            # fi
-            # rm ../discord_bot_runner.sh
-            # cd /home/ors
+            export CURRENT_DATETIME=$(date +"%Y-%m-%d,%H:%M:%S")
+            cd $DIR
+            echo -e "#################################### \n\n\n [STARTING NEW BOT SESSION] DATE: $CURRENT_DATETIME GMT \n\n\n#################################### \n" >> ./std.log
+            echo "#!/bin/bash" > ../discord_bot_runner.sh
+            echo "python3 $DIR/main_wizard_bot.py 2" >> ../discord_bot_runner.sh
+            chmod u+x ../discord_bot_runner.sh
+            if ! tmux has-session -t discord_bot_runner 2>/dev/null;                            then
+                    tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
+            else
+              tmux kill-session -t discord_bot_runner
+              tmux new -d -s discord_bot_runner '../discord_bot_runner.sh >> ../discord_bot_shell_log.txt'
+            fi
+            rm ../discord_bot_runner.sh
+            cd /home/ors
