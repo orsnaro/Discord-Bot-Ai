@@ -3,7 +3,7 @@
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/home-server-actions.yml/badge.svg?branch=production-Home-Server)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/home-server-actions.yml)
 
 
-# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2F41.196.252.205%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](http://41.196.252.205/pokeWizy)
+# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2Fors.strangled.net%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](http://ors.strangled.net/pokeWizy)
 
 
 
