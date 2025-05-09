@@ -1,9 +1,9 @@
-[![version badge](https://img.shields.io/badge/Hosted%20Version-v2.5.6B-green)](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.6B)
+[![version badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fors.strangled.net%2FwizyVersion&logo=docker)](https://ors.strangled.net/wizyVersion)
 [![lastest pre release was](https://img.shields.io/github/release-date/orsnaro/discord-bot-ai?label=latest%20release&color=9332af&logo=git)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/home-server-actions.yml/badge.svg?branch=production-Home-Server)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/home-server-actions.yml)
 
 
-# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2Fors.strangled.net%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](http://ors.strangled.net/pokeWizy)
+# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2Fors.strangled.net%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](https://ors.strangled.net/pokeWizy)
 
 
 
