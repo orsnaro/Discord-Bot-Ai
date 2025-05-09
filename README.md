@@ -22,6 +22,7 @@
 * now wizy  lives on a home server running ♾️
 * now wizy  supports partially DeepSeek R1 AI model 🐳
 * and more! **Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/V2.5.5B...V2.5.6B
+* ||AND ALOT OF BEHIND THE SCENES WORK ON THE linux HOSTING SERVER and ITS CI/CD !||
 </details>
 
       
