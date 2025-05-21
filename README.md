@@ -7,7 +7,6 @@
 
 
 
-
 ##### _Discord Bot with generative AI features using python as main project language_
 
 ![wizy image](./wizard_bot.ico "icon") 

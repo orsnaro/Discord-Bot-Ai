@@ -6,6 +6,9 @@ on:
     branches:
       - production-AWS
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Deploy to EC2 on every production-AWS branch push
