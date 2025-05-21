@@ -9,7 +9,7 @@
 
 #TODO : Documentaion for functions / classes and repo readme.md
 
-#(DONE)TODO : make bot see prev messages (use session)
+#(DONE)TODO : make bot see prev messages (use session) 
 #(DONE)TODO : talk to bot by mention him
 #(DONE)TODO : talk to bot in specific channel no need to mention or trigger him by command just send the question as plain message
 #(DONE)TODO :  reply to his message (take the content of replayed message and respond accordingly to it + new message)
