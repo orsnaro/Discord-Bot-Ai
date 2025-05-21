@@ -6,6 +6,8 @@ on:
     branches:
       - production-Home-Server
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   deploy:
     name: Deploy to ORS Home Server on every production-Home-Server branch push
