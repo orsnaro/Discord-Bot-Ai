@@ -3,7 +3,7 @@
 [![lastest pre release was](https://img.shields.io/github/release-date/orsnaro/discord-bot-ai?label=latest%20release&color=9332af&logo=git)](https://github.com/orsnaro/discord-bot-ai/releases/latest)
 
 
-# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2Fors.strangled.net%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](https://ors.strangled.net/pokeWizy)
+# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2Fors.strangled.net%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](https://ors.strangled.net/wizy-status)
 
 
 
