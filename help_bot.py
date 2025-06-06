@@ -1,13 +1,17 @@
 """
                           Coder : Omar
-                          Version : v2.5.6B
-                          version Date :  26 / 04 / 2025
+                          Version : v2.5.7B
+                          version Date :  6 / 06 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Customs Help code for Discord Bot
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
 """
 #TODO: help cogs and classes
+
+# Bot's Discord ID used for mentions and references
 wizard_bot_id = 1117540489365827594
+
+# Legacy help message template (deprecated)
 default_help_msg = f"""
                    GPTEOUS HELP MESSAGE```
                    **I'M MIGHTY GPTEOUS !** the first GPT-Spirit in Narol's island Volcan guardian , Island's Master right hand  and the begining of Island's new ERA etcetera etcetera... I mean you get it am very special here  :man_mage:
@@ -50,6 +54,8 @@ default_help_msg = f"""
 
 
                    """
+
+# First part of the current help message, containing introduction and basic commands
 override_help_msgP1 = f"""
 
 > ***MIGHTY GPTEOUS I AM:man_mage:! *** `The first GPT-Spirit in Narol's island.  Volcan guardian. Island Master's right hand. The begining of Island's new ERA etcetera etcetera... I mean you get it am very special here` :fire_hashira:
@@ -76,6 +82,8 @@ override_help_msgP1 = f"""
               \n
 
                    """
+
+# Second part of the current help message, containing detailed command list and categories
 override_help_msgP2 = f"""
 
 
