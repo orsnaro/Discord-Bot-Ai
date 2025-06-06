@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.6B
-                          version Date :  26 / 04 / 2025
+                          Version : v2.5.7B
+                          version Date :  6 / 06 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
@@ -11,16 +11,33 @@ import discord.message
 import youtube_dl
 import asyncio as aio
 import aiohttp
-
+from discord.ext import commands
+from configs import Configs
+from typing import Tuple
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def get_last_conv_id()  : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def cd_to_main_dir(main_file: str):
+   """
+   Changes the current working directory to the directory containing the specified file.
+
+   Args:
+       main_file (str): Path to the main file whose directory should be set as working directory.
+   """
    abspath = ini.os.path.abspath(main_file)
    dname = ini.os.path.dirname(abspath)
    ini.os.chdir(dname)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def await_me_maybe(value):
+    """
+    Handles awaiting of values that might be coroutines or callables.
+
+    Args:
+        value: The value to await. Can be a coroutine, callable, or regular value.
+
+    Returns:
+        The resolved value after awaiting if it was a coroutine or callable.
+    """
     if callable(value):
         value = value()
     if aio.iscoroutine(value):
@@ -28,15 +45,14 @@ async def await_me_maybe(value):
     return value
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def get_all_files(dir: str) -> list[str]:
-   """_summary_
-      get all tracks for local 
+   """
+   Recursively gets all file paths in a directory and its subdirectories.
 
    Args:
-       dir (str): the root path of all local tracks
+       dir (str): The root path to search for files.
 
    Returns:
-       list[str]: all paths for local tracks
-       
+       list[str]: List of all file paths found in the directory and subdirectories.
    """
    all_paths = []
    for root, dirs, files in ini.os.walk(dir):
@@ -46,13 +62,15 @@ def get_all_files(dir: str) -> list[str]:
    return all_paths
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def find_VC_matching_guild(invoker: discord.Member, bot: ini.commands.Bot) -> discord.VoiceClient:
-   """_summary_
-      get bots voice client in same server as the invoker
+   """
+   Finds the bot's voice client that is in the same guild as the command invoker.
+
    Args:
-       invoker (discord.Member)
-       bot (ini.commands.Bot)
+       invoker (discord.Member): The member who invoked the command.
+       bot (ini.commands.Bot): The bot instance.
+
    Returns:
-       discord.VoiceClient: bots voice client that in same guild as the bot command invoker
+       discord.VoiceClient: The bot's voice client in the same guild as the invoker, if found.
    """
    for VC in bot.voice_clients :
       if VC.guild == invoker.guild : 
@@ -60,13 +78,32 @@ def find_VC_matching_guild(invoker: discord.Member, bot: ini.commands.Bot) -> di
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def play_chill_track(server: discord.Guild):
-   tracks_dir: str = "./tracks"
-   local_tracks: list[str] = get_all_files(dir= tracks_dir)
+   """
+   Plays a random chill track in the server's voice channel.
+
+   Args:
+       server (discord.Guild): The guild/server where the track should be played.
+   """
+   tracks_root_dir: str = "./tracks"
+   types_dirs: dict = ini.bot.auto_played_tracks
+   chosen_type_dir: str = types_dirs[ini.bot.default_auto_played_track_type]
+   local_tracks: list[str] = get_all_files(dir= tracks_root_dir + chosen_type_dir)
    print("\n\n\n####TESTING\n\n\n ",local_tracks)#TESTING
    track_path = ini.random.choice(local_tracks)
    await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg", source=track_path)))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links_msg : str , lnk1_len : int , final_imgs_msg : str , lnks_flag = False , imgs_flag = True) :
+   """
+   Controls the sending of message subsections (links and images) in Discord.
+
+   Args:
+       message (discord.Message): The original message to reply to.
+       final_links_msg (str): The formatted message containing links.
+       lnk1_len (int): Length of the first link.
+       final_imgs_msg (str): The formatted message containing images.
+       lnks_flag (bool, optional): Whether to send links. Defaults to False.
+       imgs_flag (bool, optional): Whether to send images. Defaults to True.
+   """
    if  lnks_flag and imgs_flag : # meaning I will supress first link also cuz there is imgs already
       #SUPRESS FIRST LINK  (first parse the message)
       fst_char_1st_link = 33 #29 chars for header [0~28] then 3 chars  bullet point [29~31]
@@ -87,15 +124,32 @@ async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links
       
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def supress_msg_body_url_embeds ( text : str ) -> str :
-  url_regex = r"(https?://\S+)(\s|\n|$)"
-  matches = ini.re.finditer(url_regex, text)
-  for match in matches:
-    text = text.replace(match.group(0), f"<{match.group(0).strip()}> \n")
-  return text
+   """
+   Suppresses URL embeds in a message by wrapping URLs in angle brackets.
+
+   Args:
+       text (str): The text containing URLs to be suppressed.
+
+   Returns:
+       str: The text with URLs wrapped in angle brackets to prevent embedding.
+   """
+   url_regex = r"(https?://\S+)(\s|\n|$)"
+   matches = ini.re.finditer(url_regex, text)
+   for match in matches:
+     text = text.replace(match.group(0), f"<{match.group(0).strip()}> \n")
+   return text
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # TODO : join all prepare funcs in one class or control function
 async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : discord.Message , discord_msg_limit = 2000, is_gemini:bool = True) :
+   """
+   Prepares and sends a response message in the wizard channel, handling message fragmentation if needed.
 
+   Args:
+       _response (tuple): The response data to be sent.
+       message (discord.Message): The original message to reply to.
+       discord_msg_limit (int, optional): Maximum length of a Discord message. Defaults to 2000.
+       is_gemini (bool, optional): Whether the response is from Gemini AI. Defaults to True.
+   """
    #Supress i.e.(no embed) any URL inside the msg body and not in links msg section
    if is_gemini :
       _gemini_response = _response
@@ -213,9 +267,19 @@ async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : di
          await message.reply(content= full_response  , mention_author= True)
       
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_links_msg( _gemini_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000, is_gemini:bool = True) -> tuple :
+def prepare_links_msg( _gemini_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000, is_gemini:bool = True) -> tuple[str, tuple, int] :
+   """
+   Prepares a formatted message containing links from the AI response.
 
+   Args:
+       _gemini_response (tuple): The response data containing links.
+       _links_limit (int, optional): Maximum number of links to include. Defaults to 5.
+       discord_msg_limit (int, optional): Maximum length of a Discord message. Defaults to 2000.
+       is_gemini (bool, optional): Whether the response is from Gemini AI. Defaults to True.
 
+   Returns:
+       tuple: A tuple containing the formatted links message and related data.
+   """
    links_msg_header = f"\n```ini\n [Sources & links]```" #len = 29 [0 -> 28]
    links_list = list( set( _gemini_response[1]) if is_gemini else set(_gemini_response[1]))#TODO: add gpt + #remove duplicate links
 
@@ -266,7 +330,18 @@ def prepare_links_msg( _gemini_response : tuple , _links_limit : int = 5 , disco
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_imgs_msg( _gemini_response : tuple , _imgs_limit : int = 5 , discord_msg_limit = 2000, is_gemini:bool = True) -> str :
+   """
+   Prepares a formatted message containing images from the AI response.
 
+   Args:
+       _gemini_response (tuple): The response data containing images.
+       _imgs_limit (int, optional): Maximum number of images to include. Defaults to 5.
+       discord_msg_limit (int, optional): Maximum length of a Discord message. Defaults to 2000.
+       is_gemini (bool, optional): Whether the response is from Gemini AI. Defaults to True.
+
+   Returns:
+       str: The formatted message containing images.
+   """
    imgs_msg_header = f"\n```ini\n [Images]``` \n"
    
    imgs_list = list( set( _gemini_response[2]) if is_gemini else set(_gemini_response[2]) )#TODO: add gpt + #remove duplicate imgs
@@ -292,8 +367,181 @@ def prepare_imgs_msg( _gemini_response : tuple , _imgs_limit : int = 5 , discord
    final_imgs = imgs_msg_header + '\n'.join(imgs_list[ : imgs_crnt_lmt])  #list is zero based and end at limit - 1
    return final_imgs
 #------------------------------------------------------------------------------------------------------------------------------------------#
+async def prepare_bot_info_dm_on_init() -> tuple[list[str,str], discord.DMChannel]  :
+   """
+   Prepares and sends initialization DM messages to the bot master with bot information.
 
-def get_rand_greeting (user_name : str = "Master Narol"):
+   Returns:
+       tuple[list[str,str], discord.DMChannel]: A tuple containing:
+           - List of message parts to be sent
+           - The DM channel to send the messages to
+   """
+   message_parts = []
+   if Configs.config_json_dict :  #if dict not empty
+      #send any init  dm message to admin (defaults to Narol 'me')
+      bot_master: discord.User = ini.bot.get_user(Configs.config_json_dict["bot_master_id"])
+      master_dm_ch: discord.DMChannel = bot_master.dm_channel or await ini.bot.create_dm(bot_master) # if dm channel is none will create new dm (shortcut)
+      init_master_dm_msg: str = "# Wizy bot Initialized! sending DM init MSG:\n "
+      init_master_dm_msg += f"## Bot info: \n (magic and dunder attrs. excluded)\n\n"
+      print(f"Bot info: \n (magic and dunder attrs. excluded) ")
+      
+      # get and print important bot info
+      for attr in dir(ini.bot.user):
+         if  not (attr.startswith('__') or attr.startswith('_')):
+            value = getattr(ini.bot.user, attr)
+            print(f'{attr}: {value}')
+            init_master_dm_msg += f'{attr}: {value}\n'
+      init_master_dm_msg += f"#####################################\n"
+      message_parts.append(init_master_dm_msg)  #done first portion of the msg
+            
+      init_master_dm_msg = f"\n\n\n # JOINED SERVERS INFO: \n ## servers count({len(ini.bot.guilds)})\n"
+      print(f"\n ## Joined servers: count({len(ini.bot.guilds)}) \n ")
+      for guild in ini.bot.guilds :
+         print(f"name: {guild.name}")
+         print(f"owner: {guild.owner}")
+         print(f"owner-ID: {guild.owner_id}")
+         print(f"members count: {guild.member_count}")
+         print(f"#####################################")
+         init_master_dm_msg += f"Gname: {guild.name}, owner: {guild.owner}, owner-ID: {guild.owner_id}, members count: {guild.member_count}\n"
+         init_master_dm_msg += f"#####################################\n"
+      message_parts.append(init_master_dm_msg)  #done the rest of dm msg to bot master dm
+      del init_master_dm_msg
+
+      return message_parts, master_dm_ch
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def fill_bot_counters_n_timers():
+   """
+   Initializes bot counters and timers for all guilds the bot is in.
+   Sets up voice channel member counts and not playing timers.
+   """
+   for guild in ini.bot.guilds:
+      #TODO: (could be better looping and less fetching from discord api also!)
+      #we loop over all guilds wizy is in and we have list of voice channels we need to match each voice ch to its guild  , one guild per iteration
+      target_ch_id: list = [ch_id for ch_id in ini.wizy_voice_channels if guild.get_channel_or_thread(ch_id) != None] 
+
+      if len(target_ch_id) > 0:
+         target_voice_ch: discord.VoiceChannel = ini.bot.get_channel(target_ch_id[0])
+         ini.bot.connected_to_wizy_voice_per_guild[guild.id] = len(target_voice_ch.members)
+      ini.bot.guilds_not_playing_timer[guild.id] = 0
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def handle_wizy_free_timer(guilds: list[discord.Guild] , guilds_free_timers: dict[int, int], increment_value_sec: int, threshold_sec: int) -> None:
+   """
+   Handles the timer for when Wizy is free (not playing) in voice channels.
+
+   Args:
+       guilds (list[discord.Guild]): List of guilds to check.
+       guilds_free_timers (dict[int, int]): Dictionary mapping guild IDs to their free timers.
+       increment_value_sec (int): Number of seconds to increment the timer by.
+       threshold_sec (int): Threshold in seconds after which to take action.
+   """
+   for guild in guilds:
+         if guild.id in guilds_free_timers:
+            # check happens once every 5 secs so increment every time by 5 secs
+            guilds_free_timers[guild.id] += increment_value_sec
+         else:
+            guilds_free_timers[guild.id] = increment_value_sec
+
+         if guild.voice_client != None and guild.voice_client.is_connected():
+            if not guild.voice_client.is_playing():
+
+               if guilds_free_timers[guild.id] >= threshold_sec:
+                  #if there is any user in channel besides wizy the bot play chill music else nothing 
+                  connected_users_cnt = len( guild.voice_client.channel.members ) - 1
+                  if connected_users_cnt >= 1 :
+                     await guild.voice_client.channel.send("*3+ minutes of Silence:pleading_face: resuming* **Chilling Track** ...")
+                     
+                     await guild.voice_client.resume() if guild.voice_client.is_paused() else await play_chill_track(guild)
+                  else:
+                     #TESTING
+                     print("\n\n\n\n\n\n TESTING########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\n######################\n\n\n\n")
+                     #TESTING
+                     
+                  guilds_free_timers[guild.id] = 0
+            else :
+               #TESTING
+               bot_master: discord.User = ini.bot.get_user(Configs.config_json_dict["bot_master_id"])
+               master_dm_ch: discord.DMChannel = bot_master.dm_channel or await ini.bot.create_dm(bot_master) # if dm channel is none will create new dm (shortcut)
+               master_dm_ch.send(f"\n\n\n\n\n\n TESTING########################## \n\n\n\n\n did I get the wizy playing status right? guild.voice_client.is_playing():{ini.bot.fetch_guild(797143628215877672).voice_client.is_playing()}")
+               #TESTING
+               guilds_free_timers[guild.id] = 0
+         else:
+            guilds_free_timers[guild.id] = 0
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def control_auto_memequote_task(memequote_state_old: int, memequote_task: callable) -> int:
+   """
+   Controls the auto meme/quote task based on its current state.
+
+   Args:
+       memequote_state_old (int): The previous state of the meme/quote task.
+       memequote_task (callable): The task to control.
+
+   Returns:
+       int: The new state of the meme/quote task.
+   """
+   new_state = None;   
+   if memequote_state_old is None: 
+      if new_state > 0 :
+         memequote_task.cancel()
+         new_state = 0
+      else:
+         memequote_task.start()
+         new_state = 1
+   elif memequote_state_old == 0:
+      if memequote_task.is_running():
+         memequote_task.cancel()
+         new_state = 0
+   elif memequote_state_old == 1:
+      if not memequote_task.is_running():
+         memequote_task.start()
+         new_state = 1
+   elif memequote_state_old == 2: #special eventof type: FREE Palestine!
+         new_state = 2
+
+
+   return new_state
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def can_pull_wizy(member: discord.Member, is_wizy_voice_ch: bool) -> bool:
+   """
+   Determines if Wizy can be pulled to a voice channel based on various conditions.
+
+   Args:
+       member (discord.Member): The member attempting to pull Wizy.
+       is_wizy_voice_ch (bool): Whether the target channel is Wizy's voice channel.
+
+   Returns:
+       bool: True if Wizy can be pulled, False otherwise.
+   """
+   # tiggered if any member changes his voice state (change state like: joining a voice channel and we are watching for any one who joins wizy's ch)
+   is_ok_connect_bot_to_wizy_ch = False
+   is_admin = [True for role in member.roles if role.permissions.administrator == True]
+   #TESTING
+   print(f"\n\n\n\n\n\nTESTING is_wizy_voice_ch: {is_wizy_voice_ch}")
+   #TESTING
+   if is_wizy_voice_ch:
+      if is_admin: #no other condition needed BOT MUST CONNECT NOW to wizy voice channel and play chill mmo or lofi 
+         is_ok_connect_bot_to_wizy_ch = True
+      else: #not admin
+         if await member.guild.voice_client is None: #safe to pull wizy to his wizy ch  no on is annoyed
+            is_ok_connect_bot_to_wizy_ch = True
+         else: #pull wizy to his wizy ch when he is connected to another one *ONLY* when he is alone in that ch for enough time!
+            secs_until_threshold = ini.bot.wizy_alone_threshold_sec - ini.bot.guilds_not_playing_timer[member.guild.id] 
+            is_connected_and_alone_enough = True if secs_until_threshold <= ini.bot.alone_increment_val_sec else False #true if hit threshold or about to hit it next scan
+            if is_connected_and_alone_enough and member.guild.voice_client.is_playing() == False :  #NOTE: btw one check i.e."first"  is enough! is_playing() will never be true if he is in another channel and (is_playing() === true) see bot.resume_chill_if_free()
+               is_ok_connect_bot_to_wizy_ch = True
+
+   return is_ok_connect_bot_to_wizy_ch
+#------------------------------------------------------------------------------------------------------------------------------------------#
+
+def get_rand_greeting (user_name : str = "Master Narol") -> str:
+   """
+   Returns a random greeting message for the specified user.
+
+   Args:
+       user_name (str, optional): The name of the user to greet. Defaults to "Master Narol".
+
+   Returns:
+       str: A string containing a randomly selected greeting message.
+   """
    greetings = [
    f"OH  _{user_name}_  I SEE .. you're in need of MIGHTY Gpteous help ?  \n well well ...  Gpteous shall serve master narol's Islanders call ***CASTS A MIGHTY SPELL :man_mage::sparkles:***",
    f"Greetings,  _{user_name}_, seeker of knowledge 📚. I offer my wisdom 🧙‍♂️ to help you find your way, as I have seen much in my long life 👴.",
@@ -336,17 +584,39 @@ def get_rand_greeting (user_name : str = "Master Narol"):
    last_elmnt_index = len(greetings) -1
    return greetings[ini.random.randint(0 , last_elmnt_index)]
 #------------------------------------------------------------------------------------------------------------------------------------------#
+def skip_line(full_ans) -> str:
+   """
+   Skips the first line of a multi-line string.
 
-def skip_line(full_ans):
-  lines = full_ans.split('\n')
-  return '\n'.join(lines[1:])
+   Args:
+       full_ans (str): The input string containing multiple lines.
+
+   Returns:
+       str: The input string with the first line removed.
+   """
+   lines = full_ans.split('\n')
+   return '\n'.join(lines[1:])
 #------------------------------------------------------------------------------------------------------------------------------------------#
 class UserAiQuery:
+   """
+   A class to manage AI chat queries and their history for users.
+   
+   Class Attributes:
+       queries_limit (int): Maximum number of queries allowed per user.
+       command_query_tokken_limit (int): Maximum tokens allowed for command queries.
+       chats_ai_dict (dict): Dictionary storing chat histories for all users.
+   """
    queries_limit = 100
    command_query_tokken_limit = 300
    chats_ai_dict: dict = {} #key:value => {'userid': UserAiChat_obj}
    
    def __init__(self, userId:str):
+      """
+      Initialize a new UserAiQuery instance.
+
+      Args:
+          userId (str): The Discord user ID to associate with this query.
+      """
       self.userId = userId
       
       if self.userId not in self.chats_ai_dict:
@@ -366,7 +636,18 @@ class UserAiQuery:
          self.chats_ai_dict[userId] = self
    
    @classmethod
-   async def prepare_chat(cls, _user: discord.User, _AI: str, **kwargs):
+   async def prepare_chat(cls, _user: discord.User, _AI: str, **kwargs) -> Tuple[str, str|None]:
+      """
+      Prepares a chat session with the specified AI model.
+
+      Args:
+          _user (discord.User): The Discord user initiating the chat.
+          _AI (str): The AI model to use ('gpt', 'deep', or 'gemini').
+          **kwargs: Additional keyword arguments for chat preparation.
+
+      Returns:
+          tuple: A tuple containing the response ID and the AI's response.
+      """
       if _AI == "gpt":
          user_name = _user.display_name
          userId: str = str(_user.id)
@@ -508,16 +789,20 @@ class UserAiQuery:
       elif _AI == "gemini" : #TODO
          ...
          
-
-      
    def append_chat_msg(self, msg, ai_type:str = 'gpt') -> int :
-      
-      '''
-      if return == 0 (fail)
-      if return == 1 (done)
-      if return == 2 (done + cleared history due to 'queries_limit' exceeding)
-      '''
-      
+      """
+      Appends a message to the chat history for the specified AI type.
+
+      Args:
+          msg: The message to append.
+          ai_type (str, optional): The type of AI ('gpt', 'deep', or 'gemini'). Defaults to 'gpt'.
+
+      Returns:
+          int: Status code indicating the result:
+               - 0: Failed
+               - 1: Success
+               - 2: Success with history cleared due to exceeding query limit
+      """
       if ai_type == 'gpt':
          #so we want only to clear if user msgs exceeds limit not all chat msgs
          user_msgs_cnt = (len(self.history_gpt) - 1) // 2
@@ -555,28 +840,74 @@ class UserAiQuery:
    
       
    def change_chat_mode(self, user_id, mode:str, ai_type:str = 'gpt'):
+      """
+      Changes the chat mode for a specific user and AI type.
+
+      Args:
+          user_id: The ID of the user whose chat mode should be changed.
+          mode (str): The new chat mode to set.
+          ai_type (str, optional): The type of AI to change mode for. Defaults to 'gpt'.
+      """
       ... #TODO: also add a bot command that invokes it ('mode' is the system role content of GPT e.g.(funny GPT ...))
 #------------------------------------------------------------------------------------------------------------------------------------------#
 class UserAiSpecialChat(UserAiQuery):
+   """
+   A subclass of UserAiQuery for managing special chat channels (e.g., Wizy special channels).
+
+   Class Attributes:
+       chat_query_tokken_limit (int): Maximum tokens allowed for chat queries in special channels.
+       chats_ai_dict (dict): Dictionary storing chat histories for special channels.
+   """
    #NOTE: must reassign it here. otherwise the parent class 'chats_ai_dict' will be shared here ! ( wnna separate special channel chat history from normal command to talk with wizy in any other channel)
    chat_query_tokken_limit = 600
    chats_ai_dict: dict = {} 
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO GPT
-async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
+async def ask_gpt(user_query, user: discord.User, is_wizy_ch:bool = False) -> Tuple[str|None, str]:
+   """
+   Asks the GPT model a question and returns the response.
+
+   Args:
+       user_query (str): The user's query.
+       user (discord.User): The user asking the question.
+       is_wizy_ch (bool, optional): Whether the query is from a Wizy special channel. Defaults to False.
+
+   Returns:
+       tuple: The GPT response and its response ID.
+   """
    resp_id_gpt, gpt_resp = await await_me_maybe( UserAiQuery.prepare_chat(_user= user, _AI="gpt", _is_wizy_ch= is_wizy_ch, _query= user_query) )
    
    return (gpt_resp, resp_id_gpt)
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def ask_deepSeek(user_query, user: discord.User, is_wizy_ch:bool = False) -> tuple:
+async def ask_deepSeek(user_query, user: discord.User, is_wizy_ch:bool = False) -> Tuple:
+   """
+   Asks the DeepSeek model a question and returns the response.
+
+   Args:
+       user_query (str): The user's query.
+       user (discord.User): The user asking the question.
+       is_wizy_ch (bool, optional): Whether the query is from a Wizy special channel. Defaults to False.
+
+   Returns:
+       tuple: The DeepSeek response and its response ID.
+   """
    resp_id_deepSeek, deepSeek_resp = await await_me_maybe( UserAiQuery.prepare_chat(_user= user, _AI="deep", _is_wizy_ch= is_wizy_ch, _query= user_query) )
    
    return (deepSeek_resp, resp_id_deepSeek)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 
 async def ask_gemini(user_query: str, user= discord.user ) -> tuple:
-   
+   """
+   Asks the Gemini model a question and returns the response, including content, links, images, response ID, and conversation ID.
+
+   Args:
+       user_query (str): The user's query.
+       user (discord.User, optional): The user asking the question.
+
+   Returns:
+       tuple: (content, links, images, response_id, conversation_id)
+   """
    user_name = user.display_name
    character= "GPTeous Wizard whose now living in discord server called Narol's Island "
    series = "Harry Potter"
@@ -594,8 +925,21 @@ async def ask_gemini(user_query: str, user= discord.user ) -> tuple:
    # return skip_line(gemini_ans['content']) , gemini_ans['links'] , gemini_ans['images'] , gemini_ans['response_id'] , gemini_ans['conversation_id'] # skip first line that has my prompt
    return gemini_ans['content'] , gemini_ans['links'] if 'links' in gemini_ans else None , gemini_ans['images'] , gemini_ans['response_id'] , gemini_ans['conversation_id']
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> bool : 
-   #TODO : later check type must be in dictionary contains all types and check it self becomes a class
+  #TODO : later check type must be in dictionary contains all types and check it self becomes a class
+async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , targetChannelId : int | tuple = None , only_admins : bool = False , **extraArgs ) -> Tuple[bool, discord.Message | int | None] : 
+   """
+   Checks message conditions for various types of Discord message events.
+
+   Args:
+       _message (discord.Message, optional): The message to check.
+       chk_type (int, optional): The type of check to perform. Defaults to 1.
+       targetChannelId (int | tuple, optional): The target channel ID(s) to check against.
+       only_admins (bool, optional): Whether to restrict to admin users. Defaults to False.
+       **extraArgs: Additional arguments for future extension.
+
+   Returns:
+       bool: True if the check passes, otherwise False (or tuple for reply check).
+   """
    if chk_type == 1 and _message != None : #NOTE : checks for on_message() in wizard channel
       return True if  _message != None and _message.channel.id in targetChannelId and _message.author.id != ini.bot.user.id else False
 
@@ -619,16 +963,23 @@ async def check_msg ( _message : discord.Message = None  , chk_type : int = 1 , 
             print ("TESTING : ID of ref msg:" , _message.reference.message_id ) #TESTING
             return True , _message
 
-
-
-
-
    else: return False
 #------------------------------------------------------------------------------------------------------------------------------------------#
 gemini_conversation_ids_buffer = set()
 def save_gpt_last_conversation_id() : ...  #TODO
 #------------------------------------------------------------------------------------------------------------------------------------------#
 def prepare_discord_embed( _ans_data: tuple, is_reply: bool = False, is_gemini= True) -> discord.Embed :
+   """
+   Prepares a Discord embed object for the AI answer data.
+
+   Args:
+       _ans_data (tuple): The answer data to embed.
+       is_reply (bool, optional): Whether this is a reply message. Defaults to False.
+       is_gemini (bool, optional): Whether the answer is from Gemini AI. Defaults to True.
+
+   Returns:
+       discord.Embed: The prepared embed object.
+   """
    #TODO : handle if embed exceeds max size of max size of fields ( ini.bot will continue work anyway but tell user that OF happend of paganating)
    '''
 EMBED TOTAL MAX SIZE is 6000 chars ( # NOTE : use reactions and pagination if exceeded )
@@ -780,9 +1131,9 @@ class EmbedLimits(object):
                             ) #url will be  hyperlink in title
       
       embed.set_author(name= author, url=wizardChannelLink, icon_url= None )
-      if ini.bot.wizy_chat_ch_ai_type == 'gpt' :
+      if ini.bot.default_wizy_chat_ch_ai_type == 'gpt' :
          embed.set_footer(text= f"Scroll ID({ansID}) • powered by OpenAI", icon_url= footerIcon )
-      elif ini.bot.wizy_chat_ch_ai_type == 'deep' :
+      elif ini.bot.default_wizy_chat_ch_ai_type == 'deep' :
          embed.set_footer(text= f"Scroll ID({ansID}) • powered by DeepSeek\U0001F40B", icon_url= footerIcon ) #utf code is for whale emoji 🐋
       if is_reply :
          embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
@@ -794,12 +1145,21 @@ class EmbedLimits(object):
 
 
 async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) -> str :
-   first_msg_id = _message.reference.message_id
+   """
+   Retrieves the prompt for a new reply by combining the old prompt with the referenced message content.
 
+   Args:
+       _message (discord.Message): The reply message.
+       old_prompt (str): The previous prompt to append to.
+
+   Returns:
+       str: The new combined prompt.
+   """
+   first_msg_id = _message.reference.message_id
 
    msg_fetch_task = ini.bot.loop.create_task(_message.channel.fetch_message(first_msg_id))
    first_msg_content = await msg_fetch_task
-   first_msg_content : discord.Message.content = first_msg_content.content
+   first_msg_content : str = first_msg_content.content
 
    first_msg_content : str =  first_msg_content.replace(f"<@{ini.wizard_bot_id}" , ' ')#if other commands like 'gemini' or 'wizard' its mostly ok # NOTE : (still testing)
    new_prompt : str = old_prompt + ' ' + f"\"{first_msg_content}\""
@@ -808,16 +1168,16 @@ async def get_new_reply_prompt(_message : discord.Message, old_prompt : str ) ->
    return new_prompt
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : make it fully async
-   """_summary_
-   invoker : 0 wisewiz command , 1 send_rand_quote_meme()
+   """
+   Prepares a random quote message, either via a synchronous or asynchronous provider.
 
    Args:
-       invoker (int): _description_
+       invoker (int): 0 for synchronous, 1 for asynchronous quote provider.
+       retrylimit (int, optional): Number of attempts to find a suitable quote. Defaults to 10.
 
    Returns:
-       str: the final quote msg
+       str: The final quote message or embed.
    """
-
    res = None
    quotes = " "
 
@@ -855,7 +1215,17 @@ async def prepare_quote(invoker : int , retrylimit : int = 10) -> str : #TODO : 
 
    return quotes
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def extract_post_info(res: aiohttp.JsonPayload, sz: int):
+def extract_post_info(res: aiohttp.JsonPayload, sz: int) -> tuple:
+   """
+   Extracts information from a Reddit post JSON payload.
+
+   Args:
+       res (aiohttp.JsonPayload): The Reddit API response payload.
+       sz (int): The number of posts in the response.
+
+   Returns:
+       tuple: Extracted post information (index, url, org_post, title, has_crosspost_parent_list, is_video).
+   """
    rand_post_no = ini.random2.randint(0,sz - 1)
    
    #TESTING BLOCK
@@ -887,7 +1257,19 @@ def extract_post_info(res: aiohttp.JsonPayload, sz: int):
    return (*post_extracted_info,) #without the tuple brackets can't unpack in return statement
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: str, **kwargs):
+def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: str, **kwargs) -> list[bool, str, str]:
+   """
+   Prepares a special event message or embed for a Palestine-related Reddit post.
+
+   Args:
+       res (aiohttp.JsonPayload): The Reddit API response payload.
+       rand_post_no (int): The index of the selected post.
+       special_type (str): The type of special event (e.g., 'ps').
+       **kwargs: Additional keyword arguments for post details.
+
+   Returns:
+       list: [is_video, free_palestina_data, chosen_post_url]
+   """
    image_extensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp", ".psd", ".raw", ".cr2", ".nef", ".dng", ".arw", ".orf", ".sr2"]
    org_post = kwargs['org_post']
    
@@ -925,8 +1307,19 @@ def prepare_ps_event(res: aiohttp.JsonPayload, rand_post_no:int, special_type: s
       
    return [kwargs['is_video'], kwargs['free_palestina_data'], kwargs['chosen_post_url']]
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_special( res: aiohttp.JsonPayload, rand_post_no:int, special_type: str, **kwargs ):
-   
+def prepare_special( res: aiohttp.JsonPayload, rand_post_no:int, special_type: str, **kwargs ) -> Tuple:
+   """
+   Prepares a special event message or embed for a given event type.
+
+   Args:
+       res (aiohttp.JsonPayload): The Reddit API response payload.
+       rand_post_no (int): The index of the selected post.
+       special_type (str): The type of special event.
+       **kwargs: Additional keyword arguments for post details.
+
+   Returns:
+       tuple: The prepared special event data.
+   """
    special_type = special_type.lower()
    prepared_special: list = []
    
@@ -950,6 +1343,18 @@ def prepare_special( res: aiohttp.JsonPayload, rand_post_no:int, special_type: s
    return (*prepared_special,) #without the tuple brackets can't unpack in return statement
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def  final_send_special_ps(target_channel: discord.TextChannel, ps_post_embed_is_video: bool, ps_post_data: str|discord.Embed, ps_post_url: str ) -> discord.Message | None : 
+   """
+   Sends a special Palestine event message or embed to the target channel.
+
+   Args:
+       target_channel (discord.TextChannel): The channel to send the message to.
+       ps_post_embed_is_video (bool): Whether the post is a video.
+       ps_post_data (str|discord.Embed): The message or embed to send.
+       ps_post_url (str): The URL of the post.
+
+   Returns:
+       discord.Message | None: The sent message, or None if not sent.
+   """
    is_ok_embed_data: bool = type(ps_post_data) == discord.Embed
    
    if not ps_post_embed_is_video and is_ok_embed_data:
@@ -959,7 +1364,16 @@ async def  final_send_special_ps(target_channel: discord.TextChannel, ps_post_em
    
    return sent_msg
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_special: bool = False) :
+async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_special: bool = False) -> int | None:
+   """
+   Sends a random quote or meme (or special event) to the target channel.
+
+   Args:
+       target_channel (discord.TextChannel, optional): The channel to send to. Defaults to None.
+       is_special (bool, optional): Whether to send a special event. Defaults to False.
+   Returns:
+       int | None: Special event type free Palestine '2', or None.
+   """
    from init_bot import wizy_feed_channels
    target_channel = ini.bot.get_channel(wizy_feed_channels[0]) #TODO: 1) read all channels from jason 2) assign channels for each server 3)cotinue edit the structure to work on multiple servers
 
@@ -1005,10 +1419,15 @@ async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_s
    # elif (for jokes and gaming news api) #TODO
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-class tracks_queue: #TODO
+class tracks_queue:
+   """
+   Class to manage music track queues for each guild.
+
+   Class Attributes:
+       guilds_connected_queues (dict): Maps guild IDs to lists of track paths.
+   """
    guilds_connected_queues: dict[ discord.Guild.id, list[str] ] = {}
    #TODO
-
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: this is voice player/downloder implementation taken from discord.py examples : https://github.com/Rapptz/discord.py/blob/master/examples/basic_voice.py
 # Suppress noise about console usage from errors
@@ -1034,7 +1453,20 @@ ffmpeg_options = {
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 class YTDLSource(discord.PCMVolumeTransformer):
+    """
+    A helper class for downloading and streaming audio from YouTube URLs using youtube_dl and FFmpeg.
+
+    Inherits from discord.PCMVolumeTransformer.
+    """
     def __init__(self, source, *, data, volume=0.5):
+        """
+        Initializes a YTDLSource instance.
+
+        Args:
+            source: The audio source.
+            data: Metadata about the audio.
+            volume (float, optional): The playback volume. Defaults to 0.5.
+        """
         super().__init__(source, volume)
 
         self.data = data
@@ -1043,7 +1475,18 @@ class YTDLSource(discord.PCMVolumeTransformer):
         self.url = data.get('url')
 
     @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
+    async def from_url(cls, url, *, loop=None, stream=False) -> Tuple:
+        """
+        Downloads or streams audio from a YouTube URL.
+
+        Args:
+            url (str): The YouTube URL.
+            loop: The event loop to use.
+            stream (bool, optional): Whether to stream instead of download. Defaults to False.
+
+        Returns:
+            tuple: (YTDLSource instance, filename)
+        """
         loop = loop or aio.get_event_loop()
         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
 
@@ -1071,27 +1514,27 @@ async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int, 
    special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
    start, stop = 1, 0
    if state is None:
-      await ini.bot.toggle_auto_memequote_sender_state(state = start) if ini.bot.is_auto_memequote_state == 0 else await ini.bot.toggle_auto_memequote_sender_state(state= stop)
+      await ini.bot.change_auto_memequote_sender_state(state = start) if ini.bot.auto_memequote_state == 0 else await ini.bot.change_auto_memequote_sender_state(state= stop)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
    elif state == 0:
-      await ini.bot.toggle_auto_memequote_sender_state(state = stop) 
+      await ini.bot.change_auto_memequote_sender_state(state = stop) 
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
       
    elif state == 1:
-      await ini.bot.toggle_auto_memequote_sender_state(state = start)
+      await ini.bot.change_auto_memequote_sender_state(state = start)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.is_auto_memequote_state != 0 else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
+                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.auto_memequote_state != 0 else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
                   )
       
    elif state >= special_event: #special events has value >= 2
-      await ini.bot.toggle_auto_memequote_sender_state(state = special_event) 
+      await ini.bot.change_auto_memequote_sender_state(state = special_event) 
       await ctx.reply(
                   delete_after= 15.0,
                   content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}` & `frequency: post/{_interval_minutes / 60.0}hour` "
@@ -1135,15 +1578,27 @@ async def process_send_quotesz_cmd(ctx: ini.commands.context, _quote_sz: str, _q
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def process_send_change_wizy_ai_cmd(ctx: ini.commands.context, _ai_name:str):
-   ai_models = ['gpt','gemini', 'deep']
+   ai_models = ini.bot.wizy_chat_ch_ai_types
    if _ai_name == None or _ai_name not in ai_models :
       await ctx.message.delete(delay= 15)
-      await ctx.reply(f"Ops! you must choose a valid AI model: `{' , '.join(ai_models)}`. *current model is `{ini.bot.wizy_chat_ch_ai_type}`*", delete_after= 15)
+      await ctx.reply(f"Ops! you must choose a valid AI model: `{' , '.join(ai_models)}`. *current model is `{ini.bot.default_wizy_chat_ch_ai_type}`*", delete_after= 15)
       ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
    else:
-      ini.bot.wizy_chat_ch_ai_type = _ai_name
+      ini.bot.default_wizy_chat_ch_ai_type = _ai_name
       await ctx.message.delete(delay= 15)
       await ctx.reply(f"Wizard AI Chat Channel model Has been set to:  `{_ai_name}`!", delete_after= 15)
+      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+#------------------------------------------------------------------------------------------------------------------------------------------#
+async def process_send_change_wizy_music_genre_cmd(ctx: ini.commands.context, _genre_name:str):
+   tracks_types = list(ini.bot.auto_played_tracks.keys())
+   if _genre_name == None or _genre_name not in tracks_types :
+      await ctx.message.delete(delay= 15)
+      await ctx.reply(f"Ops! you must choose an available music genre: `{' / '.join(tracks_types)}`. *current genre is `{ini.bot.default_auto_played_track_type}`*", delete_after= 15)
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+   else:
+      ini.bot.default_auto_played_track_type = _genre_name
+      await ctx.message.delete(delay= 15)
+      await ctx.reply(f"Wizard Auto Played Music Genre Has been set to:  `{_genre_name}`!", delete_after= 15)
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
    
