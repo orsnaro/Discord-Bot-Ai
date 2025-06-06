@@ -3,7 +3,7 @@
 [![Deploy-workflow-status](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/home-server-actions.yml/badge.svg?branch=production-Home-Server)](https://github.com/orsnaro/Discord-Bot-Ai/actions/workflows/home-server-actions.yml)
 
 
-# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2Fors.strangled.net%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](https://ors.strangled.net/pokeWizy)
+# __Discord Bot Project (Wizard GPTeous)__  [![Bot Status](https://img.shields.io/website?url=http%3A%2F%2Fors.strangled.net%2FpokeWizy&logo=ubuntu&logoColor=white&label=Bot%20Status&labelColor=%23E95420)](https://ors.strangled.net/wizy-status)
 
 
 
@@ -14,49 +14,57 @@
 ---
 
 
-> ## Officially [`2.5.6B`](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.6B) is out 🧙‍♂️🎊!
+> ## Officially [`2.5.7B`](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.7B) is out 🧙‍♂️🎊!
 
 
 <details>
-<summary><em>  ✨Patch (2.5.6B) notes </em> </summary>
+<summary><em>  ✨Patch (2.5.7B) detailed notes </em> </summary>
 
 * now wizy  lives on a home server running ♾️
+
 * now wizy  supports partially DeepSeek R1 AI model 🐳
-* and more! **Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/V2.5.5B...V2.5.6B
+
 * ||AND ALOT OF BEHIND THE SCENES WORK ON THE linux HOSTING SERVER and ITS CI/CD !||
+
+* **✨New Content✨**: Now Wizy auto played tracks  library is heavily enhanced with more than 60hour of  local content  on Narol's local server+ Holy quran💖
+
+* **✨New command✨**: You can switch the auto played tracks genre via `/wizymusicgenre` command  genres:  (`lofi`, `mmochill`, `holyquran`, orsmix, `mmoanime`) 
+
+*  **✨New Feature✨**: Now Wizy voice channels is more usefull e.g.(`🧙🎶 Wizy-Chill`): Wizy will  swiftly auto join the channel and  also start playing whenever any one joins his channel ! he is old but still very active.
+
+* All methods/classes/coroutines is Documented via a docstring 
+
+* Refactored `CustomBot` class
+
+* Now command checks for admin perms/roles works better with most servers, not only Narol's island server!
+
+* Some minor bugs/typoes fixed
+
+* enhanced some commands error handling in `commands_bot.py`
+
+* Bump h11 from 0.14.0 to 0.16.0 by @dependabot in https://github.com/orsnaro/Discord-Bot-Ai/pull/23
+
+<br>
+<br>
+
+**Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/V2.5.6B...v2.5.7B
+>>>>>>> master
 </details>
 
+## Main Changes✨🧙‍♂️   
       
+* **✨New Content✨**: Now Wizy auto played tracks  library is heavily enhanced with more than 60hour of  local content  on Narol's local server+ Holy quran💖
       
-  
- * now Finally you can use Chat GPT for free via our wizy bot -_[video](https://youtu.be/8Je6Pb5EYmI)_- in discord (you are also free to choose between `gpt` or `bard` though bard's API isn't stable at all!)
-     
- * now understands your arabic messages! 
-
- * now can enjoy Mighty GPTeuos memes using `/BoringWizard` command
- 
- * now all bot commands work in slash commands menu! as well as classic commands style
-
- * now can enjoy Mighty GPTeuos memes using `/BoringWizard` command
-
- * now can learn for the Wisest on [Discord's Lands](https://discord.com/invite/Y23B7R3FPq) using `/WiseWiz` command
-
- * now chat mode is live! get Wizy DeepSeeker answers in [`🟢🧙Ask-the-Wizard Channel`](https://discord.gg/ptAVHmrtJX)
-
- * now Bot sends random quotes and memes multiple times a day
-
- * now bot has basic voice commands e.g.(`/wizyjoin`/`/wizyleave`) commands
-
-
+* **✨New command✨**: You can switch the auto played tracks genre via `/wizymusicgenre` command  genres:  (`lofi`, `mmochill`, `holyquran`, orsmix, `mmoanime`) 
+      
+*  **✨New Feature✨**: Now Wizy voice channels is more usefull e.g.(`🧙🎶 Wizy-Chill`): Wizy will  swiftly auto join the channel and  also start playing whenever any one joins his channel ! he is old but still very active.
 * and more! (just type `/help`) 
-
- </details>
  
 > [!IMPORTANT]  
-> #### NEW release is out ( patch `V2.5.6B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
+> #### NEW release is out ( patch `V2.5.7B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
 
 > [!IMPORTANT]  
-> #### Now Bot is hosted on AWS EC2 servers(🔴)! [AWS-branch](https://github.com/orsnaro/Discord-Bot-Ai/blob/production-AWS)
+> #### Now Bot is hosted on Local orsnaro home servers(🔴)! [Home-Server-branch](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-Home-Server)
 ---
 
 
