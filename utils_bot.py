@@ -434,6 +434,7 @@ async def handle_wizy_free_timer(guilds: list[discord.Guild] , guilds_free_timer
        increment_value_sec (int): Number of seconds to increment the timer by.
        threshold_sec (int): Threshold in seconds after which to take action.
    """
+
    for guild in guilds:
          if guild.id in guilds_free_timers:
             # check happens once every 5 secs so increment every time by 5 secs
@@ -453,19 +454,15 @@ async def handle_wizy_free_timer(guilds: list[discord.Guild] , guilds_free_timer
                      await guild.voice_client.resume() if guild.voice_client.is_paused() else await play_chill_track(guild)
                   else:
                      #TESTING
-                     print("\n\n\n\n\n\n TESTING########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\n######################\n\n\n\n")
+                     print("\n\n\n\n\n\n ##########################TESTING########################## \n\n\n\n\n there is only the bot in voice channel: don't start track... \n\n\n\n\n\n######################\n\n\n\n")
                      #TESTING
                      
                   guilds_free_timers[guild.id] = 0
             else :
-               #TESTING
-               bot_master: discord.User = ini.bot.get_user(Configs.config_json_dict["bot_master_id"])
-               master_dm_ch: discord.DMChannel = bot_master.dm_channel or await ini.bot.create_dm(bot_master) # if dm channel is none will create new dm (shortcut)
-               master_dm_ch.send(f"\n\n\n\n\n\n TESTING########################## \n\n\n\n\n did I get the wizy playing status right? guild.voice_client.is_playing():{ini.bot.fetch_guild(797143628215877672).voice_client.is_playing()}")
-               #TESTING
                guilds_free_timers[guild.id] = 0
          else:
             guilds_free_timers[guild.id] = 0
+
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def control_auto_memequote_task(memequote_state_old: int, memequote_task: callable) -> int:
    """
