@@ -162,7 +162,6 @@ class CustomBot(commands.Bot):
       await util.fill_bot_counters_n_timers()
       print(f"\n\n Bot '{self.user}' Sucessfully connected to Discord!\n\n")
 
-
    @tasks.loop(seconds= 10, count= 1) #do once
    async def load_cfg(self):
       """
@@ -200,7 +199,7 @@ class CustomBot(commands.Bot):
       This task runs every 5 seconds to check if the bot is alone in voice
       channels and should resume playing chill music.
       """
-      util.handle_wizy_free_timer(self.guilds, self.guilds_not_playing_timer, self.alone_increment_val_sec, self.wizy_alone_threshold_sec)
+      await util.handle_wizy_free_timer(self.guilds, self.guilds_not_playing_timer, self.alone_increment_val_sec, self.wizy_alone_threshold_sec)
 
    @resume_chill_if_free.before_loop
    async def wait_bot_ready(self):
