@@ -118,7 +118,7 @@ async def on_voice_state_update(member: discord.Member, before: discord.VoiceSta
        - Disconnects from any current voice channel before connecting to the new one
        - Plays a chill track after connecting
    """
-   is_wizy_voice_ch = after.channel.id in wizy_voice_channels #if member voice state change is due to joining a voice ch and the voice channel entered is wizy ch
+   is_wizy_voice_ch = after.channel.id in wizy_voice_channels if after.channel.id != None else False #if member voice state change is due to joining a voice ch and the voice channel entered is wizy ch
    is_ok_connect_bot_to_wizy_ch = await util.can_pull_wizy(member, is_wizy_voice_ch)
 
    if is_ok_connect_bot_to_wizy_ch:
