@@ -5,7 +5,10 @@ import discord
 import random2
 from utils_bot import extract_post_info, prepare_special
 
-
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Accept': 'application/json'  # Explicitly asking for JSON response
+}       
 
 async def pyrandmeme2(_title: str = "Random meme") -> discord.Embed:
     """
@@ -19,10 +22,10 @@ async def pyrandmeme2(_title: str = "Random meme") -> discord.Embed:
     """
     pymeme = discord.Embed(title=_title, description="gpteous finds this funny", color=0xe91e63)
     async with aiohttp.ClientSession() as cs:
-        async with cs.get('https://www.reddit.com/r/memes/new.json?sort=hot') as r:
+        async with cs.get('https://www.reddit.com/r/memes/new.json?sort=hot', headers= headers) as r:
             res = await r.json()
             sz = len(res['data']['children'])
-            
+
             #TESTING BLOCK
             print(f"\n\###########invoked pyrandmeme2.py: reddit memes list size : {sz}#########\n")
             #TESTING BLOCK
@@ -46,7 +49,7 @@ async def palestina_free( _title : str = ":flag_ps: OPEN YOUR EYES & WATCH! :fla
     """
     #NOTE: for way simpler logic just make them all normal messages not embedded discord messages
     async with aiohttp.ClientSession() as cs:
-        async with cs.get('https://www.reddit.com/r/Palestine/new.json?sort=hot') as r:
+        async with cs.get('https://www.reddit.com/r/Palestine/new.json?sort=hot', headers= headers) as r:
             res = await r.json()
             sz = len(res['data']['children'])
             
