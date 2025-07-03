@@ -25,7 +25,7 @@ from random_word import RandomWords
 from datetime import datetime
 import re
 import pytz
-# import asyncforismatic.asyncforismatic as foris
+import asyncforismatic.asyncforismatic as foris
 import logging
 import contextlib
 import os
