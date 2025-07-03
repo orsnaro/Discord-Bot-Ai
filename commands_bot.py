@@ -397,12 +397,13 @@ async def deepSeek (ctx : commands.Context, * , full_prompt:str ): #(search keyw
       try:
          user_msg = ctx.message
          ask_deepSeek_task = bot.loop.create_task(ask_deepSeek(full_prompt, user= ctx.author, is_wizy_ch= False))
-
+         ctx.interaction or await user_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+         
          if str(ctx.author.id) not in  util.UserAiQuery.chats_ai_dict:
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message,  content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
             
-         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Ah I see! Searching Scrolls Labyrinth for  your scroll: ** \n \n `{full_prompt}` ..."))
+         send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= f"**Ah I see! Searching Scrolls Labyrinth for  your scroll: ** \n \n `{full_prompt}` ...", delete_after= 15))
          await send_initMsg_task
 
          task_response: tuple(str, str) = await ask_deepSeek_task
@@ -454,14 +455,15 @@ async def ChatDeepSeekfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY 
 
          user_msg = ctx.message
          ask_deepSeek_task = bot.loop.create_task(ask_deepSeek(full_prompt, user= ctx.author, is_wizy_ch= False ))
+         ctx.interaction or await user_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 
          if str(ctx.author.id) not in  util.UserAiQuery.chats_ai_dict:
             send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**"+get_rand_greeting(ctx.author.display_name)+"**" ))
             await send_initMsg_task
          else:
-            send_initMsg_task = bot.loop.create_task(ctx.send(reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**", delete_after= 15 ))
+            send_initMsg_task = bot.loop.create_task(ctx.send( reference= ctx.message, content= "**Searching Ancient Scrolls for you!...**", delete_after= 15 ))
             await send_initMsg_task
-
+            
          task_response : tuple = await ask_deepSeek_task
          embed = prepare_discord_embed(task_response, is_reply= valid_reply[0], is_gemini= False)
 
