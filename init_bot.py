@@ -1,6 +1,6 @@
 """
                           Coder : Omar
-                          Version : v2.5.7B
+                          Version : v2.5.8B
                           version Date :  6 / 06 / 2025
                           Code Type : python | Discrod | GEMINI | GPT | DEEPSEEK | HTTP | ASYNC
                           Title : Initialization of Discord Bot
