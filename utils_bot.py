@@ -515,10 +515,10 @@ async def can_pull_wizy(member: discord.Member, is_wizy_voice_ch: bool) -> bool:
    print(f"\n\n\n\n\n\nTESTING is_wizy_voice_ch: {is_wizy_voice_ch}")
    #TESTING
    if is_wizy_voice_ch:
-      if is_admin: #no other condition needed BOT MUST CONNECT NOW to wizy voice channel and play chill mmo or lofi 
+      if is_admin: #no other condition needed BOT MUST CONNECT NOW to wizy voice channel and start playing  
          is_ok_connect_bot_to_wizy_ch = True
       else: #not admin
-         if await member.guild.voice_client is None: #safe to pull wizy to his wizy ch  no on is annoyed
+         if await member.guild.voice_client is None: #safe to pull wizy to his wizy ch  no one is annoyed
             is_ok_connect_bot_to_wizy_ch = True
          else: #pull wizy to his wizy ch when he is connected to another one *ONLY* when he is alone in that ch for enough time!
             secs_until_threshold = ini.bot.wizy_alone_threshold_sec - ini.bot.guilds_not_playing_timer[member.guild.id] 
