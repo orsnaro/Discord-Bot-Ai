@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.8B
-                          version Date :  14 / 09 / 2025
+                          Version : v2.5.9B
+                          version Date :  15 / 09 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : main code for Discord Bot (with generative AI)
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
