@@ -1,7 +1,7 @@
 """
                           Coder : Omar
                           Version : v2.5.8B
-                          version Date :  6 / 06 / 2025
+                          version Date :  14 / 09 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
