@@ -15,11 +15,11 @@
 ---
 
 
-> ## Officially [`2.5.7B`](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/V2.5.7B) is out 🧙‍♂️🎊!
+> ## Officially [`2.5.10B`](https://github.com/orsnaro/Discord-Bot-Ai/releases/tag/v2.5.10B) is out 🧙‍♂️🎊!
 
 
 <details>
-<summary><em>  ✨Patch (2.5.7B) detailed notes </em> </summary>
+<summary><em>  ✨Patch (2.5.8B -> 2.5.10B) detailed notes </em> </summary>
 
 * now wizy  lives on a home server running ♾️
 
@@ -28,41 +28,46 @@
 * ||AND ALOT OF BEHIND THE SCENES WORK ON THE linux HOSTING SERVER and ITS CI/CD !||
 
 * **✨New Content✨**: Now Wizy auto played tracks  library is heavily enhanced with more than 60hour of  local content  on Narol's local server+ Holy quran💖
+* 
+## Release v2.5.10B - Docstring Improvements ✨ and Minor Refinements 🛠️
 
-* **✨New command✨**: You can switch the auto played tracks genre via `/wizymusicgenre` command  genres:  (`lofi`, `mmochill`, `holyquran`, orsmix, `mmoanime`) 
+This release focuses on improving code documentation 📚 and includes several minor bug fixes 🐛 and feature enhancements 🚀.
 
-*  **✨New Feature✨**: Now Wizy voice channels is more usefull e.g.(`🧙🎶 Wizy-Chill`): Wizy will  swiftly auto join the channel and  also start playing whenever any one joins his channel ! he is old but still very active.
+### New Features & Improvements:
+- **Enhanced Docstring Coverage:** Added comprehensive docstrings to several utility functions in `utils_bot.py` (`process_send_togglerandom_cmd`, `process_send_quotesz_cmd`, `process_send_change_wizy_ai_cmd`, `process_send_change_wizy_music_genre_cmd`) for better code clarity and maintainability. 📝
+- **Dynamic Meme/Quote Frequency:** The bot's automatic meme and quote sender now dynamically updates its frequency, allowing for more flexible scheduling. ⏰
+- **Improved Error Handling Naming:** Renamed AI command error handlers in `commands_bot.py` (e.g., `gpt` to `gpt_error`) for clearer identification and debugging. 🐛➡️✨
 
-* All methods/classes/coroutines is Documented via a docstring 
+### Bug Fixes:
+- Corrected an issue in `utils_bot.py` where the `handle_wizy_free_timer` message displayed an incorrect time unit. 🐞
+- Resolved a potential `None` state issue in `change_auto_memequote_sender_state` within `init_bot.py`. 🚫
+- **Fixed Feed Channel Posting:** Addressed an issue where posts were not being sent in the feed channel when transitioning from a special event mode to a normal state (state 1). ✅
 
-* Refactored `CustomBot` class
-
-* Now command checks for admin perms/roles works better with most servers, not only Narol's island server!
-
-* Some minor bugs/typoes fixed
-
-* enhanced some commands error handling in `commands_bot.py`
-
-* Bump h11 from 0.14.0 to 0.16.0 by @dependabot in https://github.com/orsnaro/Discord-Bot-Ai/pull/23
+### Other Changes:
+- Updated version numbers across relevant files to `v2.5.10B`. ⬆️
+- Adjusted the default feed channel frequency in `init_bot.py` from 360 minutes to 120 minutes. ⏱️
+- Refactored `control_auto_memequote_task` in `utils_bot.py` for improved state management. ⚙️
 
 <br>
 <br>
 
+<<<<<<< HEAD
 **Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/V2.5.6B...v2.5.7B
+>>>>>>> master
+=======
+**Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/v2.5.7B...v2.5.10B
 >>>>>>> master
 </details>
 
 ## Main Changes✨🧙‍♂️   
       
-* **✨New Content✨**: Now Wizy auto played tracks  library is heavily enhanced with more than 60hour of  local content  on Narol's local server+ Holy quran💖
-      
-* **✨New command✨**: You can switch the auto played tracks genre via `/wizymusicgenre` command  genres:  (`lofi`, `mmochill`, `holyquran`, orsmix, `mmoanime`) 
-      
-*  **✨New Feature✨**: Now Wizy voice channels is more usefull e.g.(`🧙🎶 Wizy-Chill`): Wizy will  swiftly auto join the channel and  also start playing whenever any one joins his channel ! he is old but still very active.
-* and more! (just type `/help`) 
- 
+*   **Discord.py Library Update:** Upgraded `discord.py` from v2.3.2 to v2.6.3, addressing various underlying issues and improving overall bot performance and stability, especially concerning voice functionalities.
+*   **Enhanced Docstring Coverage:** Added comprehensive docstrings to several utility functions in `utils_bot.py` for better code clarity and maintainability. 📝
+*   **Wizydeep Command Enhancements:** The `wizydeep` command now automatically deletes "searching" messages after a certain time and adds a reaction to the command message for better user feedback.
+*   **Improved Meme/Quote Sender Control:** Refinements to the automatic meme and quote sender, including dynamic frequency updates and more robust state management. ⏰
+
 > [!IMPORTANT]  
-> #### NEW release is out ( patch `V2.5.7B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
+> #### NEW release is out ( patch `V2.5.10B`  )! [Latest Release Notes](https://github.com/orsnaro/Discord-Bot-Ai/releases/latest)
 
 > [!IMPORTANT]  
 > #### Now Bot is hosted on Local orsnaro home servers(🔴)! [Home-Server-branch](https://github.com/orsnaro/Discord-Bot-Ai/tree/production-Home-Server)
