@@ -139,7 +139,7 @@ async def toggle_rand_meme_quote_sender( ctx: commands.Context, state: int = Non
                   content=f"Ops! __*only*__ _{' , '.join(map(lambda id : '<@&' + str(id) + '>' , allowed_ids))}_ or ADMINS! are allowed to use this command..."
                   ) #used a join and map and lambda function just as fast fancy way to print all allowed roles
    else:
-      await util.process_send_togglerandom_cmd(ctx= ctx, _state= state, _interval_minutes = interval_minutes)
+      await util.process_send_togglerandom_cmd(ctx= ctx, _state_wanted= state, _interval_minutes = interval_minutes)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name="wizyaimode", help= "choose between generative AI models used in wizy's chat channel: gpt / gemini / deep")
 @commands.cooldown(1, 5)
@@ -362,7 +362,7 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
             ctx.message.delete(delay= 15)
             bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 @gpt.error
-async def gpt(ctx: commands.Context , error):
+async def gpt_error(ctx: commands.Context , error):
    print (f'\n\nTESTING#################E R R O R: {error}')
    if isinstance(error , commands.HybridCommandError):
       allowed_ids = list(allowed_roles_quotesz.values())
@@ -416,7 +416,7 @@ async def deepSeek (ctx : commands.Context, * , full_prompt:str ): #(search keyw
             ctx.message.delete(delay= 15)
             bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 @deepSeek.error
-async def deepSeek(ctx: commands.Context , error):
+async def deepSeek_error(ctx: commands.Context , error):
    print (f'\n\nTESTING#################E R R O R: {error}')
    if isinstance(error , commands.HybridCommandError):
       allowed_ids = list(allowed_roles_quotesz.values())
@@ -516,7 +516,7 @@ async def ChatDeepSeekfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY 
 #    # 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
 #    # 	await send_img_msg_task
 @ChatDeepSeekfast.error
-async def ChatDeepSeekfast(ctx: commands.Context , error):
+async def ChatDeepSeekfast_error(ctx: commands.Context , error):
    print (f'\n\nTESTING#################E R R O R: {error}')
    if isinstance(error , commands.CommandError):
       allowed_ids = list(allowed_roles_quotesz.values())
@@ -574,7 +574,7 @@ async def geminiAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT
    # 	send_img_msg_task = bot.loop.create_task(ctx.send(reference= returned_msg , embeds= img_embds) )#if error replace display_name with name
    # 	await send_img_msg_task
 @geminiAI.error
-async def geminiAI(ctx: commands.Context , error):
+async def geminiAI_error(ctx: commands.Context , error):
    print (f'\n\nTESTING#################E R R O R: {error}')
    if isinstance(error , commands.HybridCommandError):
       allowed_ids = list(allowed_roles_quotesz.values())
