@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.9B
-                          version Date :  15 / 09 / 2025
+                          Version : v2.5.10B
+                          version Date :  27 / 10 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
@@ -449,7 +449,7 @@ async def handle_wizy_free_timer(guilds: list[discord.Guild] , guilds_free_timer
                   #if there is any user in channel besides wizy the bot play chill music else nothing 
                   connected_users_cnt = len( guild.voice_client.channel.members ) - 1
                   if connected_users_cnt >= 1 :
-                     await guild.voice_client.channel.send("*3+ minutes of Silence:pleading_face: resuming* **Chilling Track** ...")
+                     await guild.voice_client.channel.send(f"*{threshold_sec/60.0}+ minutes of Silence:pleading_face: resuming* **Chilling Track** ...")
                      
                      await guild.voice_client.resume() if guild.voice_client.is_paused() else await play_chill_track(guild)
                   else:
@@ -464,37 +464,29 @@ async def handle_wizy_free_timer(guilds: list[discord.Guild] , guilds_free_timer
             guilds_free_timers[guild.id] = 0
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def control_auto_memequote_task(memequote_state_old: int, memequote_task: callable) -> int:
+async def control_auto_memequote_task(memequote_state_old: int, memequote_state_new: int,  memequote_task: callable) -> int:
    """
    Controls the auto meme/quote task based on its current state.
 
    Args:
        memequote_state_old (int): The previous state of the meme/quote task.
+       memequote_state_new (int): The new state of the meme/quote task to be set.
        memequote_task (callable): The task to control.
 
    Returns:
        int: The new state of the meme/quote task.
    """
-   new_state = None;   
-   if memequote_state_old is None: 
-      if new_state > 0 :
-         memequote_task.cancel()
-         new_state = 0
-      else:
-         memequote_task.start()
-         new_state = 1
-   elif memequote_state_old == 0:
+   if memequote_state_old == 0:
       if memequote_task.is_running():
-         memequote_task.cancel()
-         new_state = 0
+         await_me_maybe(memequote_task.stop()) #safer than .cancel() awaits last iteration to finish!
    elif memequote_state_old == 1:
       if not memequote_task.is_running():
-         memequote_task.start()
-         new_state = 1
-   elif memequote_state_old == 2: #special eventof type: FREE Palestine!
-         new_state = 2
-
-
+         await_me_maybe(memequote_task.start())
+   elif memequote_state_old >= 2: #special eventof type: FREE Palestine!(2) or else
+      if not memequote_task.is_running():
+         await_me_maybe(memequote_task.start())
+   
+   new_state = memequote_state_new 
    return new_state
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def can_pull_wizy(member: discord.Member, is_wizy_voice_ch: bool) -> bool:
@@ -1384,7 +1376,9 @@ async def send_rand_quote_meme(target_channel : discord.TextChannel = None, is_s
    print("\ntime NOW", ini.datetime.now() )
    print(f"\n\n")
 
-   if is_special : #special event (experimental) 
+   if is_special : 
+      #TODO: later expand this if branch to handle multiple different special events other than FREE PALESTINE
+      
       print(f"\n#####bot CHOICE IS FREE PALESTINE!\n")#TESTING
       ps_post_get_task = await ini.bot.loop.create_task(ini.palestina_free())
       await aio.sleep(3)
@@ -1496,51 +1490,69 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(song, **ffmpeg_options), data=data) , filename
 
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state: int, _interval_minutes: int):
+async def process_send_togglerandom_cmd(ctx: ini.commands.Context, _state_wanted: int, _interval_minutes: int):
+   """
+   Toggles the random meme/quote sender and sets its frequency.
+
+   Args:
+       ctx (ini.commands.Context): The command context.
+       _state_wanted (int): The desired state (0 for off, 1 for on, >=2 for special event).
+       _interval_minutes (int): The interval in minutes for sending memes/quotes.
+   """
    
-   #incase we received it as numeric string value 
+   #in-case we received it as numeric string value 
    _interval_minutes = int(_interval_minutes) 
    
    
    #only change if not same as current frequency
    current_post_freq = int(ini.bot.auto_memequote_sender_task.minutes)
    if _interval_minutes != current_post_freq:
-      await ini.bot.set_memequote_sender_frequency(_interval_minutes)
+      updated_interval_minutes = await ini.bot.set_memequote_sender_frequency(_interval_minutes)
    
-   state = None if _state is None else int(_state)
-   special_event = 2 #specially made 2 switch memes and quotes to post on palestine only (and for any special events later on)
+   state_wanted = None if _state_wanted is None else int(_state_wanted)
+   old_state = ini.bot.auto_memequote_state
+   special_event = 2 #specially made to switch memes and quotes to post on palestine only (and for any special events later on)
    start, stop = 1, 0
-   if state is None:
-      await ini.bot.change_auto_memequote_sender_state(state = start) if ini.bot.auto_memequote_state == 0 else await ini.bot.change_auto_memequote_sender_state(state= stop)
+   if state_wanted is None:
+      await ini.bot.change_auto_memequote_sender_state(state = start) if old_state == 0 else await ini.bot.change_auto_memequote_sender_state(state= stop)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
+                  content=f"random memes & quotes feature is {'`Enabled`' if old_state != 0  else '`Disabled`' } & frequency is `post/{updated_interval_minutes / 60.0}hour` "
                   )
-   elif state == 0:
+   elif state_wanted  == 0:
       await ini.bot.change_auto_memequote_sender_state(state = stop) 
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.auto_memequote_state != 0  else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
+                  content=f"random memes & quotes feature is {'`Enabled`' if old_state != 0  else '`Disabled`' } & frequency is `post/{updated_interval_minutes / 60.0}hour` "
                   )
       
-   elif state == 1:
+   elif state_wanted == 1:
       await ini.bot.change_auto_memequote_sender_state(state = start)
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is {'`Enabled`' if ini.bot.auto_memequote_state != 0 else '`Disabled`' } & frequency is `post/{_interval_minutes / 60.0}hour` "
+                  content=f"random memes & quotes feature is {'`Enabled`' if old_state != 0 else '`Disabled`' } & frequency is `post/{updated_interval_minutes / 60.0}hour` "
                   )
       
-   elif state >= special_event: #special events has value >= 2
+   elif state_wanted >= special_event: #special events has value >= 2
       await ini.bot.change_auto_memequote_sender_state(state = special_event) 
       await ctx.reply(
                   delete_after= 15.0,
-                  content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}` & `frequency: post/{_interval_minutes / 60.0}hour` "
+                  content=f"random memes & quotes feature is on **special event mode**:  `special event id: {'Free Palestine!' if special_event == 2 else special_event}` & `frequency: post/{updated_interval_minutes / 60.0}hour` "
                   )
       
    await ctx.message.delete(delay= 15.0)
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def process_send_quotesz_cmd(ctx: ini.commands.context, _quote_sz: str, _quote_threshhold:int, _max_sz:int):
+   """
+   Processes the command to change the maximum size of quotes.
+
+   Args:
+       ctx (ini.commands.context): The command context.
+       _quote_sz (str): The desired maximum size of the quote.
+       _quote_threshhold (int): The current maximum size of the quote.
+       _max_sz (int): The absolute maximum size of the quote.
+   """
    max_quote_size = _max_sz
    
    if _quote_sz is None or len(_quote_sz) <= 0 :
@@ -1575,6 +1587,13 @@ async def process_send_quotesz_cmd(ctx: ini.commands.context, _quote_sz: str, _q
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def process_send_change_wizy_ai_cmd(ctx: ini.commands.context, _ai_name:str):
+   """
+   Processes the command to change the default AI model for the wizard chat channel.
+
+   Args:
+       ctx (ini.commands.context): The command context.
+       _ai_name (str): The name of the AI model to set as default.
+   """
    ai_models = ini.bot.wizy_chat_ch_ai_types
    if _ai_name == None or _ai_name not in ai_models :
       await ctx.message.delete(delay= 15)
@@ -1587,6 +1606,13 @@ async def process_send_change_wizy_ai_cmd(ctx: ini.commands.context, _ai_name:st
       ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def process_send_change_wizy_music_genre_cmd(ctx: ini.commands.context, _genre_name:str):
+   """
+   Processes the command to change the default music genre for the wizard.
+
+   Args:
+       ctx (ini.commands.context): The command context.
+       _genre_name (str): The name of the music genre to set as default.
+   """
    tracks_types = list(ini.bot.auto_played_tracks.keys())
    if _genre_name == None or _genre_name not in tracks_types :
       await ctx.message.delete(delay= 15)

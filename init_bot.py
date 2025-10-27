@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.9B
-                          version Date :  15 / 09 / 2025
+                          Version : v2.5.10B
+                          version Date :  27 / 10 / 2025
                           Code Type : python | Discrod | GEMINI | GPT | DEEPSEEK | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
@@ -93,7 +93,7 @@ narols_island_wizard_channel_id = 1118953370510696498
 testing_wizard_channel_id = 1133103993942462577
 wizy_chat_channels = [narols_island_wizard_channel_id , testing_wizard_channel_id]
 wizard_bot_id = 1117540489365827594
-default_feed_channel_frequency_minutes: int = 360
+default_feed_channel_frequency_minutes: int = 120 #2hours
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: in order to avoid on_ready() issues override Bot class and move all on ready to it's setup_hook()
  #TODO: cache wizy states per guild to save the expensive for/while loops in bot tasks that runs periodically to get some wizy timer and state for each guild each x minute || second !!
@@ -187,6 +187,7 @@ class CustomBot(commands.Bot):
       await target_dm_channel.send(full_dm_msg[1])  #send the rest of dm msg to bot master
             
    @send_master_dm_msg_on_init.before_loop
+
    async def wait_send_until_ready(self):
       await self.wait_until_ready()
    
@@ -206,7 +207,7 @@ class CustomBot(commands.Bot):
       await self.wait_until_ready()
    
 
-   @tasks.loop(minutes= default_feed_channel_frequency_minutes)#def= 2 hours
+   @tasks.loop(minutes= default_feed_channel_frequency_minutes)
    async def auto_memequote_sender_task(self):
       """
       Periodically sends random memes and quotes to feed channels.
@@ -214,7 +215,8 @@ class CustomBot(commands.Bot):
       This task runs at the configured interval to send random content
       to designated feed channels. Can operate in normal or special mode.
       """
-      await util.send_rand_quote_meme(is_special= True if self.auto_memequote_state >= 2 else False)
+      _is_special = True if self.auto_memequote_state >= 2 else False
+      await util.send_rand_quote_meme(is_special= _is_special)
 
    @auto_memequote_sender_task.before_loop
    async def before_start_auto_memequote_sender(self):
@@ -223,7 +225,7 @@ class CustomBot(commands.Bot):
       #TESTING
       await self.wait_until_ready()
 
-   async def set_memequote_sender_frequency(self, _interval_minutes: int = default_feed_channel_frequency_minutes ): 
+   async def set_memequote_sender_frequency(self, _interval_minutes: int = default_feed_channel_frequency_minutes ) -> int :
       """
       Updates the frequency of the auto meme/quote sender task.
       
@@ -231,8 +233,10 @@ class CustomBot(commands.Bot):
           _interval_minutes (int): New interval in minutes between sends
       """
       self.auto_memequote_sender_task.change_interval(minutes= _interval_minutes)
+      self.auto_memequote_sender_task.restart()
+      return self.auto_memequote_sender_task.minutes
 
-   async def change_auto_memequote_sender_state(self, state:int = None ) -> bool :
+   async def change_auto_memequote_sender_state(self, state: int) -> int :
       """
       Changes the state of the auto meme/quote sender.
       
@@ -242,8 +246,12 @@ class CustomBot(commands.Bot):
       Returns:
           bool: The new state of the auto meme/quote sender
       """
-      updated_state = util.control_auto_memequote_task(self.auto_memequote_state, self.auto_memequote_sender_task)
-      self.auto_memequote_state = updated_state   
+      if state is None: 
+         raise ValueError("ERROR!: state value in 'change_auto_memequote_sender_state()'  cannot be None!")
+      else:
+         updated_state = await util.control_auto_memequote_task(self.auto_memequote_state, state, self.auto_memequote_sender_task)
+         self.auto_memequote_state = updated_state   
+         
       return self.auto_memequote_state
 
    # @tasks.loop(seconds= 1)
