@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.9B
-                          version Date :  15 / 09 / 2025
+                          Version : v2.5.10B
+                          version Date :  27 / 10 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : #
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
