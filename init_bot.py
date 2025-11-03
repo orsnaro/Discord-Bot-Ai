@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.10B
-                          version Date :  27 / 10 / 2025
+                          Version : v2.5.11B
+                          version Date :  3 / 11 / 2025
                           Code Type : python | Discrod | GEMINI | GPT | DEEPSEEK | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
@@ -134,8 +134,8 @@ class CustomBot(commands.Bot):
       self.default_voice_channel: int = wizy_voice_channels[0] #TODO : later will 1) load all voice channels from json 2)assign each wizy voice channel for each server
       self.default_wizy_chat_ch_ai_type: str = 'deep'
       self.wizy_chat_ch_ai_types: list = ['gpt','gemini', 'deep'] 
-      self.default_auto_played_track_type: str = 'mmochill' #lofi | mmochill | mmo&anime | orsmix #TODO: make type per guild
-      self.auto_played_tracks: dict = {'lofi': "/lofi", 'mmochill': '/mmochill', 'mmoanime': '/mmoanime', 'orsmix': '/orsmix', 'holyquran': '/holyquran'}  #lofi | chillmmo | mmo | orsmix #TODO: make type per guild
+      self.default_auto_played_track_type: str = 'mmochill' #TODO: make type per guild
+      self.auto_played_tracks: dict = {'lofi': "/lofi", 'mmochill': '/mmochill', 'mmoanime': '/mmoanime', 'orsmix': '/orsmix', 'holyquran': '/holyquran', 'nostalgia': '/nostalgia'}  #TODO: make type per guild
       self.alone_increment_val_sec =5
       self.wizy_alone_threshold_sec = 300 #5 minutes
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
