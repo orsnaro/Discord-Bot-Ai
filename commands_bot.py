@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.10B
-                          version Date :  27 / 10 / 2025
+                          Version : v2.5.11B
+                          version Date :  3 / 11 / 2025
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Commands Code for Discord bot
                           Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
@@ -181,7 +181,7 @@ async def change_wizy_ai_type_error(ctx: commands.Context , error):
                   )
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.hybrid_command(name="wizymusicgenre", help= "choose between local available music genras: lofi / mmochill / mmoanime / orsmix")
+@bot.hybrid_command(name="wizymusicgenre", help= "choose between local available music genras: lofi / mmochill / mmoanime / orsmix / nostalgia")
 @commands.cooldown(1, 5)
 # @commands.check_any(commands.has_any_role(*list(allowed_roles_quotesz.values())), commands.has_permissions(administrator=True))
 async def change_wizy_music_genre( ctx: commands.Context, genre_name:str = None ):
@@ -190,12 +190,12 @@ async def change_wizy_music_genre( ctx: commands.Context, genre_name:str = None 
    
    This command allows users to switch between different music genres available
    in the bot's local collection. Available genres include lofi, mmochill,
-   mmoanime, and orsmix.
+   mmoanime, orsmix, nostalgia and holyquran.
    
    Args:
        ctx (commands.Context): The context of the command invocation.
        genre_name (str, optional): The name of the genre to switch to.
-           Must be one of: 'lofi', 'mmochill', 'mmoanime', 'orsmix'.
+           Must be one of: 'lofi', 'mmochill', 'mmoanime', 'orsmix', 'nostalgia', 'holyquran'.
            Defaults to None.
            
    Note:
