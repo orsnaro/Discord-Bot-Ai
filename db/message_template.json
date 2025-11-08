@@ -1,0 +1,23 @@
+{
+	"<msg_id>": {
+		"server_id": "<int>",
+		"channel": {
+			"id": "<int>",
+			"name": "<string>"
+		},
+		"sender": {
+			"name": "<string>",
+			"id": "<int>"
+		},
+		"content": {
+			"text": "<string?>",
+			"media": ["<string?>"],
+		},
+		"tags": ["<string?>"],
+		"time": {
+			"created_at": "<string>",
+			"deleted_at": "<string?>"
+		},
+		"is_deleted": false,
+	}
+}
