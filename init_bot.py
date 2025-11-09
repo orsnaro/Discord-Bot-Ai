@@ -312,6 +312,8 @@ def pre_boot_setup(_main_file: str):
    return log_std , log_discord
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
+is_production  = True if 'IS_PRODUCTION' in os.environ and os.environ['IS_PRODUCTION'] == '1' else False 
+#------------------------------------------------------------------------------------------------------------------------------------------#
 def boot_bot(main_file: str) :
    """
    Initializes and starts the Discord bot.
@@ -323,7 +325,7 @@ def boot_bot(main_file: str) :
        Handles different logging configurations based on production status.
    """
    log_std, log_discord = pre_boot_setup(main_file)
-   if 'IS_PRODUCTION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
+   if is_production:
       with contextlib.redirect_stdout(log_std):
          with contextlib.redirect_stderr(log_std):
             bot.run(keys.Token_gpteousBot , log_handler= log_discord, log_level= logging.INFO)#default logging level is info
