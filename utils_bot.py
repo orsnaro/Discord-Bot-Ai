@@ -44,7 +44,7 @@ async def await_me_maybe(value):
         value = await value
     return value
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def get_all_files(dir: str) -> list[str]:
+async def get_all_files(dir: str) -> list[str]:
    """
    Recursively gets all file paths in a directory and its subdirectories.
 
@@ -55,7 +55,7 @@ def get_all_files(dir: str) -> list[str]:
        list[str]: List of all file paths found in the directory and subdirectories.
    """
    all_paths = []
-   for root, dirs, files in ini.os.walk(dir):
+   async for root, dirs, files in ini.os.walk(dir):
       for file in files:
          rel_path = ini.os.path.join(root, file)
          all_paths += [rel_path]
@@ -87,7 +87,7 @@ async def play_chill_track(server: discord.Guild):
    tracks_root_dir: str = "./tracks"
    types_dirs: dict = ini.bot.auto_played_tracks
    chosen_type_dir: str = types_dirs[ini.bot.default_auto_played_track_type]
-   local_tracks: list[str] = get_all_files(dir= tracks_root_dir + chosen_type_dir)
+   local_tracks: list[str] = await get_all_files(dir= tracks_root_dir + chosen_type_dir)
    print("\n\n\n####TESTING\n\n\n ",local_tracks)#TESTING
    track_path = ini.random.choice(local_tracks)
    await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg", source=track_path)))

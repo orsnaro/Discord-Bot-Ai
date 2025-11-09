@@ -137,7 +137,7 @@ class CustomBot(commands.Bot):
       self.default_auto_played_track_type: str = 'mmochill' #TODO: make type per guild
       self.auto_played_tracks: dict = {'lofi': "/lofi", 'mmochill': '/mmochill', 'mmoanime': '/mmoanime', 'orsmix': '/orsmix', 'holyquran': '/holyquran', 'nostalgia': '/nostalgia'}  #TODO: make type per guild
       self.alone_increment_val_sec =5
-      self.wizy_alone_threshold_sec = 300 #5 minutes
+      self.wizy_alone_threshold_sec = 300 #5 minutes #TODO: each server can edit their threshold
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
       self.connected_to_wizy_voice_per_guild: dict[discord.guild.id, int] = {}
       self.resume_chill_if_free.start()
@@ -162,6 +162,7 @@ class CustomBot(commands.Bot):
       await util.fill_bot_counters_n_timers()
       print(f"\n\n Bot '{self.user}' Sucessfully connected to Discord!\n\n")
 
+   
    @tasks.loop(seconds= 10, count= 1) #do once
    async def load_cfg(self):
       """
