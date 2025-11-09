@@ -55,7 +55,7 @@ async def get_all_files(dir: str) -> list[str]:
        list[str]: List of all file paths found in the directory and subdirectories.
    """
    all_paths = []
-   for root, dirs, files in ini.os.walk(dir):
+   async for root, dirs, files in ini.os.walk(dir):
       for file in files:
          rel_path = ini.os.path.join(root, file)
          all_paths += [rel_path]
