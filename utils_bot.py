@@ -95,8 +95,8 @@ async def play_chill_track(server: discord.Guild):
    
    if ini.is_production:
       #NOTE: tracks are all  raw `.pcm` this file format is way bigger in size but removes ffmpeg tool overhead (I've pre-converted the tracks to .pcm)
-      raw_track = open(file= track_path, mode= "rb", buffering= 204800) 
-      source =  discord.PCMAudio(raw_track)# read in (204800bytes)200kb  chunks
+      raw_track = open(file= track_path, mode= "rb", buffering= 512_000) 
+      source =  discord.PCMAudio(raw_track)# read in (512,000bytes)512kb  chunks
    
    elif not ini.is_production:
       #NOTE: tracks are `.mp3` i.e. (NOT RAW) (more latency and CPU load)
