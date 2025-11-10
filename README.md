@@ -34,6 +34,7 @@ This release focuses on improving code documentation 📚 and includes several m
 - Corrected an issue in `utils_bot.py` where the `handle_wizy_free_timer` message displayed an incorrect time unit. 🐞
 - Resolved a potential `None` state issue in `change_auto_memequote_sender_state` within `init_bot.py`. 🚫
 - **Fixed Feed Channel Posting:** Addressed an issue where posts were not being sent in the feed channel when transitioning from a special event mode to a normal state (state 1). ✅
+- **Fixed Bot Voice streaming quality and bad latency issues :** wizy tracks Qualtiy heavily enhanced  🎧: pre-convert the mp3 tracks stream to  .pcm raw format and directly feed it to discord client instead of having the over head of running ffmpeg on demand! + configuring buffers, bandwidths and bitrated in both production and non-production(with ffmpeg) envs ✅
 
 ### Other Changes:
 - Updated version numbers across relevant files to `v2.5.10B`. ⬆️
@@ -43,7 +44,8 @@ This release focuses on improving code documentation 📚 and includes several m
 <br>
 <br>
 
-**Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/v2.5.7B...v2.5.10B
+**Full Changelog**: https://github.com/orsnaro/Discord-Bot-Ai/compare/v2.5.7B...70bbc4f
+
 </details>
 
 ## Main Changes✨🧙‍♂️   
