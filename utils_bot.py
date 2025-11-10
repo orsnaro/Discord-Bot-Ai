@@ -55,7 +55,7 @@ async def get_all_files(dir: str) -> list[str]:
        list[str]: List of all file paths found in the directory and subdirectories.
    """
    all_paths = []
-   async for root, dirs, files in ini.os.walk(dir):
+   for root, dirs, files in await aio.to_thread(ini.os.walk, dir):
       for file in files:
          rel_path = ini.os.path.join(root, file)
          all_paths += [rel_path]
@@ -84,15 +84,29 @@ async def play_chill_track(server: discord.Guild):
    Args:
        server (discord.Guild): The guild/server where the track should be played.
    """
-   tracks_root_dir: str = "./tracks"
+   tracks_root_dir: str = r"./tracks"
    types_dirs: dict = ini.bot.auto_played_tracks
    chosen_type_dir: str = types_dirs[ini.bot.default_auto_played_track_type]
    local_tracks: list[str] = await get_all_files(dir= tracks_root_dir + chosen_type_dir)
-   print("\n\n\n####TESTING\n\n\n ",local_tracks)#TESTING
+   print("\n\n\n####TESTING tracks\n\n\n ",local_tracks)#TESTING
    track_path = ini.random.choice(local_tracks)
-   await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg", source=track_path)))
+   track_path = track_path.replace("//", "/").replace("\\", "/")
+   print(f"\n\n\n####TESTING after slash  correction \n\n\n {track_path}")#TESTING
+   
+   if ini.is_production:
+      #NOTE: tracks are all  raw `.pcm` this file format is way bigger in size but removes ffmpeg tool overhead (I've pre-converted the tracks to .pcm)
+      raw_track = open(file= track_path, mode= "rb", buffering= 512_000) 
+      source =  discord.PCMAudio(raw_track)# read in (512,000bytes)512kb  chunks
+   
+   elif not ini.is_production:
+      #NOTE: tracks are `.mp3` i.e. (NOT RAW) (more latency and CPU load)
+      source =  discord.FFmpegPCMAudio(executable="ffmpeg", source=track_path, options="-vn -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 2  -buffer_size 512k")
+      
+   #see: https://discordpy.readthedocs.io/en/stable/api.html#discord.VoiceClient.play
+   server.voice_client.play(source= source, bitrate= 128, expected_packet_loss= 0.15, signal_type= 'music')
+   
 #------------------------------------------------------------------------------------------------------------------------------------------#
-async def sub_sections_msg_sending_ctrl (message : discord.Message , final_links_msg : str , lnk1_len : int , final_imgs_msg : str , lnks_flag = False , imgs_flag = True) :
+async def sub_sections_msg_sending_ctrl ( message : discord.Message, final_links_msg : str, lnk1_len : int, final_imgs_msg : str, lnks_flag = False, imgs_flag = True ) :
    """
    Controls the sending of message subsections (links and images) in Discord.
 
@@ -140,7 +154,7 @@ def supress_msg_body_url_embeds ( text : str ) -> str :
    return text
 #------------------------------------------------------------------------------------------------------------------------------------------#
 # TODO : join all prepare funcs in one class or control function
-async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : discord.Message , discord_msg_limit = 2000, is_gemini:bool = True) :
+async def prepare_send_wizard_channel_ans_msg( _response : tuple, message : discord.Message, discord_msg_limit = 2000,  is_gemini:bool = True) :
    """
    Prepares and sends a response message in the wizard channel, handling message fragmentation if needed.
 
@@ -267,7 +281,7 @@ async def prepare_send_wizard_channel_ans_msg( _response : tuple  , message : di
          await message.reply(content= full_response  , mention_author= True)
       
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def prepare_links_msg( _gemini_response : tuple , _links_limit : int = 5 , discord_msg_limit = 2000, is_gemini:bool = True) -> tuple[str, tuple, int] :
+def prepare_links_msg( _gemini_response : tuple, _links_limit : int = 5, discord_msg_limit = 2000, is_gemini:bool = True) -> tuple[str, tuple, int] :
    """
    Prepares a formatted message containing links from the AI response.
 
