@@ -44,7 +44,7 @@ async def await_me_maybe(value):
         value = await value
     return value
 #------------------------------------------------------------------------------------------------------------------------------------------#
-def get_all_files(dir: str) -> list[str]:
+async def get_all_files(dir: str) -> list[str]:
    """
    Recursively gets all file paths in a directory and its subdirectories.
 
@@ -55,7 +55,7 @@ def get_all_files(dir: str) -> list[str]:
        list[str]: List of all file paths found in the directory and subdirectories.
    """
    all_paths = []
-   for root, dirs, files in ini.os.walk(dir):
+   async for root, dirs, files in ini.os.walk(dir):
       for file in files:
          rel_path = ini.os.path.join(root, file)
          all_paths += [rel_path]
@@ -87,7 +87,7 @@ async def play_chill_track(server: discord.Guild):
    tracks_root_dir: str = "./tracks"
    types_dirs: dict = ini.bot.auto_played_tracks
    chosen_type_dir: str = types_dirs[ini.bot.default_auto_played_track_type]
-   local_tracks: list[str] = get_all_files(dir= tracks_root_dir + chosen_type_dir)
+   local_tracks: list[str] = await get_all_files(dir= tracks_root_dir + chosen_type_dir)
    print("\n\n\n####TESTING\n\n\n ",local_tracks)#TESTING
    track_path = ini.random.choice(local_tracks)
    await await_me_maybe(server.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg", source=track_path)))
@@ -415,14 +415,17 @@ async def fill_bot_counters_n_timers():
    Sets up voice channel member counts and not playing timers.
    """
    for guild in ini.bot.guilds:
-      #TODO: (could be better looping and less fetching from discord api also!)
+      #TODO: make use of the db 
       #we loop over all guilds wizy is in and we have list of voice channels we need to match each voice ch to its guild  , one guild per iteration
-      target_ch_id: list = [ch_id for ch_id in ini.wizy_voice_channels if guild.get_channel_or_thread(ch_id) != None] 
+      target_ch_ids: list = [ch_id for ch_id in ini.wizy_voice_channels if guild.get_channel_or_thread(ch_id) != None] 
 
-      if len(target_ch_id) > 0:
-         target_voice_ch: discord.VoiceChannel = ini.bot.get_channel(target_ch_id[0])
-         ini.bot.connected_to_wizy_voice_per_guild[guild.id] = len(target_voice_ch.members)
+      if len(target_ch_ids) > 0:
+         target_voice_ch: discord.VoiceChannel = ini.bot.get_channel(target_ch_ids[0])
+         ini.bot.connected_to_wizy_voice_per_guild[guild.id] = len(target_voice_ch.members)  
+         
       ini.bot.guilds_not_playing_timer[guild.id] = 0
+      #NOTE: a guild present in the keys of those dicts after method finihes doesnt mean it has  a created voice channel 
+      # (our db will keep track of this)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def handle_wizy_free_timer(guilds: list[discord.Guild] , guilds_free_timers: dict[int, int], increment_value_sec: int, threshold_sec: int) -> None:
    """

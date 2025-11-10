@@ -1,5 +1,6 @@
 {
 	"<msg_id>": {
+		"url": "<url>",
 		"server_id": "<int>",
 		"channel": {
 			"id": "<int>",
@@ -11,13 +12,13 @@
 		},
 		"content": {
 			"text": "<string?>",
-			"media": ["<string?>"],
+			"media": ["<string?>"]
 		},
 		"tags": ["<string?>"],
 		"time": {
 			"created_at": "<string>",
 			"deleted_at": "<string?>"
 		},
-		"is_deleted": false,
+		"is_deleted": false
 	}
 }
