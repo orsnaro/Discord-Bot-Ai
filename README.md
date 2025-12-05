@@ -11,6 +11,7 @@
 
 ![wizy image](./wizard_bot.ico "icon") 
 
+
 ---
 
 
@@ -208,8 +209,15 @@ when user reacts on a wizy message wizy responds depending on category of emoji 
 
 
  </details> 
- 
 
+
+</br>
+</br>
+</br>
+
+
+> ## 📽️ Watch The Video!
+[![Watch the video](https://img.youtube.com/vi/XBL0okHyTwM/maxresdefault.jpg)](https://youtu.be/XBL0okHyTwM)
 
 
 

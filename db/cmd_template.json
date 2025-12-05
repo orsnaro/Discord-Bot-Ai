@@ -3,6 +3,7 @@
 		"cmd_name": "<string>",
 		"cmd_args": ["<string?>"],
 		"response": "<string>",
+		"url": "<url>",
 		"server_id": "<int>",
 		"channel": {
 			"id": "<int>",
@@ -14,12 +15,12 @@
 		},
 		"content": {
 			"text": "<string?>",
-			"media": ["<string?>"],
+			"media": ["<string?>"]
 		},
 		"time": {
 			"created_at": "<string>",
 			"deleted_at": "<string?>"
 		},
-		"will_be_deleted": "<boolean>",
+		"will_be_deleted": "<boolean>"
 	}
 }

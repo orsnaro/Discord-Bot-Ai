@@ -3,7 +3,7 @@
 		
 		"<guild_id>":{
 			"admin_rooms": ["<int?>"],
-			"wizy_voice_channels": ["<int?>",],
+			"wizy_voice_channels": ["<int?>"],
 			"wizy_chat_channels": ["<int?>"],
 			"wizy_feed_channels": ["<int?>"],
 			"params": {
@@ -12,13 +12,16 @@
 					"quotesz": 200
 			},
 			"allowed_roles": {
-				"<cmd_name>": {
-					"<role_name>": "<int>",
+				"<cmd_name1>": {
+					"<role_name1>": "<int>",
+					"<role_name2>": "<int>"
 				},
+				"<cmd_name2>": {
+					"<role_name1>": "<int>",
+					"<role_name2>": "<int>"
+				}
 			}
 	
-		},
-		"bot_master_id": 726888595754844202,
-		"wizard_bot_id": 1117540489365827594
+		}
 	}
 }
