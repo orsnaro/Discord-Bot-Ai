@@ -689,8 +689,8 @@ async def play(ctx: commands.Context, url: str= None):
             async with ctx.typing():
                if bot_vioce_client.is_playing():
                   bot_vioce_client.stop()
-               
-               await util.play_chill_track(guild_obj)
+                  
+               aio.create_task(util.play_chill_track(guild_obj))
                bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} started Wizy's Default Wizy Tracks** enjoy! :blue_heart::notes:")
                ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
                ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'

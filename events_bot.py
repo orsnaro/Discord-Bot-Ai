@@ -120,7 +120,9 @@ async def on_voice_state_update(member: discord.Member, before: discord.VoiceSta
    """
     #if member voice state change is due to joining a voice ch and the voice channel entered is wizy ch
    joined_voice_ch_id = None
-   if after.channel != None and after.channel.id != None:
+   is_channel_changed =  before.channel.id != after.channel.id #so we join only if state change is due channel join (not mute or other state changes)
+   is_valid_channel = after.channel != None and after.channel.id != None
+   if is_valid_channel and is_channel_changed:
       joined_voice_ch_id = after.channel.id
       
    is_wizy_voice_ch = joined_voice_ch_id in wizy_voice_channels

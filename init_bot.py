@@ -96,7 +96,7 @@ wizard_bot_id = 1117540489365827594
 default_feed_channel_frequency_minutes: int = 120 #2hours
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #NOTE: in order to avoid on_ready() issues override Bot class and move all on ready to it's setup_hook()
-#TODO: cache wizy states per guild to save the expensive for/while loops in bot tasks that runs periodically to get some wizy timer and state for each guild each x minute || second !!
+ #TODO: cache wizy states per guild to save the expensive for/while loops in bot tasks that runs periodically to get some wizy timer and state for each guild each x minute || second !!
 class CustomBot(commands.Bot):
    """
    Custom Discord bot implementation with extended functionality.
@@ -130,17 +130,14 @@ class CustomBot(commands.Bot):
       - Initializes tracking dictionaries
       - Starts periodic tasks for various bot functions
       """
-      # self.auto_memequote_state = 1 if len(sys.argv) <= 1 else int(sys.argv[1]) #0 off | 1 on normal mode | 2 on special mode
-      self.auto_memequote_state: dict[discord.guild.id, int] = {}  # value is state per guild
+      self.auto_memequote_state = 1 if len(sys.argv) <= 1 else int(sys.argv[1]) #0 off | 1 on normal mode | 2 on special mode
       self.default_voice_channel: int = wizy_voice_channels[0] #TODO : later will 1) load all voice channels from json 2)assign each wizy voice channel for each server
-      # self.default_wizy_chat_ch_ai_type: str = 'deep'
-      self.default_wizy_chat_ch_ai_type: dict[discord.guild.id, str] = {} # value is ai type per guild
+      self.default_wizy_chat_ch_ai_type: str = 'deep'
       self.wizy_chat_ch_ai_types: list = ['gpt','gemini', 'deep'] 
-      # self.default_auto_played_track_type: str = 'mmochill' #TODO: make type per guild
-      self.default_auto_played_track_type: dict[discord.guild.id, str] = {}  # value is track_type
+      self.default_auto_played_track_type: str = 'mmochill' #TODO: make type per guild
       self.auto_played_tracks: dict = {'lofi': "/lofi", 'mmochill': '/mmochill', 'mmoanime': '/mmoanime', 'orsmix': '/orsmix', 'holyquran': '/holyquran', 'nostalgia': '/nostalgia'}  #TODO: make type per guild
-      self.alone_increment_val_sec = 5
-      self.wizy_alone_threshold_sec = 300 #5 minutes
+      self.alone_increment_val_sec =5
+      self.wizy_alone_threshold_sec = 300 #5 minutes #TODO: each server can edit their threshold
       self.guilds_not_playing_timer: dict[discord.guild.id, int] = {}
       self.connected_to_wizy_voice_per_guild: dict[discord.guild.id, int] = {}
       self.resume_chill_if_free.start()
@@ -165,6 +162,7 @@ class CustomBot(commands.Bot):
       await util.fill_bot_counters_n_timers()
       print(f"\n\n Bot '{self.user}' Sucessfully connected to Discord!\n\n")
 
+   
    @tasks.loop(seconds= 10, count= 1) #do once
    async def load_cfg(self):
       """
@@ -314,6 +312,8 @@ def pre_boot_setup(_main_file: str):
    return log_std , log_discord
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
+is_production  = True if 'IS_PRODUCTION' in os.environ and os.environ['IS_PRODUCTION'] == '1' else False 
+#------------------------------------------------------------------------------------------------------------------------------------------#
 def boot_bot(main_file: str) :
    """
    Initializes and starts the Discord bot.
@@ -325,7 +325,7 @@ def boot_bot(main_file: str) :
        Handles different logging configurations based on production status.
    """
    log_std, log_discord = pre_boot_setup(main_file)
-   if 'IS_PRODUCTION' in os.environ and os.environ['IS_PRODUCTION'] == '1' :
+   if is_production:
       with contextlib.redirect_stdout(log_std):
          with contextlib.redirect_stderr(log_std):
             bot.run(keys.Token_gpteousBot , log_handler= log_discord, log_level= logging.INFO)#default logging level is info
