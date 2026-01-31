@@ -1,10 +1,11 @@
 """
                           Coder : Omar
                           Version : v2.5.11B
-                          version Date :  3 / 11 / 2025
+                          version Date :  31 / 1 / 2026
                           Code Type : python | Discrod | GEMINI | GPT | DEEPSEEK | HTTP | ASYNC
                           Title : Initialization of Discord Bot
-                          Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]
+                          WIN Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]  
+                          Linux Interpreter :  Python 3.11.8 (main, Apr 9 2025, 17:28:17) [GCC 13.3.0]
 """
 import discord
 from discord.ext import commands , tasks
