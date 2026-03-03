@@ -17,3 +17,6 @@ discord.log
 .discord_bot_ai_venv/*
 .discord_bot_ai_venv/
 *.webm
+.is_autoVenv  
+.gemini/
+gha-creds-*.json
