@@ -13,7 +13,8 @@ import utils_bot as util
 import asyncio as aio
 import random
 import random2
-import google.generativeai as genai
+# import google.generativeai as genai
+from google import genai
 from openai import AsyncOpenAI
 from inspect import getmembers , isfunction
 import aiohttp
@@ -80,11 +81,12 @@ def init_gemini_session():
        to move from the old unofficial Bard API to the new Gemini API.
    """
    ... #TODO
-#    genai.configure_session(api_key= keys.geminiAPI_KEY)
-#    gemini = genai.GenerativeModel(model_name= 'gemini-1.5-flash')
-#    return gemini
 
-# gemini = init_gemini_session()
+   # The client gets the API key from the environment variable `GEMINI_API_KEY`.
+   gemini = genai.Client(api_key=keys.geminiAPI_KEY, project=keys.geminiProject_ID)
+   return gemini
+
+gemini = init_gemini_session()
 
 # regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
 admin_rooms: list = [889999601350881390,]
