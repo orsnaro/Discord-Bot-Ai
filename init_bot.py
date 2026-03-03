@@ -83,10 +83,10 @@ def init_gemini_session():
    ... #TODO
 
    # The client gets the API key from the environment variable `GEMINI_API_KEY`.
-   gemini = genai.Client(api_key=keys.geminiAPI_KEY, project=keys.geminiProject_ID)
+   gemini = genai.Client(api_key=keys.geminiAPI_KEY, project=keys.geminiProject_ID,)
    return gemini
 
-gemini = init_gemini_session()
+# gemini = init_gemini_session()
 
 # regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
 admin_rooms: list = [889999601350881390,]
