@@ -24,7 +24,8 @@ if( keysFileOk ):
       geminiAPI_KEY      = keys_dict['GEMINI_APIKEY']
       geminiGmail        = keys_dict['GEMINI_GMAIL']
       geminiGmail_KEY    = keys_dict['GEMINI_GMAILPASS']
-
+      geminiProject_ID    = keys_dict['GOOGLE_CLOUD_PROJECT']
+      db_conn_str        = keys_dict['MONGODB_CONN_STRING']
 else : #if json file is not there (the ones with default None val are not super necessary)
    openaiAPI_KEY    = os.environ['OPENAI_API_KEY']
    openaiAPI_ORG_ID = os.environ['OPENAI_ORG_ID']
@@ -33,3 +34,5 @@ else : #if json file is not there (the ones with default None val are not super 
    geminiAPI_KEY      = os.environ['GEMINI_APIKEY']
    geminiGmail        = os.environ.get('GEMINI_GMAIL', None) 
    geminiGmailK_KEY   = os.environ.get('GEMINI_GMAILPASS', None) 
+   geminiProject_ID  = os.environ.get('GOOGLE_CLOUD_PROJECT', None) 
+   db_conn_str        = os.environ.get('MONGODB_CONN_STRING', None) 
