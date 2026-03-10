@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.11B
-                          version Date :  31 / 1 / 2026
+                          Version : v2.5.12B
+                          version Date :  11 / 3 / 2026
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Utility code for Discord Bot
                           WIN Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]  
@@ -104,7 +104,7 @@ async def play_chill_track(server: discord.Guild):
       source =  discord.FFmpegPCMAudio(executable="ffmpeg", source=track_path, options="-vn -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 2  -buffer_size 512k")
       
    #see: https://discordpy.readthedocs.io/en/stable/api.html#discord.VoiceClient.play
-   server.voice_client.play(source= source, bitrate= 128, expected_packet_loss= 0.15, signal_type= 'music')
+   await_me_maybe(server.voice_client.play(source= source, bitrate= 128, expected_packet_loss= 0.15, signal_type= 'music'))
    
 #------------------------------------------------------------------------------------------------------------------------------------------#
 async def sub_sections_msg_sending_ctrl ( message : discord.Message, final_links_msg : str, lnk1_len : int, final_imgs_msg : str, lnks_flag = False, imgs_flag = True ) :
