@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.11B
-                          version Date :  31 / 1 / 2026
+                          Version : v2.5.12B
+                          version Date :  11 / 3 / 2026
                           Code Type : python | Discrod | GEMINI | GPT | DEEPSEEK | HTTP | ASYNC
                           Title : Initialization of Discord Bot
                           WIN Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]  
@@ -90,7 +90,7 @@ def init_gemini_session():
 
 # regarding mentions for all discrod objects : messages , users , rules .. etc : https://discord.com/developers/docs/reference#message-formatting
 admin_rooms: list = [889999601350881390,]
-wizy_voice_channels = [890209823898107904,]
+wizy_voice_channels = [890209823898107904,1146753377959673937]
 wizy_feed_channels = [1137242260203909151,]
 narols_island_wizard_channel_id = 1118953370510696498
 testing_wizard_channel_id = 1133103993942462577

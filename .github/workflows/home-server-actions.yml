@@ -1,0 +1,71 @@
+name: push-home-bot-server
+
+# Trigger deployment only on push to production-Home-Server branch
+on:
+  push:
+    branches:
+      - production-Home-Server
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    name: Deploy to ORS Home Server on every production-Home-Server branch push
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - 3.11.8 # with a build matrix, you can specify a list of python versions to deploy with
+        cache: ['pip']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      - name: Install python project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      # - name: install ssh keys
+      # this a manual ssh install step if the auto one 'Deploy to Home Server discord bot server' stopped working!
+      # this partt of this article:https://www.programonaut.com/how-to-deploy-a-git-repository-to-a-server-using-github-actions/
+      #   run: |
+      #     install -m 600 -D /dev/null ~/.ssh/id_rsa
+      #     echo "${{ secrets.HOME_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+      #     ssh-keyscan -H ${{ secrets.HOST_DNS }} > ~/.ssh/known_hosts
+      - name: Deploy to Home Server discord bot server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.HOME_SERVER_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST_DNS }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          TARGET: ${{ secrets.TARGET_DIR }}
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v1
+        env: # next line is dedundunt of next envs in same action(source: DeepSeek)
+          BARD_GMAILPASS: ${{ secrets.BARD_GMAILPASS }}
+          BARD_GMAIL: ${{ secrets.BARD_GMAIL }}
+          BARD_APIKEY: ${{ secrets.BARD_APIKEY }}
+          DISCORDBOTTOKEN_GPTEOUS: ${{ secrets.DISCORDBOTTOKEN_GPTEOUS }}
+          OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
+          DIR : ${{ secrets.TARGET_DIR }}   
+          DEEPSEEK_APIKEY: ${{secrets.DEEPSEEK_APIKEY}}
+          IS_PRODUCTION : '1'
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          #password: ${{ secrets.HOME_SERVER_SSH_KEY }}
+          key: ${{ secrets.HOME_SERVER_SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          command_timeout: 5m
+        # script_stop: true
+          envs: IS_PRODUCTION , DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , DEEPSEEK_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
+          script: | 
+            # set -e  # Exit immediately on error
+            echo "Starting bot deployment..."
+            if pgrep -f "bot_wizy_discord.py" >/dev/null; then
+              echo "terminating old wizy... system daemon will auto restart it!"
+              pkill -f bot_wizy_discord.py
+            fi

@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.11B
-                          version Date :  31 / 1 / 2026
+                          Version : v2.5.12B
+                          version Date :  11 / 3 / 2026
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Commands Code for Discord bot
                           WIN Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]  
@@ -585,7 +585,7 @@ async def geminiAI_error(ctx: commands.Context , error):
                   content=f"Ops! this is not avialble right now🧙‍♂️"
                   ) 
 # #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.hybrid_command(name="wizyleave", help= 'wizy leaves voice channel _if_ connected to one')
+@bot.hybrid_command(name="leave", aliases=['wizyleave'], help= 'wizy leaves voice channel _if_ connected to one')
 @commands.cooldown(1, 5)
 async def leave_voice_wizard( ctx: commands.Context ):
    """
@@ -603,9 +603,11 @@ async def leave_voice_wizard( ctx: commands.Context ):
 
    await ctx.message.delete(delay= 15.0)
    ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-   await ctx.guild.voice_client.disconnect()
+   
+   if ctx.guild.voice_client is not None:
+      await ctx.guild.voice_client.disconnect()
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.hybrid_command(name="wizyjoin", help= 'wizy joins voice channel you are in' )
+@bot.hybrid_command(name="join", aliases=['wizyjoin'], help= 'wizy joins voice channel you are in' )
 @commands.cooldown(1, 5)
 async def join_voice_wizard( ctx: commands.Context ):
    """
@@ -622,11 +624,12 @@ async def join_voice_wizard( ctx: commands.Context ):
    #TESTING
    
    if ( ctx.author.voice ):
-      if ctx.guild.voice_client is not None:
-         await ctx.guild.voice_client.disconnect()
-
       target_voice_channel = ctx.message.author.voice.channel
-      await  target_voice_channel.connect()
+      
+      if ctx.guild.voice_client is not None:
+         await ctx.guild.voice_client.move_to(target_voice_channel)
+      else:
+         await target_voice_channel.connect()
 
       if ctx.interaction: #if invoked using slash commmand
          bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
@@ -645,7 +648,7 @@ async def join_voice_wizard( ctx: commands.Context ):
       await ctx.message.delete(delay= 15.0)
       ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
 #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.hybrid_command(name='wizyplay', help='To play audio')
+@bot.hybrid_command(name='play', aliases=['wizyplay'], help='To play audio')
 @commands.cooldown(1, 5)
 async def play(ctx: commands.Context, url: str= None):
    """
@@ -661,26 +664,33 @@ async def play(ctx: commands.Context, url: str= None):
    print(f"TESTING ######### \n\n\n {url} \n\n\n ###########")
    try :
       guild_obj = ctx.message.guild
-      bot_vioce_client: discord.voice_client = guild_obj.voice_client
+      bot_voice_client: discord.voice_client = guild_obj.voice_client
       
       
-      #make bot (join + play) in one command! (IF he is already in a VC you must move him first!)
+      #make bot (join + play) in one command! (ONLY! IF he is already in a VC you must move him first!)
       if ( ctx.author.voice ):
-         if bot_vioce_client is not None and (bot_vioce_client.channel != ctx.author.voice.channel):
-            raise Exception("Bot is Being Used in another Voice Channel!")
-         elif bot_vioce_client is None: #user is in a voice ch and bot is not in any voice channel
+         is_bot_connected_to_other_ch = bot_voice_client is not None and bot_voice_client.is_connected() and (bot_voice_client.channel.id != ctx.author.voice.channel.id)
+         if is_bot_connected_to_other_ch:
+             bot_reply_msg: discord.Message = await ctx.reply(content="Bot is Being Used in another Voice Channel!", delete_after= 15)
+             ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+             ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+             await ctx.message.delete(delay= 15.0)
+             return
+            #  raise Exception("Bot is Being Used in another Voice Channel!")
+            
+         elif bot_voice_client is None or not bot_voice_client.is_connected(): #user is in a voice ch and bot is not in any voice channel
             await ctx.author.voice.channel.connect()
-            bot_vioce_client: discord.voice_client = guild_obj.voice_client
+            bot_voice_client: discord.voice_client = guild_obj.voice_client
          
          if url != None:
             async with ctx.typing():
                #NOTE: if stream arg causes error set to false (download file then play from local pc)
                song_obj , filename = await YTDLSource.from_url(url, loop=bot.loop, stream= True)
 
-               if bot_vioce_client.is_playing():
-                  bot_vioce_client.stop()
+               if bot_voice_client.is_playing():
+                  bot_voice_client.stop()
 
-               bot_vioce_client.play(song_obj)
+               bot_voice_client.play(song_obj)
 
             bot_reply_msg: discord.Message = await ctx.reply(f'**Now playing:** {filename} **-** _islander_ {ctx.message.author.mention}')
             ctx.interaction or await bot_reply_msg.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
@@ -688,8 +698,8 @@ async def play(ctx: commands.Context, url: str= None):
             await ctx.message.delete(delay= 15.0)
          else: #play default chill tracks locally on your pc (infinity loop)
             async with ctx.typing():
-               if bot_vioce_client.is_playing():
-                  bot_vioce_client.stop()
+               if bot_voice_client.is_playing():
+                  bot_voice_client.stop()
                   
                aio.create_task(util.play_chill_track(guild_obj))
                bot_reply_msg: discord.Message = await ctx.reply(f"**{ctx.message.author.mention} started Wizy's Default Wizy Tracks** enjoy! :blue_heart::notes:")
@@ -709,7 +719,7 @@ async def play(ctx: commands.Context, url: str= None):
       ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
 # #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.hybrid_command(name='wizypause', help='This command pauses the audio')
+@bot.hybrid_command(name='pause', aliases=['wizypause'], help='This command pauses the audio')
 @commands.cooldown(1, 5)
 async def pause(ctx: commands.Context):
    """
@@ -721,23 +731,33 @@ async def pause(ctx: commands.Context):
    Args:
        ctx (commands.Context): The context of the command invocation.
    """
-   voice_client = ctx.message.guild.voice_client
-   if voice_client.is_playing():
-      await await_me_maybe( voice_client.pause() )
-
-      if ctx.interaction: #if invoked using slash commmand
-               bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
-               await bot_reply_msg.delete(delay= 5)
-
-      ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-      await ctx.message.delete(delay= 15.0)
-   else:
-      bot_reply_msg: discord.Message = await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
+   
+   guild_obj = ctx.message.guild
+   bot_voice_client: discord.voice_client = guild_obj.voice_client
+   is_bot_connected_to_other_ch = ctx.author.voice is not None and bot_voice_client is not None and bot_voice_client.is_connected() and (bot_voice_client.channel.id != ctx.author.voice.channel.id)
+   if is_bot_connected_to_other_ch:
+      bot_reply_msg: discord.Message = await ctx.reply(content="The bot is in another channel!", delete_after= 15)
       ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
       await ctx.message.delete(delay= 15.0)
+      # raise Exception("Bot is Being Used in another Voice Channel!")
+   else:  
+      if bot_voice_client.is_playing():
+         await await_me_maybe( bot_voice_client.pause() )
 
-@bot.hybrid_command(name='wizyresume', help='Resumes the audio')
+         if ctx.interaction: #if invoked using slash commmand
+                  bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+                  await bot_reply_msg.delete(delay= 5)
+
+         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+         await ctx.message.delete(delay= 15.0)
+      else:
+         bot_reply_msg: discord.Message = await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
+         ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         await ctx.message.delete(delay= 15.0)
+
+@bot.hybrid_command(name='resume', aliases=['wizyresume'], help='Resumes the audio')
 @commands.cooldown(1, 5)
 async def resume(ctx: commands.Context):
     """
@@ -749,23 +769,32 @@ async def resume(ctx: commands.Context):
     Args:
         ctx (commands.Context): The context of the command invocation.
     """
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_paused():
-        await await_me_maybe(voice_client.resume())
+    guild_obj = ctx.message.guild
+    bot_voice_client: discord.voice_client = guild_obj.voice_client
+    is_bot_connected_to_other_ch = ctx.author.voice is not None and bot_voice_client is not None and bot_voice_client.is_connected() and (bot_voice_client.channel.id != ctx.author.voice.channel.id)
+    if is_bot_connected_to_other_ch:
+      bot_reply_msg: discord.Message = await ctx.reply(content="The bot is in another channel!", delete_after= 15)
+      ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      await ctx.message.delete(delay= 15.0)
+      # raise Exception("Bot is Being Used in another Voice Channel!")
+    else:  
+      if bot_voice_client.is_paused():
+         await await_me_maybe(bot_voice_client.resume())
 
-        if ctx.interaction: #if invoked using slash commmand
-            bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
-            await bot_reply_msg.delete(delay= 5)
+         if ctx.interaction: #if invoked using slash commmand
+               bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+               await bot_reply_msg.delete(delay= 5)
 
-        ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-        await ctx.message.delete(delay= 15.0)
-    else:
-        bot_reply_msg: discord.Message = await ctx.reply(content="wizy wasn't pausing any track. maybe try  **wizyplay** command", delete_after= 15)
-        ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-        ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-        await ctx.message.delete(delay= 15.0)
+         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+         await ctx.message.delete(delay= 15.0)
+      else:
+         bot_reply_msg: discord.Message = await ctx.reply(content="wizy wasn't pausing any track. maybe try  **wizyplay** command", delete_after= 15)
+         ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         await ctx.message.delete(delay= 15.0)
 # #------------------------------------------------------------------------------------------------------------------------------------------#
-@bot.hybrid_command(name='wizystop', help='Stops the audio')
+@bot.hybrid_command(name='stop', aliases=['wizystop'], help='Stops the audio')
 @commands.cooldown(1, 5)
 async def stop(ctx: commands.Context):
     """
@@ -777,21 +806,30 @@ async def stop(ctx: commands.Context):
     Args:
         ctx (commands.Context): The context of the command invocation.
     """
-    voice_client= ctx.message.guild.voice_client
-    if voice_client.is_playing() or voice_client.is_paused():
-        await await_me_maybe(voice_client.stop())
+    guild_obj = ctx.message.guild
+    bot_voice_client: discord.voice_client = guild_obj.voice_client
+    is_bot_connected_to_other_ch = ctx.author.voice is not None and bot_voice_client is not None and bot_voice_client.is_connected() and (bot_voice_client.channel.id != ctx.author.voice.channel.id)
+    if is_bot_connected_to_other_ch:
+      bot_reply_msg: discord.Message = await ctx.reply(content="The bot is in another channel!", delete_after= 15)
+      ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+      await ctx.message.delete(delay= 15.0)
+      # raise Exception("Bot is Being Used in another Voice Channel!")
+    else:  
+      if bot_voice_client.is_playing() or bot_voice_client.is_paused():
+         await await_me_maybe(bot_voice_client.stop())
 
-        if ctx.interaction: #if invoked using slash commmand
-            bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
-            await bot_reply_msg.delete(delay= 5)
+         if ctx.interaction: #if invoked using slash commmand
+               bot_reply_msg = await ctx.reply(slash_cmd_ok_msg)
+               await bot_reply_msg.delete(delay= 5)
 
-        ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
-        await ctx.message.delete(delay= 15.0)
-    else:
-        bot_reply_msg: discord.Message = await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
-        ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-        ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
-        await ctx.message.delete(delay= 15.0)
+         ctx.interaction or await ctx.message.add_reaction('\U00002705') #✅ mark unicode == '\U00002705'
+         await ctx.message.delete(delay= 15.0)
+      else:
+         bot_reply_msg: discord.Message = await ctx.reply(content="The bot is not playing anything at the moment.", delete_after= 15)
+         ctx.interaction or await bot_reply_msg.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         ctx.interaction or await ctx.message.add_reaction('\U0000274C') #❌ mark unicode == '\U0000274C'
+         await ctx.message.delete(delay= 15.0)
 # #------------------------------------------------------------------------------------------------------------------------------------------#
 @bot.hybrid_command(name='wizyque', help='Shows the current queue or clears it **(TODO)**') #TODO
 @commands.cooldown(1, 5)
