@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.11B
-                          version Date :  31 / 1 / 2026
+                          Version : v2.5.12B
+                          version Date :  11 / 3 / 2026
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Events code for Discord bot
                           WIN Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]  
@@ -121,18 +121,25 @@ async def on_voice_state_update(member: discord.Member, before: discord.VoiceSta
    """
     #if member voice state change is due to joining a voice ch and the voice channel entered is wizy ch
    joined_voice_ch_id = None
-   is_channel_changed =  before.channel.id != after.channel.id #so we join only if state change is due channel join (not mute or other state changes)
-   is_valid_channel = after.channel != None and after.channel.id != None
-   if is_valid_channel and is_channel_changed:
-      joined_voice_ch_id = after.channel.id
+   
+   if before.channel is not None and after.channel is not None:
+      is_channel_changed =  before.channel.id != after.channel.id #so we join only if state change is due channel join (not mute or other state changes)
+      
+      is_valid_channel = after.channel is not None and after.channel.id is not None
+      if is_valid_channel and is_channel_changed:
+         joined_voice_ch_id = after.channel.id
       
    is_wizy_voice_ch = joined_voice_ch_id in wizy_voice_channels
    is_ok_connect_bot_to_wizy_ch = await util.can_pull_wizy(member, is_wizy_voice_ch)
 
    if is_ok_connect_bot_to_wizy_ch:
-      if await util.await_me_maybe(member.guild.voice_client) is not None and await util.await_me_maybe(member.guild.voice_client.is_connected()): 
-         await member.guild.voice_client.disconnect()
-      await after.channel.connect()
+      if member.guild.voice_client is not None: 
+         if member.guild.voice_client.is_playing() :
+            member.guild.voice_client.stop()
+         await member.guild.voice_client.move_to(after.channel)
+      else:
+         await after.channel.connect()
+      
       await util.play_chill_track(member.guild)
    
 # ------------------------------------------------------------------------------------------------------------------------------------------#

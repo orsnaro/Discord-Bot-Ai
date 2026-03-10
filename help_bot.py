@@ -1,7 +1,7 @@
 """
                           Coder : Omar
-                          Version : v2.5.11B
-                          version Date :  31 / 1 / 2026
+                          Version : v2.5.12B
+                          version Date :  11 / 3 / 2026
                           Code Type : python | Discrod | GEMINI | HTTP | ASYNC
                           Title : Customs Help code for Discord Bot
                           WIN Interpreter : cPython  v3.11.8 [Compiler : MSC v.1937 64 bit (AMD64)]  
