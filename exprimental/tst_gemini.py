@@ -1,11 +1,9 @@
-import google.generativeai as genai
-import os
+from google import genai
 
+# The client gets the API key from the environment variable `GEMINI_API_KEY`.
+client = genai.Client()
 
-
-genai.configure(api_key= os.environ['GEMINI_APIKEY'])
-gemi = genai.GenerativeModel('gemini-1.5-flash')
-resp = gemi.generate_content("hi gemi are you okay ? send me an image of happy face and text that you okay!")
-print(resp.text, "\n\n\n")
-resp = gemi.start_chat()
-print(resp.candidates, "\n\n\n")
+response = client.models.generate_content(
+    model="gemini-3-flash-preview", contents=" what is todays date and Explain how AI works in a few words"
+)
+print(response.text)
