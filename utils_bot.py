@@ -765,19 +765,24 @@ class UserAiQuery:
          
          if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
             deepSeek_payload= await ini.deepSeek.chat.completions.create(
-                  model="deepseek-chat",
+                  model="deepseek-v4-flash", #pro also available
                   max_tokens= UserAiQuery.command_query_tokken_limit,
                   messages= user_deepSeek_history,
-                  temperature= 1.3 #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
-                  # stream= True
+                  temperature= 1.1, #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
+                  # stream= True,
+                   # reasoning_effort="high", #use it if thinking mode is enabled options: (high, max)
+                  extra_body={"thinking": {"type": "disabled"}}
                )
          elif kwargs["_is_wizy_ch"]: 
             deepSeek_payload= await ini.deepSeek.chat.completions.create(
-                  model="deepseek-chat",
+                  model="deepseek-v4-flash", #pro also available
                   max_tokens= UserAiSpecialChat.chat_query_tokken_limit,
                   messages= user_deepSeek_history,
-                  temperature= 1.3 #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
-                  # stream= True
+                  temperature= 1.1, #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
+                  # stream= True,
+                  # reasoning_effort="high", #use it if thinking mode is enabled options: (high, max)
+                  extra_body={"thinking": {"type": "disabled"}}
+                  
                )
          
          deepSeek_resp = deepSeek_payload.choices[0].message.content
