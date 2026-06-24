@@ -56,7 +56,7 @@ def init_gpt_session():
 gpt = init_gpt_session()
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #by default checks keys in sys. env variables check func docstring
-def init_deepSeek_session():
+def init_deepSeek_session(is_using_nvidia_api: bool = False):
    """
    Initializes and returns a DeepSeek API session.
    
@@ -66,10 +66,12 @@ def init_deepSeek_session():
    Note:
        By default checks for API keys in system environment variables.
    """
-   deepSeek = AsyncOpenAI(api_key= keys.deepseekAPI_KEY, base_url="https://api.deepseek.com") 
+   
+   deepSeek = AsyncOpenAI(api_key= keys.deepseekAPI_KEY, base_url="https://api.deepseek.com" if not is_using_nvidia_api else "https://integrate.api.nvidia.com/v1") 
    return deepSeek   
 
-deepSeek = init_deepSeek_session()
+is_using_nvidia_api = True
+deepSeek = init_deepSeek_session(is_using_nvidia_api= is_using_nvidia_api)
 #------------------------------------------------------------------------------------------------------------------------------------------#
 #TODO : complete moving from old un-official bard api to new better gemini(ex-bard) api 
 def init_gemini_session():

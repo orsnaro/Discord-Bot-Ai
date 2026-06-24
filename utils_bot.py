@@ -694,29 +694,31 @@ class UserAiQuery:
          print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n {user_gpt_history}  ############# \n\n\n")
          #TESTING
          
-         
-         if not kwargs["_is_wizy_ch"]: # set max token limit for query types of requests
-            gpt_payload= await ini.gpt.chat.completions.create(
-                  model="gpt-3.5-turbo",
-                  max_tokens= UserAiQuery.command_query_tokken_limit,
-                  messages= user_gpt_history
-                  # stream= True
-               )
-         elif kwargs["_is_wizy_ch"]: # set max token limit for chat types of requests
-            gpt_payload= await ini.gpt.chat.completions.create(
-                  model="gpt-3.5-turbo",
-                  max_tokens= UserAiSpecialChat.chat_query_tokken_limit,
-                  messages= user_gpt_history
-                  # stream= True
-               )
-         
-         gpt_resp = gpt_payload.choices[0].message.content
-         gpt_user_msg_resp = [{"role": "assistant", "content": gpt_resp}]
-         chat_dict[userId].append_chat_msg(msg= gpt_user_msg_resp, ai_type= 'gpt')
-   
-         #TESTING
-         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
-         #TESTING
+         try:
+            if not kwargs["_is_wizy_ch"]: # set max token limit for query types of requests
+               gpt_payload= await ini.gpt.chat.completions.create(
+                     model="gpt-3.5-turbo",
+                     max_tokens= UserAiQuery.command_query_tokken_limit,
+                     messages= user_gpt_history
+                     # stream= True
+                  )
+            elif kwargs["_is_wizy_ch"]: # set max token limit for chat types of requests
+               gpt_payload= await ini.gpt.chat.completions.create(
+                     model="gpt-3.5-turbo",
+                     max_tokens= UserAiSpecialChat.chat_query_tokken_limit,
+                     messages= user_gpt_history
+                     # stream= True
+                  )
+            
+            gpt_resp = gpt_payload.choices[0].message.content
+            gpt_user_msg_resp = [{"role": "assistant", "content": gpt_resp}]
+            chat_dict[userId].append_chat_msg(msg= gpt_user_msg_resp, ai_type= 'gpt')
+      
+            #TESTING
+            print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload: {gpt_payload}  \n\n\n ############# \n\n\n")
+            #TESTING
+         except Exception as e:
+            print(f"An issue happend while reaching LLM GPT API!...: {e}")
          
          return gpt_payload.id, gpt_resp
       
@@ -738,14 +740,14 @@ class UserAiQuery:
          chat_dict = UserAiSpecialChat.chats_ai_dict if kwargs["_is_wizy_ch"] else cls.chats_ai_dict
          
          #TESTING
-         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n gpt payload:  \n\n\n is special channel {kwargs['_is_wizy_ch']}  ############# \n\n\n")
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n DeepSeek payload:  \n\n\n is special channel {kwargs['_is_wizy_ch']}  ############# \n\n\n")
          #TESTING
          
          if userId in chat_dict:
             chat_dict[userId].append_chat_msg(msg= deepSeek_user_msg, ai_type= 'deep')
             user_deepSeek_history = chat_dict[userId].history_deepSeek
             
-         else: #new chat with gpt
+         else: #new chat with DeepSeek
             new_chat = UserAiSpecialChat(userId) if kwargs["_is_wizy_ch"] else cls(userId) 
             # tell th AI tokkens limit  to assure him to not send longer messages!
             tokken_limit = new_chat.chat_query_tokken_limit if kwargs['_is_wizy_ch'] else new_chat.command_query_tokken_limit
@@ -759,31 +761,33 @@ class UserAiQuery:
             user_deepSeek_history = chat_dict[userId].history_deepSeek
 
          #TESTING
-         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n deepSeek payload:  \n\n\n {user_deepSeek_history}  ############# \n\n\n")
+         print(f"\n\n\n\n\n\n\n TESTING############# \n\n\n DeepSeek payload:  \n\n\n {user_deepSeek_history}  ############# \n\n\n")
          #TESTING
          
-         
-         if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
-            deepSeek_payload= await ini.deepSeek.chat.completions.create(
-                  model="deepseek-v4-flash", #pro also available
-                  max_tokens= UserAiQuery.command_query_tokken_limit,
-                  messages= user_deepSeek_history,
-                  temperature= 1.1, #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
-                  # stream= True,
-                   # reasoning_effort="high", #use it if thinking mode is enabled options: (high, max)
-                  extra_body={"thinking": {"type": "disabled"}}
-               )
-         elif kwargs["_is_wizy_ch"]: 
-            deepSeek_payload= await ini.deepSeek.chat.completions.create(
-                  model="deepseek-v4-flash", #pro also available
-                  max_tokens= UserAiSpecialChat.chat_query_tokken_limit,
-                  messages= user_deepSeek_history,
-                  temperature= 1.1, #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
-                  # stream= True,
-                  # reasoning_effort="high", #use it if thinking mode is enabled options: (high, max)
-                  extra_body={"thinking": {"type": "disabled"}}
-                  
-               )
+         try:
+            if not kwargs["_is_wizy_ch"]: # set max token to 250 if using gpt outside wizy special chat channel
+               deepSeek_payload= await ini.deepSeek.chat.completions.create(
+                     model="deepseek-v4-flash" if not ini.is_using_nvidia_api else "deepseek-ai/deepseek-v4-flash", #pro also available
+                     max_tokens= UserAiQuery.command_query_tokken_limit,
+                     messages= user_deepSeek_history,
+                     temperature= 1.1, #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
+                     # stream= True,
+                     # reasoning_effort="high", #use it if thinking mode is enabled options: (high, max)
+                     extra_body={"thinking": {"type": "disabled"}}
+                  )
+            elif kwargs["_is_wizy_ch"]: 
+               deepSeek_payload= await ini.deepSeek.chat.completions.create(
+                     model="deepseek-v4-flash" if not ini.is_using_nvidia_api else "deepseek-ai/deepseek-v4-flash", #pro also available
+                     max_tokens= UserAiSpecialChat.chat_query_tokken_limit,
+                     messages= user_deepSeek_history,
+                     temperature= 1.1, #temp. parameter details: https://api-docs.deepseek.com/quick_start/parameter_settings
+                     # stream= True,
+                     # reasoning_effort="high", #use it if thinking mode is enabled options: (high, max)
+                     extra_body={"thinking": {"type": "disabled"}}
+                     
+                  )
+         except Exception as e:
+            print(f"An issue happend while reaching LLM DeepSeek API!..: {e}")
          
          deepSeek_resp = deepSeek_payload.choices[0].message.content
          deepSeek_user_msg_resp = [{"role": "assistant", "content": deepSeek_resp}]
@@ -1105,7 +1109,7 @@ class EmbedLimits(object):
       if is_reply :
          embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
 
-      embed.set_footer(text= f"Scroll ID({gemini_ans_data[3]})" , icon_url= footerIcon )
+      embed.set_footer(text= f"Scroll ID({gemini_ans_data[3][:8]})" , icon_url= footerIcon )
 
       #TESTING BLOCK
       field_sz += len((embed.fields)[i])
@@ -1141,9 +1145,9 @@ class EmbedLimits(object):
       
       embed.set_author(name= author, url=wizardChannelLink, icon_url= None )
       if ini.bot.default_wizy_chat_ch_ai_type == 'gpt' :
-         embed.set_footer(text= f"Scroll ID({ansID}) • powered by OpenAI", icon_url= footerIcon )
+         embed.set_footer(text= f"Scroll ID({ansID[:8]}) • powered by OpenAI", icon_url= footerIcon )
       elif ini.bot.default_wizy_chat_ch_ai_type == 'deep' :
-         embed.set_footer(text= f"Scroll ID({ansID}) • powered by DeepSeek\U0001F40B", icon_url= footerIcon ) #utf code is for whale emoji 🐋
+         embed.set_footer(text= f"Scroll ID({ansID[:8]}) • powered by DeepSeek\U0001F40B", icon_url= footerIcon ) #utf code is for whale emoji 🐋
       if is_reply :
          embed.add_field(name= "_ __note__ _ " , inline= False , value= note_compined_msg)
 
