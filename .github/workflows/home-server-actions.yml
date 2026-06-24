@@ -62,10 +62,10 @@ jobs:
           command_timeout: 5m
         # script_stop: true
           envs: IS_PRODUCTION , DIR , BARD_APIKEY , DISCORDBOTTOKEN_GPTEOUS , OPENAI_APIKEY , DEEPSEEK_APIKEY , BARD_GMAIL , BARD_GMAILPASS #passes them to server put doesnt save them this which is good!
-          script: | 
+          script: |
             # set -e  # Exit immediately on error
             echo "Starting bot deployment..."
-            if pgrep -f "bot_wizy_discord.py" >/dev/null; then
+            if pgrep -f "[b]ot_wizy_discord.py" >/dev/null; then
               echo "terminating old wizy... system daemon will auto restart it!"
-              pkill -f bot_wizy_discord.py
+              pkill -f "[b]ot_wizy_discord.py"
             fi
