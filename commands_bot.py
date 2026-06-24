@@ -360,7 +360,7 @@ async def gpt (ctx : commands.Context, * , full_prompt:str ): #(search keyword-o
          returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
       except:
          async with ctx.typing():
-            ctx.message.delete(delay= 15)
+            await ctx.message.delete(delay= 15.0)
             bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 @gpt.error
 async def gpt_error(ctx: commands.Context , error):
@@ -414,7 +414,7 @@ async def deepSeek (ctx : commands.Context, * , full_prompt:str ): #(search keyw
          returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
       except:
          async with ctx.typing():
-            ctx.message.delete(delay= 15)
+            await ctx.message.delete(delay= 15.0)
             bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 @deepSeek.error
 async def deepSeek_error(ctx: commands.Context , error):
@@ -472,7 +472,7 @@ async def ChatDeepSeekfast (ctx: commands.Context, * ,full_prompt: str = "EMPTY 
          returned_msg : discord.Message = await send_func_return  # short cut for ctx.send()
       except:
          async with ctx.typing():
-            ctx.message.delete(delay= 15)
+            await ctx.message.delete(delay= 15.0)
             bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 
 
@@ -564,7 +564,7 @@ async def geminiAI (ctx: commands.Context , * , full_prompt: str = "EMPTY PROMPT
          del valid_reply
       except:
          async with ctx.typing():
-            ctx.message.delete(delay= 15)
+            await ctx.message.delete(delay= 15.0)
             bot_reply_msg: discord.Message = await ctx.reply("**Ops! This feature is not working wizy very sorry!**", delete_after= 15)
 
    # img_embds = list()
